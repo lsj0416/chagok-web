@@ -9,12 +9,17 @@ export function completionRate(plannedDoneCount: number, plannedCount: number): 
   return plannedCount === 0 ? null : plannedDoneCount / plannedCount;
 }
 
-/** 이번 주(월요일부터 오늘까지) 요약. 연속 일수는 세지 않는다 */
+/**
+ * 이번 주(월요일부터 오늘까지) 요약. 연속 일수는 세지 않는다.
+ * 실행률은 끝난 날(어제까지)만 센다. 오늘은 아직 하는 중이라 아침마다 실행률이 떨어져 보이지 않게 한다.
+ * 오늘 완료한 할 일은 완료 수와 실행한 날에는 들어간다
+ */
 export function summarizeWeek(days: DayRecord[], today: DateKey): WeekSummary {
   const monday = startOfWeek(today);
   const week = days.filter((d) => d.date >= monday && d.date <= today);
-  const planned = week.reduce((sum, d) => sum + d.plannedCount, 0);
-  const plannedDone = week.reduce((sum, d) => sum + d.plannedDoneCount, 0);
+  const finished = week.filter((d) => d.date < today);
+  const planned = finished.reduce((sum, d) => sum + d.plannedCount, 0);
+  const plannedDone = finished.reduce((sum, d) => sum + d.plannedDoneCount, 0);
   return {
     doneCount: week.reduce((sum, d) => sum + d.doneTasks.length, 0),
     activeDayCount: week.filter((d) => d.doneTasks.length > 0).length,

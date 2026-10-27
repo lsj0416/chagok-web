@@ -37,7 +37,12 @@ describe("summarizeWeek", () => {
     const week = summarizeWeek(days, "2026-10-28");
     expect(week.doneCount).toBe(5);
     expect(week.activeDayCount).toBe(2);
-    expect(week.completionRate).toBe(0.5);
+    // 오늘(10/28, 0/2)은 아직 하는 중이라 실행률에서 빠진다: 10/26의 3/4만
+    expect(week.completionRate).toBe(0.75);
+  });
+
+  it("월요일 아침에는 끝난 날이 없어 실행률이 없다", () => {
+    expect(summarizeWeek([day("2026-10-26", 3, 0)], "2026-10-26").completionRate).toBeNull();
   });
 
   it("계획이 하나도 없던 주는 실행률이 없다", () => {

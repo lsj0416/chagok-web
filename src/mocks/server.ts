@@ -206,14 +206,23 @@ export function rescheduleTask(id: string, date: DateKey) {
     // 옮긴 날짜의 핵심 할 일이 이미 가득 차 있으면 일반 할 일로 옮긴다. 화면이 알릴 수 있게 결과에 남긴다
     const demotedFromCore = task.isCore && isCoreFull(db.tasks.filter((t) => t.id !== id && t.scheduledDate === date));
     if (demotedFromCore) task.isCore = false;
+    recordMoveFromToday(task, date);
     task.scheduledDate = date;
     return { demotedFromCore };
   });
 }
 
+/** 오늘이 수행 날짜였던 할 일을 다른 날로 옮기면 오늘 기록에 남긴다 (이전 날짜 기록은 남는다) */
+function recordMoveFromToday(task: Task, movedTo: DateKey | null) {
+  const date = today();
+  if (task.scheduledDate !== date || movedTo === date || task.status !== "PLANNED") return;
+  db.movedFromToday = [...db.movedFromToday.filter((m) => m.id !== task.id), { id: task.id, title: task.title, movedTo }];
+}
+
 export function unscheduleTask(id: string) {
   return mutate(() => {
     const task = findTask(id);
+    recordMoveFromToday(task, null);
     task.scheduledDate = null;
     task.isCore = false;
     return { ok: true };
@@ -489,12 +498,14 @@ export function addGoalTasks(goalId: string, titles: string[], source: Task["sou
 function todayRecord(date: DateKey): DayRecord {
   const planned = db.tasks.filter((t) => t.scheduledDate === date && t.status !== "SPLIT");
   const done = db.tasks.filter((t) => t.status === "DONE" && t.completedAt !== null && toDateKey(new Date(t.completedAt)) === date);
+  // 옮긴 할 일도 오늘의 수행 대상이었으므로 오늘 계획 수에 남긴다. 다시 오늘로 돌아온 할 일은 한 번만 센다
+  const moved = db.movedFromToday.filter((m) => !planned.some((t) => t.id === m.id));
   return {
     date,
-    plannedCount: planned.length,
+    plannedCount: planned.length + moved.length,
     plannedDoneCount: planned.filter((t) => t.status === "DONE").length,
     doneTasks: done.map(({ id, title }) => ({ id, title })),
-    movedTasks: [],
+    movedTasks: moved,
   };
 }
 

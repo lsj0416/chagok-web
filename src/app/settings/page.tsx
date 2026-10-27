@@ -1,5 +1,10 @@
-import { StubScreen } from "@/components/StubScreen";
+import { Suspense } from "react";
+import { SettingsScreen } from "@/components/settings/SettingsScreen";
 
-export default function Page() {
-  return <StubScreen title="설정" screenId="S15" />;
+export default function SettingsPage() {
+  return (
+    <Suspense>
+      <SettingsScreen />
+    </Suspense>
+  );
 }

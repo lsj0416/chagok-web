@@ -1,5 +1,10 @@
-import { StubScreen } from "@/components/StubScreen";
+import { Suspense } from "react";
+import { RecordsScreen } from "@/components/records/RecordsScreen";
 
-export default function Page() {
-  return <StubScreen title="기록" screenId="S13" tab />;
+export default function RecordsPage() {
+  return (
+    <Suspense>
+      <RecordsScreen />
+    </Suspense>
+  );
 }
