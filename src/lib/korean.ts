@@ -15,3 +15,9 @@ export function withEulReul(word: string): string {
   const final = finalConsonant(word);
   return final === null || final === 0 ? `${word}를` : `${word}을`;
 }
+
+/** 받침에 따라 '이' 또는 '가'를 붙인다. 예: 오피스가, 학교가, 체육관이 */
+export function withIGa(word: string): string {
+  const final = finalConsonant(word);
+  return final === null || final === 0 ? `${word}가` : `${word}이`;
+}

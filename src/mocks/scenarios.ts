@@ -4,9 +4,11 @@ import { AI_DAILY_LIMIT, DAILY_BONUS_THRESHOLD, HOUSE_UPGRADE_RULES } from "@/co
 import { addDays, toDateKey } from "@/lib/date";
 import { furnishedSlots, MOCK_CATALOG } from "@/mocks/house";
 import type {
+  AchievementProgress,
   Building,
   CreditLedgerEntry,
   DateKey,
+  DayRecord,
   Furniture,
   FurnitureCatalogItem,
   Goal,
@@ -14,6 +16,7 @@ import type {
   Placement,
   QuickTaskTemplate,
   Task,
+  UserSettings,
 } from "@/types";
 
 export interface MockDb {
@@ -30,6 +33,10 @@ export interface MockDb {
   dailyBonusDates: DateKey[];
   /** 오늘 사용한 AI 분해 횟수 */
   aiUsedToday: number;
+  /** 어제까지의 기록. 오늘 기록은 할 일에서 계산한다 */
+  pastRecords: DayRecord[];
+  achievements: AchievementProgress[];
+  settings: UserSettings;
 }
 
 export const MOCK_SCENARIOS = [
@@ -61,6 +68,10 @@ export const MOCK_SCENARIOS = [
   "village-stage-up",
   "village-archived",
   "village-full",
+  "goals-mixed",
+  "records-empty",
+  "notify-denied",
+  "login-error",
 ] as const;
 
 export type MockScenario = (typeof MOCK_SCENARIOS)[number];
@@ -171,6 +182,45 @@ function upgradeReady(): Pick<MockDb, "ledger" | "furniture" | "placements"> {
   return { ledger: seedCredit((rule.upgradeCost ?? 0) + 20), ...furnishedSlots("STUDIO", rule.requiredFurniture ?? 0) };
 }
 
+/** 지난 기록. 쉬었던 날(기록 없음)과 계획이 없던 날을 섞는다 */
+function pastRecords(today: DateKey): DayRecord[] {
+  const t = (title: string, i: number) => ({ id: `r-${title}-${i}`, title });
+  const rec = (offset: number, planned: number, done: string[], plannedDone: number, moved: DayRecord["movedTasks"] = []): DayRecord => ({
+    date: addDays(today, -offset),
+    plannedCount: planned,
+    plannedDoneCount: plannedDone,
+    doneTasks: done.map(t),
+    movedTasks: moved,
+  });
+  return [
+    rec(1, 4, ["운영체제 정리 노트 읽기", "자기소개서 소제목 정하기", "산책 20분"], 3, [
+      { id: "r-m1", title: "자기소개서 초안 쓰기", movedTo: addDays(today, 1) },
+    ]),
+    rec(2, 0, ["독서 20분", "책상 정리"], 0),
+    rec(3, 5, ["기출 1회분 풀기", "Spring Security 강의 1개 듣기", "영어 단어 30개", "산책 30분"], 4, [
+      { id: "r-m2", title: "운영체제 1장 복습", movedTo: addDays(today, -1) },
+    ]),
+    // 4~5일 전은 쉬었다
+    rec(6, 3, ["관심 공고 2개 읽기"], 1, [{ id: "r-m3", title: "포트폴리오 README 쓰기", movedTo: null }]),
+    rec(7, 3, ["네트워크 기출 오답 정리", "헬스장 등록 알아보기", "독서 20분"], 3),
+    rec(9, 2, ["이력서 경력 칸 다듬기"], 1),
+  ];
+}
+
+// TODO: 미정 (docs/planning.md 14장). 업적 목록과 보상은 정하지 않았다. 화면 확인용 임시 값이다
+function mockAchievements(today: DateKey): AchievementProgress[] {
+  const earned = (offset: number) => at(addDays(today, -offset), "21:00");
+  return [
+    { achievement: { code: "FIRST_DONE", name: "첫 완료", description: "할 일을 처음 완료했어요", target: null, unit: null }, earnedAt: earned(19), progress: null },
+    { achievement: { code: "FIRST_FRAME", name: "첫 골조", description: "건물 하나가 골조가 됐어요", target: null, unit: null }, earnedAt: earned(6), progress: null },
+    { achievement: { code: "ACTIVE_DAYS_7", name: "실행한 날 7일", description: "할 일을 완료한 날이 7일이 됐어요", target: 7, unit: "일" }, earnedAt: earned(3), progress: 7 },
+    { achievement: { code: "ACTIVE_DAYS_30", name: "실행한 날 30일", description: "할 일을 완료한 날 30일", target: 30, unit: "일" }, earnedAt: null, progress: 12 },
+    { achievement: { code: "CORE_DONE_50", name: "핵심 할 일 50개", description: "핵심 할 일을 50개 완료", target: 50, unit: "개" }, earnedAt: null, progress: 23 },
+    { achievement: { code: "FIRST_GOAL", name: "첫 목표 완료", description: "목표 하나를 완료", target: null, unit: null }, earnedAt: null, progress: null },
+    { achievement: { code: "COMEBACK", name: "다시 시작", description: "쉬었다가 다시 할 일을 완료", target: null, unit: null }, earnedAt: null, progress: null },
+  ];
+}
+
 function baseDb(today: DateKey): MockDb {
   return {
     goals: goals(today),
@@ -183,6 +233,15 @@ function baseDb(today: DateKey): MockDb {
     quickTemplates,
     dailyBonusDates: [],
     aiUsedToday: 3,
+    pastRecords: pastRecords(today),
+    achievements: mockAchievements(today),
+    settings: {
+      email: "sample.user@gmail.com",
+      // 처음에는 기기 시간대를 쓴다
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      morningReminder: { enabled: false, time: "08:00" },
+      eveningReminder: { enabled: false, time: "21:00" },
+    },
   };
 }
 
@@ -197,9 +256,13 @@ export function createMockDb(scenario: MockScenario, now: Date = new Date()): Mo
       break;
     case "first-entry":
     case "empty-no-goal":
+    case "records-empty":
+      // 처음 시작한 상태: 기록과 업적도 없다
       db.goals = [];
       db.buildings = [];
       db.tasks = [];
+      db.pastRecords = [];
+      db.achievements = db.achievements.map((a) => ({ ...a, earnedAt: null, progress: a.progress === null ? null : 0 }));
       break;
     case "overdue":
       db.tasks.push(...overdueTasks(today));
@@ -292,6 +355,38 @@ export function createMockDb(scenario: MockScenario, now: Date = new Date()): Mo
     case "village-archived":
       db.goals = db.goals.map((g) => (g.id === "g-health" ? { ...g, status: "ARCHIVED" } : g));
       break;
+    case "goals-mixed": {
+      // 목표 상세(S12)의 상태를 한 번에 확인한다
+      // g-study: 기한 지남 / g-health: 보관 / g-done: 완료 / g-all: 할 일을 모두 마침 / g-new: 할 일 0개
+      db.goals = db.goals.map((g) => {
+        if (g.id === "g-study") return { ...g, dueDate: addDays(today, -2), completionCriteria: "필기 60점 이상" };
+        if (g.id === "g-health") return { ...g, status: "ARCHIVED" };
+        if (g.id === "g-career") return { ...g, dueDate: addDays(today, 60), completionCriteria: "최종 합격 1곳" };
+        return g;
+      });
+      const extra: [string, string, Goal["type"], Building["type"], Goal["status"]][] = [
+        ["g-done", "블로그 글 10편 쓰기", "PROJECT", "WORKSHOP", "COMPLETED"],
+        ["g-all", "토익 시험 접수하기", "STUDY", "SCHOOL", "ACTIVE"],
+        ["g-new", "매달 30만 원 모으기", "FINANCE", "BANK", "ACTIVE"],
+      ];
+      for (const [id, title, type, buildingType, status] of extra) {
+        db.goals.push({ id, title, type, status, dueDate: null, completionCriteria: null, createdAt: at(addDays(today, -5), "09:00") });
+        db.buildings.push({
+          id: `b-${id}`,
+          goalId: id,
+          type: buildingType,
+          stage: status === "COMPLETED" ? "COMPLETE" : "LOT",
+          constructionProgress: status === "COMPLETED" ? 10 : 2,
+          lastSeenStage: status === "COMPLETED" ? "COMPLETE" : "LOT",
+        });
+      }
+      db.tasks.push(
+        makeTask(today, "토익 공식 사이트 회원가입", { scheduledDate: addDays(today, -1), goalId: "g-all", ...done(addDays(today, -1), "20:00") }),
+        makeTask(today, "시험 날짜 고르고 접수비 결제", { goalId: "g-all", ...done(today, "09:00") }),
+        makeTask(today, "글감 목록 정리", { scheduledDate: addDays(today, -9), goalId: "g-done", ...done(addDays(today, -9), "21:00") }),
+      );
+      break;
+    }
     case "ai-limit":
       db.aiUsedToday = AI_DAILY_LIMIT;
       break;

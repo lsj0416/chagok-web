@@ -1,11 +1,13 @@
 "use client";
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
 import { BottomActions, OutlineButton, PrimaryButton, TextButton } from "@/components/BottomActions";
 import { useMockScenario } from "@/components/dev/useMockScenario";
 import { useGoalFlow } from "@/components/goals/GoalFlowProvider";
+import { requestAddTaskOnReturn } from "@/components/pendingToast";
 import { Spinner } from "@/components/Spinner";
 import { TopBar } from "@/components/TopBar";
 import { AI_TIMEOUT_MS } from "@/config/app";
@@ -20,6 +22,15 @@ export function GoalInputScreen() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { state, update, applyBreakdown } = useGoalFlow();
+  // 목표 상세(S12)의 'AI로 할 일 추가': 새 목표 대신 이 목표에 할 일을 더한다
+  const targetGoalId = useSearchParams().get("goal");
+  const target = useQuery({
+    queryKey: ["goal", targetGoalId, scenario],
+    queryFn: () => api.fetchGoalDetail(targetGoalId ?? ""),
+    enabled: targetGoalId !== null,
+  });
+  const targetGoal = target.data?.goal ?? null;
+  const addMode = targetGoalId !== null;
   const [status, setStatus] = useState<Status>("idle");
   const controller = useRef<AbortController | null>(null);
   const ids = { title: useId(), due: useId(), situation: useId() };
@@ -32,7 +43,8 @@ export function GoalInputScreen() {
   const limitReached = remaining === 0;
   const generating = status === "generating";
   const aiUnavailable = limitReached || status === "failed";
-  const canSubmit = state.title.trim().length > 0 && !limitReached && usage.isSuccess && !generating;
+  const requestTitle = addMode ? (targetGoal?.title ?? "") : state.title.trim();
+  const canSubmit = requestTitle.length > 0 && !limitReached && usage.isSuccess && !generating;
 
   // 화면을 떠나면 진행 중인 요청을 끊는다
   useEffect(() => () => controller.current?.abort(), []);
@@ -45,15 +57,17 @@ export function GoalInputScreen() {
     try {
       const breakdown = await api.requestGoalBreakdown(
         {
-          title: state.title.trim(),
-          dueDate: state.dueDate,
+          title: requestTitle,
+          dueDate: addMode ? (targetGoal?.dueDate ?? null) : state.dueDate,
           currentSituation: state.currentSituation.trim() || null,
         },
         AbortSignal.any([own.signal, AbortSignal.timeout(AI_TIMEOUT_MS)]),
       );
+      // 이 목표에 더할 때는 건물 종류가 이미 정해져 있다
+      if (addMode && targetGoal) update({ title: targetGoal.title, goalType: targetGoal.type, goalTypeTouched: true });
       applyBreakdown(breakdown);
       setStatus("idle");
-      router.push("/goals/new/drafts");
+      router.push(addMode ? `/goals/new/drafts?goal=${encodeURIComponent(targetGoalId)}` : "/goals/new/drafts");
     } catch {
       // 사용자가 취소했으면 조용히 입력 상태로 돌아간다
       setStatus(own.signal.aborted ? "idle" : "failed");
@@ -62,13 +76,41 @@ export function GoalInputScreen() {
     }
   };
 
-  const goManual = () => router.push("/goals/new/manual");
+  // 이 목표에 더할 때 직접 입력은 목표 상세로 돌아가 할 일 추가(S03)를 연다
+  const goManual = () => {
+    if (!addMode) {
+      router.push("/goals/new/manual");
+      return;
+    }
+    requestAddTaskOnReturn();
+    router.back();
+  };
+
+  // 더할 목표가 없거나 진행 중이 아니면(지난 링크, 새로고침) 이유를 알리고 돌아갈 길을 준다
+  if (addMode && target.isSuccess && (target.data === null || target.data.goal.status !== "ACTIVE")) {
+    return (
+      <>
+        <TopBar title="" back />
+        <main className="flex-1 px-5 pt-2 pb-6">
+          <h1 className="text-[19px] font-bold">{target.data === null ? "목표를 찾을 수 없어요" : "진행 중인 목표에만 더할 수 있어요"}</h1>
+          <Link
+            href="/goals"
+            className="mt-6 flex h-12 items-center justify-center rounded-xl border border-line-strong text-[16px] font-semibold"
+          >
+            목표 목록으로
+          </Link>
+        </main>
+      </>
+    );
+  }
 
   return (
     <>
-      <TopBar title="" back={!isFirstEntry} />
+      <TopBar title="" back={addMode || !isFirstEntry} />
       <main className="flex-1 px-5 pb-6">
-        <h1 className="pt-2 text-[19px] leading-snug font-bold tracking-[-0.01em]">이루고 싶은 목표를 적어주세요</h1>
+        <h1 className="pt-2 text-[19px] leading-snug font-bold tracking-[-0.01em]">
+          {addMode ? "이 목표에 더할 할 일을 추천받아요" : "이루고 싶은 목표를 적어주세요"}
+        </h1>
 
         <form
           className="mt-6 flex flex-col gap-5"
@@ -78,30 +120,39 @@ export function GoalInputScreen() {
           }}
         >
           <fieldset disabled={generating} className="flex flex-col gap-5 disabled:opacity-60">
-            <Field id={ids.title} label="목표">
-              <input
-                id={ids.title}
-                type="text"
-                required
-                autoFocus
-                enterKeyHint="go"
-                maxLength={100}
-                value={state.title}
-                onChange={(e) => update({ title: e.target.value })}
-                placeholder="백엔드 개발자로 취업하기"
-                className={inputClass}
-              />
-            </Field>
-            <Field id={ids.due} label="기한" optional>
-              <input
-                id={ids.due}
-                type="date"
-                min={toDateKey(new Date())}
-                value={state.dueDate ?? ""}
-                onChange={(e) => update({ dueDate: e.target.value || null })}
-                className={`${inputClass} tabular-nums`}
-              />
-            </Field>
+            {addMode ? (
+              <div className="flex flex-col gap-2">
+                <p className="text-[14px] font-semibold text-ink-2">목표</p>
+                <p className="text-[16px] leading-snug font-semibold">{targetGoal?.title ?? " "}</p>
+              </div>
+            ) : (
+              <>
+                <Field id={ids.title} label="목표">
+                  <input
+                    id={ids.title}
+                    type="text"
+                    required
+                    autoFocus
+                    enterKeyHint="go"
+                    maxLength={100}
+                    value={state.title}
+                    onChange={(e) => update({ title: e.target.value })}
+                    placeholder="백엔드 개발자로 취업하기"
+                    className={inputClass}
+                  />
+                </Field>
+                <Field id={ids.due} label="기한" optional>
+                  <input
+                    id={ids.due}
+                    type="date"
+                    min={toDateKey(new Date())}
+                    value={state.dueDate ?? ""}
+                    onChange={(e) => update({ dueDate: e.target.value || null })}
+                    className={`${inputClass} tabular-nums`}
+                  />
+                </Field>
+              </>
+            )}
             <Field id={ids.situation} label="지금 상황" optional>
               <input
                 id={ids.situation}
@@ -158,16 +209,16 @@ export function GoalInputScreen() {
         {/* AI를 쓸 수 없으면 직접 입력이 남은 길이다. 눈에 띄는 버튼으로 둔다 */}
         {aiUnavailable && (
           <div className="mt-2">
-            <OutlineButton onClick={goManual}>직접 입력하기</OutlineButton>
+            <OutlineButton onClick={goManual}>{addMode ? "직접 추가하기" : "직접 입력하기"}</OutlineButton>
           </div>
         )}
         <div className="mt-1 flex justify-center gap-2">
-          {!aiUnavailable && (
+          {!aiUnavailable && !addMode && (
             <TextButton disabled={generating} onClick={goManual}>
               직접 입력하기
             </TextButton>
           )}
-          {isFirstEntry && (
+          {isFirstEntry && !addMode && (
             <TextButton disabled={generating} onClick={() => router.replace("/today")}>
               나중에 하기
             </TextButton>

@@ -37,3 +37,9 @@ export function formatShortDate(key: DateKey): string {
 export function isSameDay(iso: string, key: DateKey): boolean {
   return toDateKey(new Date(iso)) === key;
 }
+
+/** 그 날짜가 속한 주의 월요일 */
+export function startOfWeek(key: DateKey): DateKey {
+  const day = parseDateKey(key).getDay();
+  return addDays(key, day === 0 ? -6 : 1 - day);
+}

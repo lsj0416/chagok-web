@@ -228,7 +228,7 @@ export function TodayScreen() {
 
   const rowProps = (task: Task) => ({
     task,
-    goalTitle: goalTitle(task),
+    caption: goalTitle(task),
     canToggleOff: canUncomplete(task, today),
     pending: pendingId === task.id,
     onToggle: toggle,

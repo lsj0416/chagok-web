@@ -6,23 +6,32 @@ import { toDateKey } from "@/lib/date";
 import { remainingAiCalls } from "@/lib/drafts";
 import { canPurchase, canUpgradeHouse } from "@/lib/house";
 import { slotsFor } from "@/mocks/house";
+import { summarizeWeek } from "@/lib/records";
 import { isCoreFull } from "@/lib/today";
 import { mockBreakdown } from "@/mocks/aiDrafts";
 import { createMockDb, type MockDb, type MockScenario } from "@/mocks/scenarios";
 import { GOAL_BUILDING, HOUSE_UPGRADE_RULES, SPLIT_MIN_TASKS } from "@/config/game";
 import type {
+  AchievementProgress,
   AiUsage,
   CreateGoalRequest,
   CreateTaskRequest,
   DateKey,
+  DayRecord,
   Goal,
   GoalBreakdown,
   GoalBreakdownRequest,
+  GoalDetail,
+  GoalSummary,
+  RemainingTaskAction,
+  UpdateGoalRequest,
   HouseDetail,
+  RecordsOverview,
   Task,
   TaskDetail,
   VillageDetail,
   TodayPlan,
+  UserSettings,
 } from "@/types";
 
 let scenario: MockScenario = "default";
@@ -360,6 +369,182 @@ export function createGoal(req: CreateGoalRequest) {
     });
     return { goalId };
   });
+}
+
+// 목표 목록, 목표 상세 (S08, S12)
+
+const goalTasks = (goalId: string) => db.tasks.filter((t) => t.goalId === goalId && t.status !== "SPLIT");
+
+function findGoal(id: string) {
+  const goal = db.goals.find((g) => g.id === id);
+  if (!goal) throw new MockApiError(`goal ${id} not found`);
+  return goal;
+}
+
+/** 모든 상태의 목표. 만든 순서가 최근인 것이 위 */
+export function fetchGoals(): Promise<GoalSummary[]> {
+  return respond(() =>
+    [...db.goals]
+      .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+      .map((goal) => {
+        const tasks = goalTasks(goal.id);
+        return {
+          goal,
+          building: db.buildings.find((b) => b.goalId === goal.id) ?? null,
+          doneTaskCount: tasks.filter((t) => t.status === "DONE").length,
+          taskCount: tasks.length,
+        };
+      }),
+  );
+}
+
+/** 없는 목표면 null */
+export function fetchGoalDetail(id: string): Promise<GoalDetail | null> {
+  return respond(() => {
+    const goal = db.goals.find((g) => g.id === id);
+    if (!goal) return null;
+    const date = today();
+    return {
+      goal,
+      building: db.buildings.find((b) => b.goalId === id) ?? null,
+      tasks: goalTasks(id),
+      activeGoals: activeGoals(),
+      todayTasks: db.tasks.filter((t) => t.scheduledDate === date && t.status !== "SPLIT"),
+    };
+  });
+}
+
+export function updateGoal(id: string, req: UpdateGoalRequest) {
+  return mutate(() => {
+    Object.assign(findGoal(id), req);
+    return { ok: true };
+  });
+}
+
+/** 목표 완료. 사용자가 고른 대로 남은 할 일을 처리하고 건물을 완성한다. 자동으로 완료하지 않는다 */
+export function completeGoal(id: string, remaining: RemainingTaskAction) {
+  return mutate(() => {
+    const goal = findGoal(id);
+    const left = goalTasks(id).filter((t) => t.status === "PLANNED");
+    if (remaining === "UNSCHEDULE") {
+      for (const t of left) {
+        t.scheduledDate = null;
+        t.isCore = false;
+      }
+    }
+    if (remaining === "DELETE") {
+      const ids = new Set(left.map((t) => t.id));
+      db.tasks = db.tasks.filter((t) => !ids.has(t.id));
+    }
+    goal.status = "COMPLETED";
+    const building = db.buildings.find((b) => b.goalId === id);
+    if (building) building.stage = "COMPLETE";
+    return { ok: true };
+  });
+}
+
+/** 보관. 건물은 그대로 남고 공사가 멈춘다 */
+export function archiveGoal(id: string) {
+  return mutate(() => {
+    findGoal(id).status = "ARCHIVED";
+    return { ok: true };
+  });
+}
+
+/** 보관한 목표 다시 진행 */
+export function resumeGoal(id: string) {
+  return mutate(() => {
+    findGoal(id).status = "ACTIVE";
+    return { ok: true };
+  });
+}
+
+/** 목표에 할 일 여러 개를 날짜 없이 추가한다 (S12의 AI로 할 일 추가) */
+export function addGoalTasks(goalId: string, titles: string[], source: Task["source"]) {
+  return mutate(() => {
+    findGoal(goalId);
+    const now = new Date().toISOString();
+    titles.forEach((title, i) => {
+      db.tasks.push({
+        id: `t-${goalId}-${Date.now()}-${i}`,
+        title,
+        goalId,
+        status: "PLANNED",
+        scheduledDate: null,
+        isCore: false,
+        source,
+        recurrence: null,
+        memo: null,
+        completedAt: null,
+        createdAt: now,
+      });
+    });
+    return { count: titles.length };
+  });
+}
+
+// 기록, 업적 (S13, S14)
+
+/** 오늘 기록은 할 일에서 바로 계산한다. 지난 기록은 계획 이력과 실행 이력에서 계산한 값(가짜 데이터) */
+function todayRecord(date: DateKey): DayRecord {
+  const planned = db.tasks.filter((t) => t.scheduledDate === date && t.status !== "SPLIT");
+  const done = db.tasks.filter((t) => t.status === "DONE" && t.completedAt !== null && toDateKey(new Date(t.completedAt)) === date);
+  return {
+    date,
+    plannedCount: planned.length,
+    plannedDoneCount: planned.filter((t) => t.status === "DONE").length,
+    doneTasks: done.map(({ id, title }) => ({ id, title })),
+    movedTasks: [],
+  };
+}
+
+export function fetchRecords(): Promise<RecordsOverview> {
+  return respond(() => {
+    const date = today();
+    const current = todayRecord(date);
+    const days = [current, ...db.pastRecords].filter(
+      (d) => d.plannedCount > 0 || d.doneTasks.length > 0 || d.movedTasks.length > 0,
+    );
+    return {
+      week: summarizeWeek(days, date),
+      days,
+      earnedAchievementCount: db.achievements.filter((a) => a.earnedAt !== null).length,
+    };
+  });
+}
+
+export function fetchAchievements(): Promise<AchievementProgress[]> {
+  return respond(() => db.achievements);
+}
+
+// 설정, 로그인 (S15, S01)
+
+export function fetchSettings(): Promise<UserSettings> {
+  return respond(() => db.settings);
+}
+
+export function updateSettings(patch: Partial<Omit<UserSettings, "email">>) {
+  return mutate(() => {
+    Object.assign(db.settings, patch);
+    return { ok: true };
+  });
+}
+
+/** 구글 로그인. login-error 시나리오는 실패(취소 포함)로 끝난다 */
+export async function signInWithGoogle(): Promise<{ activeGoalCount: number }> {
+  await wait();
+  await wait();
+  if (scenario === "login-error") throw new MockApiError("sign-in failed");
+  return { activeGoalCount: activeGoals().length };
+}
+
+export function signOut() {
+  return mutate(() => ({ ok: true }));
+}
+
+/** 알림 권한을 거부한 상태를 흉내 낼 때 (notify-denied 시나리오) */
+export function isNotificationDeniedMock(): boolean {
+  return scenario === "notify-denied";
 }
 
 // 집 내부와 가구 (S06, S07)

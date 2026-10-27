@@ -162,6 +162,103 @@ export interface HouseDetail {
 
 // 조회 결과
 
+/** 하루 시작·마무리 알림 하나 */
+export interface ReminderSetting {
+  enabled: boolean;
+  /** 'HH:MM' (사용자 시간대 기준) */
+  time: string;
+}
+
+/** 설정 화면(S15)의 값 */
+export interface UserSettings {
+  /** 연결된 구글 계정 */
+  email: string;
+  /** IANA 시간대 이름. 예: Asia/Seoul. 처음에는 기기 시간대 */
+  timezone: string;
+  morningReminder: ReminderSetting;
+  eveningReminder: ReminderSetting;
+}
+
+/** 기록(S13)의 하루. 별도 저장 데이터가 아니라 계획 이력과 실행 이력에서 계산한 결과다 */
+export interface DayRecord {
+  date: DateKey;
+  /** 그날이 수행 날짜였던 할 일 수 (나중에 다른 날로 옮긴 할 일 포함) */
+  plannedCount: number;
+  /** 그중 그날 완료한 수. 실행률의 분자 */
+  plannedDoneCount: number;
+  /** 그날 완료한 할 일 (날짜 없는 할 일을 완료한 것도 포함) */
+  doneTasks: Pick<Task, "id" | "title">[];
+  /** 그날에서 다른 날로 옮긴 할 일. movedTo가 null이면 날짜 없이 보관 */
+  movedTasks: (Pick<Task, "id" | "title"> & { movedTo: DateKey | null })[];
+}
+
+/** 이번 주(월요일부터) 요약 */
+export interface WeekSummary {
+  doneCount: number;
+  activeDayCount: number;
+  /** 계획 대비 실행률(0~1). 계획이 하나도 없던 주면 null */
+  completionRate: number | null;
+}
+
+/** 기록 화면(S13)에 필요한 조회 결과 */
+export interface RecordsOverview {
+  week: WeekSummary;
+  /** 최근 날짜가 위. 계획도 완료도 없던 날은 빠진다 */
+  days: DayRecord[];
+  earnedAchievementCount: number;
+}
+
+/** 업적 정의. 목록과 보상은 미정 (docs/planning.md 14장) */
+export interface Achievement {
+  /** TODO: 미정 (docs/planning.md 14장). 값이 정해지기 전까지 string */
+  code: string;
+  name: string;
+  description: string;
+  /** 진행을 셀 수 있는 업적의 목표 수와 단위. 예: 30, '일' */
+  target: number | null;
+  unit: string | null;
+}
+
+/** 업적 화면(S14)의 한 줄 */
+export interface AchievementProgress {
+  achievement: Achievement;
+  /** 얻은 시각. 아직 얻지 못했으면 null */
+  earnedAt: IsoDateTime | null;
+  /** 지금까지 센 수. 셀 수 없는 업적이면 null */
+  progress: number | null;
+}
+
+/** 목표 목록(S08)의 한 줄. 별도 저장 데이터가 아니다 */
+export interface GoalSummary {
+  goal: Goal;
+  building: Building | null;
+  /** 연결된 할 일 중 완료한 수와 전체 수 (나눠진 할 일 제외) */
+  doneTaskCount: number;
+  taskCount: number;
+}
+
+/** 목표 상세 화면(S12)에 필요한 조회 결과. 별도 저장 데이터가 아니다 */
+export interface GoalDetail {
+  goal: Goal;
+  building: Building | null;
+  /** 이 목표에 연결된 할 일 (나눠진 할 일 제외) */
+  tasks: Task[];
+  /** 할 일 추가(S03)에서 고를 수 있는 진행 중 목표 */
+  activeGoals: Goal[];
+  /** 오늘 할 일. 할 일 추가의 핵심 3개 확인과 완료 알림 계산에 쓴다 */
+  todayTasks: Task[];
+}
+
+/** 목표를 고칠 때 바꾸는 값 */
+export interface UpdateGoalRequest {
+  title: string;
+  dueDate: DateKey | null;
+  completionCriteria: string | null;
+}
+
+/** 목표 완료 때 남은 할 일 처리: 그대로 두기 / 날짜 없이 보관 / 삭제 */
+export type RemainingTaskAction = "KEEP" | "UNSCHEDULE" | "DELETE";
+
 /** 할 일 상세 화면(S04)에 필요한 조회 결과. 별도 저장 데이터가 아니다 */
 export interface TaskDetail {
   task: Task;

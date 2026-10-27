@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { withEulReul, withEuro } from "@/lib/korean";
+import { withEulReul, withEuro, withIGa } from "@/lib/korean";
 
 describe("withEuro", () => {
   it("받침이 있으면 '으로', 없거나 ㄹ이면 '로'", () => {
@@ -14,5 +14,12 @@ describe("withEulReul", () => {
   it("받침이 있으면 '을', 없으면 '를'", () => {
     expect(withEulReul("원목 침대")).toBe("원목 침대를");
     expect(withEulReul("책장")).toBe("책장을");
+  });
+});
+
+describe("withIGa", () => {
+  it("받침이 없으면 '가', 있으면 '이'", () => {
+    expect(withIGa("오피스")).toBe("오피스가");
+    expect(withIGa("체육관")).toBe("체육관이");
   });
 });

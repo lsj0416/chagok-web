@@ -2,7 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Check } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { BottomActions, PrimaryButton, TextButton } from "@/components/BottomActions";
 import { useMockScenario } from "@/components/dev/useMockScenario";
@@ -11,11 +11,11 @@ import { useGoalFlow } from "@/components/goals/GoalFlowProvider";
 import { GraphicPlaceholder } from "@/components/GraphicPlaceholder";
 import { Spinner } from "@/components/Spinner";
 import { TopBar } from "@/components/TopBar";
-import { AI_TIMEOUT_MS } from "@/config/app";
+import { setPendingToast } from "@/components/pendingToast";
+import { AI_TIMEOUT_MS, TASK_TITLE_MAX_LENGTH } from "@/config/app";
 import * as api from "@/lib/api/goals";
 import { applyToggleAll, toggleAllAction, toggleOne } from "@/lib/drafts";
 import type { TaskDraft } from "@/types";
-import { TASK_TITLE_MAX_LENGTH } from "@/config/app";
 
 /** S10 할 일 초안 선택 (AI 분해 2) */
 export function DraftSelectScreen() {
@@ -23,6 +23,8 @@ export function DraftSelectScreen() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { state, update, applyBreakdown } = useGoalFlow();
+  // 목표 상세(S12)에서 왔으면 새 목표를 만들지 않고 이 목표에 할 일을 더한다
+  const targetGoalId = useSearchParams().get("goal");
   const [buildingOpen, setBuildingOpen] = useState(false);
   const [regenerating, setRegenerating] = useState(false);
   const [regenerateFailed, setRegenerateFailed] = useState(false);
@@ -34,8 +36,8 @@ export function DraftSelectScreen() {
   // 초안 없이 들어오면(새로고침, 직접 주소 입력) 목표 입력으로 돌려보낸다
   const hasDrafts = state.drafts.length > 0 && state.goalType !== null;
   useEffect(() => {
-    if (!hasDrafts) router.replace("/goals/new");
-  }, [hasDrafts, router]);
+    if (!hasDrafts) router.replace(targetGoalId ? `/goals/new?goal=${encodeURIComponent(targetGoalId)}` : "/goals/new");
+  }, [hasDrafts, router, targetGoalId]);
 
   const ids = state.drafts.map((d) => d.id);
   const selected = state.selectedDraftIds;
@@ -60,16 +62,29 @@ export function DraftSelectScreen() {
   };
 
   const create = useMutation({
-    mutationFn: () =>
-      api.createGoal({
+    mutationFn: async () => {
+      const taskTitles = state.drafts.filter((d) => selected.has(d.id)).map((d) => d.title);
+      if (targetGoalId) {
+        await api.addGoalTasks(targetGoalId, taskTitles, "AI");
+        return { goalId: targetGoalId, added: taskTitles.length };
+      }
+      const { goalId } = await api.createGoal({
         title: state.title.trim(),
         type: state.goalType!,
         dueDate: state.dueDate,
-        taskTitles: state.drafts.filter((d) => selected.has(d.id)).map((d) => d.title),
+        taskTitles,
         source: "AI",
-      }),
-    onSuccess: ({ goalId }) => {
+      });
+      return { goalId, added: null };
+    },
+    onSuccess: ({ goalId, added }) => {
       void queryClient.invalidateQueries();
+      if (added !== null) {
+        // 목표 상세 → S09 → S10으로 왔으므로 두 칸 뒤로 돌아가 원래 목표 상세에 알림을 보여준다
+        setPendingToast(`할 일 ${added}개를 추가했어요`);
+        window.history.go(-2);
+        return;
+      }
       // 목표 만들기 경로를 벗어나면 흐름의 입력값은 함께 사라진다
       router.replace(`/goals/detail?id=${encodeURIComponent(goalId)}`);
     },
@@ -87,15 +102,22 @@ export function DraftSelectScreen() {
         <section aria-label="목표" className="flex items-center gap-4 px-5 pt-1">
           <div className="min-w-0 flex-1">
             <h2 className="text-[18px] leading-snug font-bold">{state.title}</h2>
-            <button
-              type="button"
-              onClick={() => setBuildingOpen(true)}
-              aria-haspopup="dialog"
-              className="mt-1 flex h-11 items-center gap-1.5 text-[14px] text-ink-2"
-            >
-              추천 건물 <strong className="font-semibold text-ink">{buildingName(state.goalType!)}</strong>
-              <span className="ml-1 font-semibold underline underline-offset-4">바꾸기</span>
-            </button>
+            {/* 이미 있는 목표에 더할 때는 건물이 정해져 있어 바꾸지 않는다 */}
+            {targetGoalId ? (
+              <p className="mt-1 flex h-11 items-center gap-1.5 text-[14px] text-ink-2">
+                건물 <strong className="font-semibold text-ink">{buildingName(state.goalType!)}</strong>
+              </p>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setBuildingOpen(true)}
+                aria-haspopup="dialog"
+                className="mt-1 flex h-11 items-center gap-1.5 text-[14px] text-ink-2"
+              >
+                추천 건물 <strong className="font-semibold text-ink">{buildingName(state.goalType!)}</strong>
+                <span className="ml-1 font-semibold underline underline-offset-4">바꾸기</span>
+              </button>
+            )}
           </div>
           <GraphicPlaceholder label={buildingName(state.goalType!)} className="size-20" />
         </section>

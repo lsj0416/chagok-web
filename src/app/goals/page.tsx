@@ -1,5 +1,10 @@
-import { StubScreen } from "@/components/StubScreen";
+import { Suspense } from "react";
+import { GoalListScreen } from "@/components/goals/GoalListScreen";
 
-export default function Page() {
-  return <StubScreen title="목표" screenId="S08" tab />;
+export default function GoalsPage() {
+  return (
+    <Suspense>
+      <GoalListScreen />
+    </Suspense>
+  );
 }
