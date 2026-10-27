@@ -27,7 +27,7 @@ STORY: 연다 → 핵심 할 일 3개를 본다 → 왼쪽 체크를 누른다 �
 
 FIRST VIEWPORT (375px): 위에 날짜와 설정. 그 아래 조건부 안내 한 줄, 진행 현황 한 줄, 핵심 할 일 목록. 할 일 추가 버튼은 하단 탭 바로 위에 고정. 알림은 추가 버튼 위.
 
-FORM: 표준 모바일 목록 화면. 화면 구성 순서가 screens.md에 고정되어 있어 구성안 추첨은 하지 않았다. seed: none (pinned by brief)
+FORM: 표준 모바일 목록 화면. 화면 구성 순서가 screens.md에 고정되어 있어 구성안 추첨은 하지 않았다. seed: none (pinned by brief). 사용자 확인 2026-10-27: "지금과 동일하게 유지해줘" (와이어프레임 단계 동안 구성안 추첨 생략 유지에 동의. 비주얼 단계에서 다시 정한다)
 
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
 

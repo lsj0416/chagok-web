@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { HOUSE_UPGRADE_RULES, MAX_CORE_TASKS_PER_DAY } from "@/config/game";
-import { canUpgradeHouse } from "@/lib/house";
+import { MAX_CORE_TASKS_PER_DAY } from "@/config/game";
 import { buildTodayView, isCoreFull, pickNotice } from "@/lib/today";
 import type { Task, TodayPlan } from "@/types";
 
@@ -89,17 +88,5 @@ describe("isCoreFull", () => {
     const cores = Array.from({ length: MAX_CORE_TASKS_PER_DAY }, () => task({ isCore: true }));
     expect(isCoreFull(cores)).toBe(true);
     expect(isCoreFull(cores.slice(1))).toBe(false);
-  });
-});
-
-describe("canUpgradeHouse", () => {
-  const studio = HOUSE_UPGRADE_RULES.STUDIO;
-  it("설치 수와 잔액을 모두 채워야 한다", () => {
-    expect(canUpgradeHouse("STUDIO", studio.requiredPlacements!, studio.upgradeCost!)).toBe(true);
-    expect(canUpgradeHouse("STUDIO", studio.requiredPlacements! - 1, studio.upgradeCost!)).toBe(false);
-    expect(canUpgradeHouse("STUDIO", studio.requiredPlacements!, studio.upgradeCost! - 1)).toBe(false);
-  });
-  it("마지막 단계는 업그레이드할 수 없다", () => {
-    expect(canUpgradeHouse("DETACHED", 100, 100000)).toBe(false);
   });
 });

@@ -17,17 +17,17 @@ export const UNDATED_TASK_DISPLAY_LIMIT = 3;
 // 집 단계별 조건 (docs/glossary.md 8장)
 export interface HouseUpgradeRule {
   next: HouseLevel | null;
-  /** 다음 단계로 가는 데 필요한 누적 설치 가구 수 */
-  requiredPlacements: number | null;
+  /** 다음 단계로 가는 데 필요한 보유 가구 수. 한 번 산 가구는 빼도 수에 남는다 */
+  requiredFurniture: number | null;
   upgradeCost: number | null;
   slotCount: number;
 }
 
 export const HOUSE_UPGRADE_RULES: Record<HouseLevel, HouseUpgradeRule> = {
-  STUDIO: { next: "TWO_ROOM", requiredPlacements: 3, upgradeCost: 300, slotCount: 4 },
-  TWO_ROOM: { next: "APARTMENT", requiredPlacements: 7, upgradeCost: 700, slotCount: 8 },
-  APARTMENT: { next: "DETACHED", requiredPlacements: 12, upgradeCost: 1500, slotCount: 13 },
-  DETACHED: { next: null, requiredPlacements: null, upgradeCost: null, slotCount: 18 },
+  STUDIO: { next: "TWO_ROOM", requiredFurniture: 3, upgradeCost: 300, slotCount: 4 },
+  TWO_ROOM: { next: "APARTMENT", requiredFurniture: 7, upgradeCost: 700, slotCount: 8 },
+  APARTMENT: { next: "DETACHED", requiredFurniture: 12, upgradeCost: 1500, slotCount: 13 },
+  DETACHED: { next: null, requiredFurniture: null, upgradeCost: null, slotCount: 18 },
 };
 
 // 목표 유형과 건물 (docs/glossary.md 4장)
@@ -37,6 +37,13 @@ export const GOAL_BUILDING: Record<GoalType, BuildingType> = {
   FINANCE: "BANK",
   HEALTH: "GYM",
   PROJECT: "WORKSHOP",
+};
+
+export const HOUSE_LEVEL_LABEL: Record<HouseLevel, string> = {
+  STUDIO: "원룸",
+  TWO_ROOM: "투룸",
+  APARTMENT: "아파트",
+  DETACHED: "주택",
 };
 
 export const BUILDING_LABEL: Record<BuildingType, string> = {

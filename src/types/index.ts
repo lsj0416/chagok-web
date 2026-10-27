@@ -85,10 +85,47 @@ export interface House {
   level: HouseLevel;
 }
 
+/** 집 안에서 가구를 놓을 수 있는 정해진 자리 */
+export interface Slot {
+  id: string;
+  /** 슬롯 종류. 값은 미정 (docs/planning.md 14장) */
+  slotType: string;
+  /** 방 그림 안의 위치. 왼쪽 위 기준 % */
+  x: number;
+  y: number;
+}
+
+/** 판매 중인 가구 정보 */
+export interface FurnitureCatalogItem {
+  id: string;
+  name: string;
+  price: number;
+  /** 놓을 수 있는 슬롯 종류. 값은 미정 (docs/planning.md 14장) */
+  slotType: string;
+}
+
+/** 사용자가 보유한 가구 */
+export interface Furniture {
+  id: string;
+  catalogItemId: string;
+  purchasedAt: IsoDateTime;
+}
+
 export interface Placement {
   id: string;
   furnitureId: string;
   slotId: string;
+}
+
+/** 집 내부 화면(S06)에 필요한 조회 결과. 별도 저장 데이터가 아니다 */
+export interface HouseDetail {
+  house: House;
+  /** 현재 집 단계의 슬롯 */
+  slots: Slot[];
+  placements: Placement[];
+  furniture: Furniture[];
+  catalog: FurnitureCatalogItem[];
+  balance: number;
 }
 
 // 조회 결과

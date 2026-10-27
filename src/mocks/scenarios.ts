@@ -1,11 +1,14 @@
-// 오늘 화면(S02) 상태 확인용 가짜 데이터 시나리오.
-// 개발 서버에서 /today?mock=<이름> 으로 바꿔 본다. 날짜는 오늘을 기준으로 만든다
-import { AI_DAILY_LIMIT, CORE_TASK_CREDIT, DAILY_BONUS_THRESHOLD, HOUSE_UPGRADE_RULES } from "@/config/game";
+// 화면 상태 확인용 가짜 데이터 시나리오.
+// 개발 서버에서 ?mock=<이름> 으로 바꿔 본다. 날짜는 오늘을 기준으로 만든다
+import { AI_DAILY_LIMIT, DAILY_BONUS_THRESHOLD, HOUSE_UPGRADE_RULES } from "@/config/game";
 import { addDays, toDateKey } from "@/lib/date";
+import { furnishedSlots, MOCK_CATALOG } from "@/mocks/house";
 import type {
   Building,
   CreditLedgerEntry,
   DateKey,
+  Furniture,
+  FurnitureCatalogItem,
   Goal,
   House,
   Placement,
@@ -19,7 +22,9 @@ export interface MockDb {
   tasks: Task[];
   ledger: CreditLedgerEntry[];
   house: House;
+  furniture: Furniture[];
   placements: Placement[];
+  catalog: FurnitureCatalogItem[];
   quickTemplates: QuickTaskTemplate[];
   /** 일일 보너스를 받은 날짜 */
   dailyBonusDates: DateKey[];
@@ -47,6 +52,11 @@ export const MOCK_SCENARIOS = [
   "ai-timeout",
   "ai-limit",
   "ai-last",
+  "house-ready",
+  "house-two-room",
+  "house-max",
+  "house-negative",
+  "house-shop-empty",
 ] as const;
 
 export type MockScenario = (typeof MOCK_SCENARIOS)[number];
@@ -135,18 +145,14 @@ function overdueTasks(today: DateKey): Task[] {
   ];
 }
 
-/** 업그레이드 조건을 채운 잔액과 설치 수 */
-function upgradeReady(): Pick<MockDb, "ledger" | "placements"> {
+const seedCredit = (amount: number): CreditLedgerEntry[] => [
+  { id: "l-seed", type: "EARN_CORE_TASK", amount, taskId: null, createdAt: "2026-10-20T09:00:00" },
+];
+
+/** 원룸에서 넓히기 조건을 채운 상태: 가구 수와 잔액 */
+function upgradeReady(): Pick<MockDb, "ledger" | "furniture" | "placements"> {
   const rule = HOUSE_UPGRADE_RULES.STUDIO;
-  return {
-    ledger: [{ id: "l-seed", type: "EARN_ACHIEVEMENT", amount: rule.upgradeCost ?? 0, taskId: null, createdAt: "2026-10-01T00:00:00" }],
-    placements: Array.from({ length: rule.requiredPlacements ?? 0 }, (_, i) => ({
-      id: `p-${i}`,
-      furnitureId: `f-${i}`,
-      // TODO: 미정 (docs/planning.md 14장)
-      slotId: `slot-${i}`,
-    })),
-  };
+  return { ledger: seedCredit((rule.upgradeCost ?? 0) + 20), ...furnishedSlots("STUDIO", rule.requiredFurniture ?? 0) };
 }
 
 function baseDb(today: DateKey): MockDb {
@@ -154,9 +160,10 @@ function baseDb(today: DateKey): MockDb {
     goals: goals(today),
     buildings: buildings.map((b) => ({ ...b })),
     tasks: [...todayTasks(today), ...undatedTasks(today)],
-    ledger: [{ id: "l-seed", type: "EARN_CORE_TASK", amount: CORE_TASK_CREDIT, taskId: null, createdAt: at(today, "08:30") }],
+    ledger: seedCredit(210),
     house: { level: "STUDIO" },
-    placements: [],
+    ...furnishedSlots("STUDIO", 2),
+    catalog: MOCK_CATALOG,
     quickTemplates,
     dailyBonusDates: [],
     aiUsedToday: 3,
@@ -213,6 +220,26 @@ export function createMockDb(scenario: MockScenario, now: Date = new Date()): Mo
         makeTask(today, "세탁기 돌리기"),
         ...undatedTasks(today),
       ];
+      break;
+    case "house-ready":
+      Object.assign(db, upgradeReady());
+      break;
+    case "house-two-room":
+      db.house = { level: "TWO_ROOM" };
+      Object.assign(db, furnishedSlots("TWO_ROOM", 5));
+      db.ledger = seedCredit(450);
+      break;
+    case "house-max":
+      db.house = { level: "DETACHED" };
+      Object.assign(db, furnishedSlots("DETACHED", 14));
+      db.ledger = seedCredit(380);
+      break;
+    case "house-negative":
+      db.ledger = seedCredit(-20);
+      break;
+    case "house-shop-empty":
+      // 첫 빈 자리(조명)에 놓을 판매 가구가 없는 상태. 이미 놓인 가구의 정보는 남긴다
+      db.catalog = MOCK_CATALOG.filter((c) => c.slotType !== "LAMP");
       break;
     case "ai-limit":
       db.aiUsedToday = AI_DAILY_LIMIT;

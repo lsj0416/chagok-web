@@ -153,7 +153,11 @@ export function TodayScreen() {
     onSuccess: (_result, { done }) => {
       if (done) showToast(done);
     },
-    onError: (_error, variables) => saveFailed(() => save.mutate(variables)),
+    // 열린 시트(지난 할 일 등)는 알림을 가린다. 닫고 나서 재시도를 보여준다
+    onError: (_error, variables) => {
+      setSheet(null);
+      saveFailed(() => save.mutate(variables));
+    },
     onSettled: () => {
       setPendingId(null);
       refresh();

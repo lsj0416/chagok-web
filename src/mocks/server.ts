@@ -4,11 +4,12 @@ import { MOCK_AI_LATENCY_MS, MOCK_LATENCY_MS } from "@/config/app";
 import { computeCompletion, computeUncompletion, canUncomplete, type LedgerChange } from "@/lib/completion";
 import { toDateKey } from "@/lib/date";
 import { remainingAiCalls } from "@/lib/drafts";
-import { canUpgradeHouse } from "@/lib/house";
+import { canPurchase, canUpgradeHouse } from "@/lib/house";
+import { slotsFor } from "@/mocks/house";
 import { isCoreFull } from "@/lib/today";
 import { mockBreakdown } from "@/mocks/aiDrafts";
 import { createMockDb, type MockDb, type MockScenario } from "@/mocks/scenarios";
-import { GOAL_BUILDING } from "@/config/game";
+import { GOAL_BUILDING, HOUSE_UPGRADE_RULES } from "@/config/game";
 import type {
   AiUsage,
   CreateGoalRequest,
@@ -16,6 +17,7 @@ import type {
   Goal,
   GoalBreakdown,
   GoalBreakdownRequest,
+  HouseDetail,
   Task,
   TodayPlan,
 } from "@/types";
@@ -94,7 +96,7 @@ export function fetchTodayPlan(): Promise<TodayPlan> {
       goals: db.goals.filter((g) => goalIds.has(g.id)),
       buildings: db.buildings,
       overdueCount: db.tasks.filter((t) => isOverdue(t, date)).length,
-      canUpgradeHouse: canUpgradeHouse(db.house.level, db.placements.length, balance()),
+      canUpgradeHouse: canUpgradeHouse(db.house.level, db.furniture.length, balance()),
       undatedTasks: db.tasks.filter(
         (t) => t.scheduledDate === null && t.status === "PLANNED" && t.goalId !== null && goalIds.has(t.goalId),
       ),
@@ -284,5 +286,69 @@ export function createGoal(req: CreateGoalRequest) {
       });
     });
     return { goalId };
+  });
+}
+
+// 집 내부와 가구 (S06, S07)
+
+export function fetchHouseDetail(): Promise<HouseDetail> {
+  return respond(() => ({
+    house: db.house,
+    slots: slotsFor(db.house.level),
+    placements: db.placements,
+    furniture: db.furniture,
+    catalog: db.catalog,
+    balance: balance(),
+  }));
+}
+
+function spend(type: "SPEND_FURNITURE" | "SPEND_HOUSE_UPGRADE", amount: number) {
+  db.ledger.push({ id: `l-${db.ledger.length + 1}`, type, amount: -amount, taskId: null, createdAt: new Date().toISOString() });
+}
+
+/** 슬롯에 가구를 놓는다. 이미 놓인 가구가 있으면 빼서 보유 상태로 둔다 */
+function place(furnitureId: string, slotId: string) {
+  db.placements = db.placements.filter((p) => p.slotId !== slotId && p.furnitureId !== furnitureId);
+  db.placements.push({ id: `p-${Date.now()}`, furnitureId, slotId });
+}
+
+export function purchaseAndPlace(catalogItemId: string, slotId: string) {
+  return mutate(() => {
+    const item = db.catalog.find((c) => c.id === catalogItemId);
+    if (!item) throw new MockApiError("item not found");
+    if (!canPurchase(item.price, balance())) throw new MockApiError("not enough credit");
+    spend("SPEND_FURNITURE", item.price);
+    const furnitureId = `f-${Date.now()}`;
+    db.furniture.push({ id: furnitureId, catalogItemId, purchasedAt: new Date().toISOString() });
+    place(furnitureId, slotId);
+    return { ok: true };
+  });
+}
+
+/** 보유한 가구를 크레딧 차감 없이 놓는다 */
+export function placeOwnedFurniture(furnitureId: string, slotId: string) {
+  return mutate(() => {
+    place(furnitureId, slotId);
+    return { ok: true };
+  });
+}
+
+/** 가구를 뺀다. 뺀 가구는 보유 상태로 남고 업그레이드 조건의 가구 수도 그대로다 */
+export function removePlacement(slotId: string) {
+  return mutate(() => {
+    db.placements = db.placements.filter((p) => p.slotId !== slotId);
+    return { ok: true };
+  });
+}
+
+export function upgradeHouse() {
+  return mutate(() => {
+    const rule = HOUSE_UPGRADE_RULES[db.house.level];
+    if (!rule.next || !canUpgradeHouse(db.house.level, db.furniture.length, balance())) {
+      throw new MockApiError("cannot upgrade");
+    }
+    spend("SPEND_HOUSE_UPGRADE", rule.upgradeCost ?? 0);
+    db.house = { level: rule.next };
+    return { level: rule.next };
   });
 }

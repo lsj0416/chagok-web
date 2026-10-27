@@ -27,7 +27,7 @@ STORY: 목표를 적는다 → 추천받기 → 초안 중 해볼 것만 체크(
 
 FIRST VIEWPORT (375px): S09는 안내 문구와 목표 제목 입력이 위, 남은 횟수와 '할 일 추천받기'가 아래 고정(키보드 위). S10은 목표 제목과 건물 자리 표시자, 선택 전환 버튼, 초안 목록, 아래 고정 'N개 추가하기'.
 
-FORM: 표준 모바일 입력 화면과 체크 목록. 구성은 screens.md에 고정. seed: none (pinned by brief)
+FORM: 표준 모바일 입력 화면과 체크 목록. 구성은 screens.md에 고정. seed: none (pinned by brief). 사용자 확인 2026-10-27: "지금과 동일하게 유지해줘" (와이어프레임 단계 동안 구성안 추첨 생략 유지에 동의. 비주얼 단계에서 다시 정한다)
 
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
 

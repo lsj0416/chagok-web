@@ -45,7 +45,7 @@ export function BuildingSheet({ open, value, onClose, onSelect }: BuildingSheetP
                 }}
                 className="flex min-h-16 w-full items-center gap-3 py-2 text-left"
               >
-                <GraphicPlaceholder label={buildingName(type)} className="size-12" />
+                <GraphicPlaceholder label={buildingName(type)} decorative className="size-12" />
                 <span className="min-w-0 flex-1">
                   <span className="block text-[16px] font-semibold">{buildingName(type)}</span>
                   <span className="block text-[13px] text-ink-3">{GOAL_TYPE_EXAMPLE[type]}</span>

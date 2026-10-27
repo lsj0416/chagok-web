@@ -144,10 +144,10 @@ export function CompletedSection({ count, children }: { count: number; children:
   );
 }
 
-export function LoadError({ onRetry }: { onRetry: () => void }) {
+export function LoadError({ message = "할 일을 불러오지 못했어요", onRetry }: { message?: string; onRetry: () => void }) {
   return (
     <div role="alert" className="mx-4 mt-6 flex flex-col items-start gap-3 rounded-xl bg-surface-2 px-4 py-4">
-      <p className="text-[15px]">할 일을 불러오지 못했어요</p>
+      <p className="text-[15px]">{message}</p>
       <button type="button" onClick={onRetry} className="h-11 rounded-lg bg-ink px-4 text-[14px] font-semibold text-surface">
         다시 시도
       </button>
