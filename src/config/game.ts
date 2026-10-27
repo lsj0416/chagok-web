@@ -1,5 +1,5 @@
 // 게임 상수 (docs/glossary.md 8장, 러프안). 다른 곳에 숫자를 직접 쓰지 않는다
-import type { BuildingType, GoalType, HouseLevel } from "@/types";
+import type { BuildingType, GoalType, HouseLevel, TaskUnit } from "@/types";
 
 export const MAX_CORE_TASKS_PER_DAY = 3;
 export const CORE_TASK_CREDIT = 20;
@@ -37,6 +37,14 @@ export const GOAL_BUILDING: Record<GoalType, BuildingType> = {
   FINANCE: "BANK",
   HEALTH: "GYM",
   PROJECT: "WORKSHOP",
+};
+
+// 단위 화면 표기 (docs/glossary.md 1장)
+export const TASK_UNIT_LABEL: Record<TaskUnit, string> = {
+  MINUTE: "분",
+  COUNT: "회",
+  PAGE: "쪽",
+  ITEM: "개",
 };
 
 export const HOUSE_LEVEL_LABEL: Record<HouseLevel, string> = {

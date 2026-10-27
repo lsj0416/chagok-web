@@ -2,6 +2,7 @@
 // 백엔드가 생기면 이 파일의 구현만 fetch로 바꾼다
 export {
   completeTask,
+  createTask,
   fetchOverdueTasks,
   fetchTodayPlan,
   rescheduleTask,

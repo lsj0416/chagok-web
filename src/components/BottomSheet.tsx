@@ -31,6 +31,26 @@ export function BottomSheet({ open, onClose, title, description, children }: Bot
     if (!open && dialog.open) dialog.close();
   }, [open]);
 
+  // iOS Safari는 interactive-widget을 따르지 않아 키보드가 시트를 가린다.
+  // 열려 있는 동안 보이는 영역(visualViewport)을 따라 시트를 키보드 위로 올린다
+  useEffect(() => {
+    const vv = window.visualViewport;
+    const dialog = ref.current;
+    if (!open || !vv || !dialog) return;
+    const update = () => {
+      const inset = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+      dialog.style.setProperty("--keyboard-inset", `${inset}px`);
+      dialog.style.setProperty("--viewport-height", `${vv.height}px`);
+    };
+    update();
+    vv.addEventListener("resize", update);
+    vv.addEventListener("scroll", update);
+    return () => {
+      vv.removeEventListener("resize", update);
+      vv.removeEventListener("scroll", update);
+    };
+  }, [open]);
+
   const resetDrag = () => {
     dragStart.current = null;
     if (ref.current) ref.current.style.transform = "";
@@ -54,7 +74,7 @@ export function BottomSheet({ open, onClose, title, description, children }: Bot
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="flex max-h-[85dvh] flex-col">
+      <div className="flex max-h-[calc(var(--viewport-height,100dvh)*0.85)] flex-col">
         <div
           className="flex h-6 shrink-0 cursor-grab touch-none items-center justify-center"
           aria-hidden
@@ -86,7 +106,8 @@ export function BottomSheet({ open, onClose, title, description, children }: Bot
             </p>
           )}
         </div>
-        <div className="min-h-0 overflow-y-auto overscroll-contain px-5 pb-[calc(20px+var(--safe-bottom))]">
+        {/* 위쪽 4px: 첫 입력칸의 포커스 윤곽선이 스크롤 영역에 잘리지 않게 */}
+        <div className="min-h-0 overflow-y-auto overscroll-contain px-5 pt-1 pb-[calc(20px+var(--safe-bottom))]">
           {children}
         </div>
       </div>

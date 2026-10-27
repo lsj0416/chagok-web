@@ -13,6 +13,7 @@ import { GOAL_BUILDING, HOUSE_UPGRADE_RULES } from "@/config/game";
 import type {
   AiUsage,
   CreateGoalRequest,
+  CreateTaskRequest,
   DateKey,
   Goal,
   GoalBreakdown,
@@ -282,6 +283,7 @@ export function createGoal(req: CreateGoalRequest) {
         scheduledDate: null,
         isCore: false,
         source: req.source,
+        recurrence: null,
         completedAt: null,
         createdAt: now,
       });
@@ -374,5 +376,28 @@ export function markBuildingStageSeen(buildingId: string) {
     const building = db.buildings.find((b) => b.id === buildingId);
     if (building) building.lastSeenStage = building.stage;
     return { ok: true };
+  });
+}
+
+// 할 일 만들기 (S03, S16)
+
+/** 할 일을 만든다. 그날 핵심 할 일이 이미 3개면 일반 할 일로 만든다 (docs/screens.md 확인 필요) */
+export function createTask(req: CreateTaskRequest) {
+  return mutate(() => {
+    const sameDay = req.scheduledDate ? db.tasks.filter((t) => t.scheduledDate === req.scheduledDate) : [];
+    const task: Task = {
+      id: `t-${Date.now()}`,
+      title: req.title,
+      goalId: req.goalId,
+      status: "PLANNED",
+      scheduledDate: req.scheduledDate,
+      isCore: req.isCore && req.scheduledDate !== null && !isCoreFull(sameDay),
+      source: req.source,
+      recurrence: req.recurrence,
+      completedAt: null,
+      createdAt: new Date().toISOString(),
+    };
+    db.tasks.push(task);
+    return { taskId: task.id };
   });
 }

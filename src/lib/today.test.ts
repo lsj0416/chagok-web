@@ -14,6 +14,7 @@ function task(overrides: Partial<Task> = {}): Task {
     scheduledDate: "2026-10-27",
     isCore: false,
     source: "MANUAL",
+    recurrence: null,
     completedAt: null,
     createdAt: `2026-10-27T08:${String(seq).padStart(2, "0")}:00`,
     ...overrides,

@@ -87,17 +87,21 @@ const buildings: Building[] = [
 ];
 
 // TODO: 템플릿 목록은 개발 시점에 정한다 (docs/planning.md 14장). 정렬된 상태로 둔다
+const minutes = (options: number[], fallback: number) => ({
+  amountOptions: { MINUTE: options },
+  defaultAmount: { MINUTE: fallback },
+});
 const quickTemplates: QuickTaskTemplate[] = [
-  { id: "q-read", keyword: "독서", units: ["MINUTE", "PAGE"], goalType: null, sortOrder: 1 },
-  { id: "q-algo", keyword: "알고리즘 문제", units: ["COUNT"], goalType: "CAREER", sortOrder: 2 },
-  { id: "q-cert", keyword: "기출 풀기", units: ["COUNT", "MINUTE"], goalType: "STUDY", sortOrder: 3 },
-  { id: "q-walk", keyword: "산책", units: ["MINUTE"], goalType: "HEALTH", sortOrder: 4 },
-  { id: "q-clean", keyword: "청소", units: ["MINUTE"], goalType: null, sortOrder: 5 },
-  { id: "q-eng", keyword: "영어 단어", units: ["ITEM"], goalType: null, sortOrder: 6 },
-  { id: "q-stretch", keyword: "스트레칭", units: ["MINUTE"], goalType: "HEALTH", sortOrder: 7 },
-  { id: "q-journal", keyword: "일기", units: ["MINUTE"], goalType: null, sortOrder: 8 },
-  { id: "q-blog", keyword: "기술 블로그", units: ["MINUTE"], goalType: "CAREER", sortOrder: 9 },
-  { id: "q-water", keyword: "물 마시기", units: ["COUNT"], goalType: null, sortOrder: 10 },
+  { id: "q-read", keyword: "독서", units: ["MINUTE", "PAGE"], amountOptions: { MINUTE: [10, 20, 30], PAGE: [10, 20, 50] }, defaultAmount: { MINUTE: 20, PAGE: 20 }, goalType: null, sortOrder: 1 },
+  { id: "q-algo", keyword: "알고리즘 문제", units: ["COUNT"], amountOptions: { COUNT: [1, 2, 3] }, defaultAmount: { COUNT: 2 }, goalType: "CAREER", sortOrder: 2 },
+  { id: "q-cert", keyword: "기출 풀기", units: ["COUNT", "MINUTE"], amountOptions: { COUNT: [10, 20, 40], MINUTE: [30, 60] }, defaultAmount: { COUNT: 20, MINUTE: 30 }, goalType: "STUDY", sortOrder: 3 },
+  { id: "q-walk", keyword: "산책", units: ["MINUTE"], ...minutes([10, 20, 30], 20), goalType: "HEALTH", sortOrder: 4 },
+  { id: "q-clean", keyword: "청소", units: ["MINUTE"], ...minutes([10, 20, 30], 10), goalType: null, sortOrder: 5 },
+  { id: "q-eng", keyword: "영어 단어", units: ["ITEM"], amountOptions: { ITEM: [10, 20, 30] }, defaultAmount: { ITEM: 20 }, goalType: null, sortOrder: 6 },
+  { id: "q-stretch", keyword: "스트레칭", units: ["MINUTE"], ...minutes([5, 10, 20], 10), goalType: "HEALTH", sortOrder: 7 },
+  { id: "q-journal", keyword: "일기", units: ["MINUTE"], ...minutes([5, 10, 15], 10), goalType: null, sortOrder: 8 },
+  { id: "q-blog", keyword: "기술 블로그", units: ["MINUTE"], ...minutes([30, 60, 90], 60), goalType: "CAREER", sortOrder: 9 },
+  { id: "q-water", keyword: "물 마시기", units: ["COUNT"], amountOptions: { COUNT: [4, 6, 8] }, defaultAmount: { COUNT: 6 }, goalType: null, sortOrder: 10 },
 ];
 
 let seq = 0;
@@ -111,6 +115,7 @@ function makeTask(today: DateKey, title: string, overrides: Partial<Task> = {}):
     scheduledDate: today,
     isCore: false,
     source: "MANUAL",
+    recurrence: null,
     completedAt: null,
     createdAt: at(addDays(today, -1), `2${seq % 10}:00`),
     ...overrides,

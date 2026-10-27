@@ -32,8 +32,22 @@ export interface Task {
   scheduledDate: DateKey | null;
   isCore: boolean;
   source: TaskSource;
+  /** 반복. 매일 반복이면 DAILY */
+  recurrence: TaskRecurrence | null;
   completedAt: IsoDateTime | null;
   createdAt: IsoDateTime;
+}
+
+export type TaskRecurrence = "DAILY";
+
+/** 할 일 만들기 요청 (S03 할 일 추가, S16 빠른 추가) */
+export interface CreateTaskRequest {
+  title: string;
+  scheduledDate: DateKey | null;
+  goalId: string | null;
+  isCore: boolean;
+  source: TaskSource;
+  recurrence: TaskRecurrence | null;
 }
 
 export type TaskUnit = "MINUTE" | "COUNT" | "PAGE" | "ITEM";
@@ -41,7 +55,12 @@ export type TaskUnit = "MINUTE" | "COUNT" | "PAGE" | "ITEM";
 export interface QuickTaskTemplate {
   id: string;
   keyword: string;
+  /** 쓸 수 있는 단위. 첫 번째가 기본 단위 */
   units: TaskUnit[];
+  /** 단위별 수량 선택지 */
+  amountOptions: Partial<Record<TaskUnit, number[]>>;
+  /** 단위별 기본 수량 */
+  defaultAmount: Partial<Record<TaskUnit, number>>;
   /** 목표 유형 템플릿이면 그 유형, 공통 템플릿이면 null */
   goalType: GoalType | null;
   sortOrder: number;

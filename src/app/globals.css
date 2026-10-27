@@ -53,11 +53,12 @@ input {
 /* 바텀시트: 네이티브 dialog를 화면 아래에 붙인다 */
 dialog.sheet {
   position: fixed;
-  inset: auto 0 0 0;
+  /* --keyboard-inset, --viewport-height: BottomSheet가 visualViewport로 채운다 (iOS 키보드) */
+  inset: auto 0 var(--keyboard-inset, 0px) 0;
   margin: 0 auto;
   width: 100%;
   max-width: var(--app-max-width);
-  max-height: 85dvh;
+  max-height: calc(var(--viewport-height, 100dvh) * 0.85);
   border: 0;
   padding: 0;
   border-radius: 16px 16px 0 0;

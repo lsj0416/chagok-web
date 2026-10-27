@@ -12,7 +12,8 @@ import { TopBar } from "@/components/TopBar";
 import { CoreReplaceSheet } from "@/components/today/CoreReplaceSheet";
 import { EmptyTodayCard } from "@/components/today/EmptyTodayCard";
 import { ListSkeleton, OverdueSheet } from "@/components/today/OverdueSheet";
-import { PlaceholderSheet } from "@/components/today/PlaceholderSheet";
+import { AddTaskSheet } from "@/components/today/AddTaskSheet";
+import { QuickAddSheet } from "@/components/today/QuickAddSheet";
 import { TaskActionsSheet } from "@/components/today/TaskActionsSheet";
 import { TaskRow } from "@/components/today/TaskRow";
 import {
@@ -31,7 +32,7 @@ import * as api from "@/lib/api/tasks";
 import { canUncomplete } from "@/lib/completion";
 import { formatDayTitle, formatShortDate, toDateKey } from "@/lib/date";
 import { buildTodayView, isCoreFull } from "@/lib/today";
-import type { DateKey, QuickTaskTemplate, Task, TodayPlan } from "@/types";
+import type { CreateTaskRequest, DateKey, QuickTaskTemplate, Task, TodayPlan } from "@/types";
 
 type Sheet =
   | { kind: "actions"; task: Task }
@@ -163,6 +164,12 @@ export function TodayScreen() {
       refresh();
     },
   });
+
+  /** S03, S16에서 할 일 만들기. 실패하면 시트가 그 자리에서 알린다 */
+  const createTask = async (req: CreateTaskRequest) => {
+    await api.createTask(req);
+    refresh();
+  };
 
   const today: DateKey = plan?.date ?? toDateKey(new Date());
   const view = useMemo(
@@ -364,12 +371,21 @@ export function TodayScreen() {
           setSheet(null);
         }}
       />
-      <PlaceholderSheet open={sheet?.kind === "addTask"} onClose={() => setSheet(null)} title="할 일 추가" screenId="S03" />
-      <PlaceholderSheet
-        open={sheet?.kind === "quickAdd"}
+      <AddTaskSheet
+        open={sheet?.kind === "addTask"}
         onClose={() => setSheet(null)}
-        title={sheet?.kind === "quickAdd" ? sheet.template.keyword : "빠른 추가"}
-        screenId="S16"
+        today={today}
+        goals={plan?.goals.filter((g) => g.status === "ACTIVE") ?? []}
+        knownTasks={plan?.tasks ?? []}
+        onSubmit={createTask}
+      />
+      <QuickAddSheet
+        key={sheet?.kind === "quickAdd" ? sheet.template.id : "closed"}
+        template={sheet?.kind === "quickAdd" ? sheet.template : null}
+        today={today}
+        goals={plan?.goals ?? []}
+        onClose={() => setSheet(null)}
+        onSubmit={createTask}
       />
     </>
   );
