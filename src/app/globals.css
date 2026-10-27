@@ -1,3 +1,119 @@
 @import "tailwindcss";
 
-/* 와이어프레임 단계: 색과 폰트는 아직 정하지 않았다. 회색 톤과 기본 폰트만 쓴다 */
+/* 와이어프레임 단계: 색과 폰트는 아직 정하지 않았다. 회색 톤과 기본 폰트만 쓴다.
+   색을 정할 때는 아래 토큰의 값만 바꾼다 */
+@theme {
+  --color-ink: #1c1c1c;
+  --color-ink-2: #4b4b4b;
+  --color-ink-3: #6e6e6e; /* 흰 바탕 대비 5.1:1 */
+  --color-line: #e3e3e3;
+  --color-line-strong: #c9c9c9;
+  --color-surface: #ffffff;
+  --color-surface-2: #f3f3f3;
+  --color-surface-3: #e9e9e9;
+  --color-placeholder: #d6d6d6;
+  --color-backdrop: rgb(0 0 0 / 0.4);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root {
+  color-scheme: light;
+  --app-max-width: 430px;
+  --tab-bar-height: 56px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+html {
+  -webkit-tap-highlight-color: transparent;
+  text-size-adjust: 100%;
+}
+
+body {
+  background: var(--color-surface-2);
+  color: var(--color-ink);
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+::selection {
+  background: var(--color-surface-3);
+  color: var(--color-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+}
+
+input {
+  caret-color: var(--color-ink);
+}
+
+/* 바텀시트: 네이티브 dialog를 화면 아래에 붙인다 */
+dialog.sheet {
+  position: fixed;
+  inset: auto 0 0 0;
+  margin: 0 auto;
+  width: 100%;
+  max-width: var(--app-max-width);
+  max-height: 85dvh;
+  border: 0;
+  padding: 0;
+  border-radius: 16px 16px 0 0;
+  background: var(--color-surface);
+  color: var(--color-ink);
+  box-shadow: 0 -4px 24px rgb(0 0 0 / 0.12);
+  transform: translateY(100%);
+  transition:
+    transform 280ms var(--ease-out-expo),
+    overlay 280ms allow-discrete,
+    display 280ms allow-discrete;
+}
+
+dialog.sheet[open] {
+  transform: translateY(0);
+}
+
+@starting-style {
+  dialog.sheet[open] {
+    transform: translateY(100%);
+  }
+}
+
+dialog.sheet::backdrop {
+  background: var(--color-backdrop);
+  opacity: 0;
+  transition:
+    opacity 280ms var(--ease-out-expo),
+    overlay 280ms allow-discrete,
+    display 280ms allow-discrete;
+}
+
+dialog.sheet[open]::backdrop {
+  opacity: 1;
+}
+
+@starting-style {
+  dialog.sheet[open]::backdrop {
+    opacity: 0;
+  }
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after,
+  dialog.sheet,
+  dialog.sheet::backdrop {
+    transition-duration: 1ms !important;
+    animation-duration: 1ms !important;
+  }
+}

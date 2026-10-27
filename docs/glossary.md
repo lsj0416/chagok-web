@@ -61,6 +61,8 @@
 | 다시 생성 | `regenerate` | 다시 만들기 | 같은 목표로 초안을 다시 요청. 하루 호출 횟수에 포함 |
 | 직접 입력 | `manualEntry` | 직접 입력 | AI 없이 할 일을 입력하는 경로 |
 | 하루 호출 상한 | `AI_DAILY_LIMIT` | 오늘 남은 횟수 | 사용자별 하루 AI 분해 횟수 제한 |
+| 지금 상황 | `currentSituation` | 지금 상황 | AI 분해 요청에 함께 보내는 선택 입력. 한 줄. 저장하지 않는다 |
+| AI 사용량 | `AiUsage` | 오늘 남은 횟수 | 오늘 사용한 AI 분해 횟수와 남은 횟수 |
 
 ## 4 마을과 건물
 
@@ -134,6 +136,9 @@
 | `AI_DRAFT_COUNT_MIN` | 5 | AI가 제안하는 할 일 초안의 최소 개수 |
 | `AI_DRAFT_COUNT_MAX` | 10 | AI가 제안하는 할 일 초안의 최대 개수 |
 | `QUICK_TEMPLATE_DISPLAY_LIMIT` | 8 | 빈 화면 카드에 보여줄 빠른 추가 칩 개수 |
+| `UNDATED_TASK_DISPLAY_LIMIT` | 3 | 빈 화면 카드의 '목표에서 가져오기'에 보여줄 날짜 없는 할 일 개수 |
+
+코드에서 아래 표의 값은 `HOUSE_UPGRADE_RULES`로, 4장의 목표 유형과 건물 표는 `GOAL_BUILDING`(유형→건물)과 `BUILDING_LABEL`(건물→화면 표기)로 둔다.
 
 집 단계별 조건
 

@@ -1,0 +1,410 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-27T00:00:00Z",
+  "title": "Design System: chagok (와이어프레임)",
+  "extensions": {
+    "stage": "wireframe",
+    "undecided": [
+      "colors",
+      "typeface"
+    ],
+    "sourceOfTruth": "src/app/globals.css @theme",
+    "colorMeta": {
+      "ink": {
+        "role": "primary",
+        "displayName": "먹색",
+        "canonical": "#1c1c1c",
+        "tonalRamp": [
+          "#1c1c1c",
+          "#4b4b4b",
+          "#6e6e6e",
+          "#c9c9c9",
+          "#d6d6d6",
+          "#e3e3e3",
+          "#e9e9e9",
+          "#f3f3f3"
+        ]
+      },
+      "ink-2": {
+        "role": "neutral",
+        "displayName": "진회색",
+        "canonical": "#4b4b4b",
+        "tonalRamp": [
+          "#1c1c1c",
+          "#4b4b4b",
+          "#6e6e6e",
+          "#c9c9c9",
+          "#d6d6d6",
+          "#e3e3e3",
+          "#e9e9e9",
+          "#f3f3f3"
+        ]
+      },
+      "ink-3": {
+        "role": "neutral",
+        "displayName": "중회색",
+        "canonical": "#6e6e6e",
+        "tonalRamp": [
+          "#1c1c1c",
+          "#4b4b4b",
+          "#6e6e6e",
+          "#c9c9c9",
+          "#d6d6d6",
+          "#e3e3e3",
+          "#e9e9e9",
+          "#f3f3f3"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "선",
+        "canonical": "#e3e3e3",
+        "tonalRamp": [
+          "#1c1c1c",
+          "#4b4b4b",
+          "#6e6e6e",
+          "#c9c9c9",
+          "#d6d6d6",
+          "#e3e3e3",
+          "#e9e9e9",
+          "#f3f3f3"
+        ]
+      },
+      "line-strong": {
+        "role": "neutral",
+        "displayName": "진한 선",
+        "canonical": "#c9c9c9",
+        "tonalRamp": [
+          "#1c1c1c",
+          "#4b4b4b",
+          "#6e6e6e",
+          "#c9c9c9",
+          "#d6d6d6",
+          "#e3e3e3",
+          "#e9e9e9",
+          "#f3f3f3"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "흰 면",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "#1c1c1c",
+          "#4b4b4b",
+          "#6e6e6e",
+          "#c9c9c9",
+          "#d6d6d6",
+          "#e3e3e3",
+          "#f3f3f3",
+          "#ffffff"
+        ]
+      },
+      "surface-2": {
+        "role": "neutral",
+        "displayName": "옅은 면",
+        "canonical": "#f3f3f3",
+        "tonalRamp": [
+          "#1c1c1c",
+          "#4b4b4b",
+          "#6e6e6e",
+          "#c9c9c9",
+          "#d6d6d6",
+          "#e3e3e3",
+          "#e9e9e9",
+          "#f3f3f3"
+        ]
+      },
+      "surface-3": {
+        "role": "neutral",
+        "displayName": "더 옅은 면",
+        "canonical": "#e9e9e9",
+        "tonalRamp": [
+          "#1c1c1c",
+          "#4b4b4b",
+          "#6e6e6e",
+          "#c9c9c9",
+          "#d6d6d6",
+          "#e3e3e3",
+          "#e9e9e9",
+          "#f3f3f3"
+        ]
+      },
+      "placeholder": {
+        "role": "neutral",
+        "displayName": "자리 표시 회색",
+        "canonical": "#d6d6d6",
+        "tonalRamp": [
+          "#1c1c1c",
+          "#4b4b4b",
+          "#6e6e6e",
+          "#c9c9c9",
+          "#d6d6d6",
+          "#e3e3e3",
+          "#e9e9e9",
+          "#f3f3f3"
+        ]
+      },
+      "backdrop": {
+        "role": "neutral",
+        "displayName": "덮개",
+        "canonical": "rgb(0 0 0 / 0.4)"
+      }
+    },
+    "typographyMeta": {
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "상단 바 화면 제목(S02는 날짜)."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "바텀시트 제목. 빈 화면 카드 제목은 17px."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "할 일 제목(최대 두 줄), 시트 행동 목록, 입력 칸."
+      },
+      "body-sm": {
+        "displayName": "Body small",
+        "purpose": "안내 영역, 알림, 칩, 시트 보조 버튼."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "섹션 제목과 버튼 글자(600). 400은 진행 현황 문장과 시트 설명."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "목표 이름, 날짜 같은 보조 정보."
+      },
+      "tab-label": {
+        "displayName": "Tab label",
+        "purpose": "하단 탭 이름. 활성은 600."
+      }
+    },
+    "shadows": [
+      {
+        "name": "sheet",
+        "value": "0 -4px 24px rgb(0 0 0 / 0.12)",
+        "purpose": "바텀시트 위쪽 가장자리."
+      },
+      {
+        "name": "toast",
+        "value": "0 4px 16px rgb(0 0 0 / 0.18)",
+        "purpose": "목록 위에 뜨는 알림."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out-expo",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "유일한 감속 곡선. 시트, 알림, 덮개."
+      },
+      {
+        "name": "sheet",
+        "value": "280ms",
+        "purpose": "바텀시트가 아래에서 올라오고 덮개가 짙어지는 시간."
+      },
+      {
+        "name": "toast-in",
+        "value": "240ms",
+        "purpose": "알림이 8px 아래에서 떠오르는 시간."
+      },
+      {
+        "name": "check",
+        "value": "150ms",
+        "purpose": "체크 원 채움 색 전환."
+      },
+      {
+        "name": "disclosure",
+        "value": "200ms",
+        "purpose": "완료 목록 펼침 꺾쇠 회전."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "1ms",
+        "purpose": "prefers-reduced-motion에서 모든 전환과 애니메이션."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "min-check",
+        "value": "360px"
+      },
+      {
+        "name": "base",
+        "value": "375px"
+      },
+      {
+        "name": "app-max-width",
+        "value": "430px"
+      }
+    ],
+    "focus": {
+      "value": "outline: 2px solid var(--color-ink); outline-offset: 2px",
+      "purpose": "모든 요소의 키보드 포커스."
+    }
+  },
+  "components": [
+    {
+      "name": "주요 버튼",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "화면이나 시트에서 하나뿐인 주요 행동.",
+      "html": "<button class=\"ds-btn-primary\">다시 시도</button>",
+      "css": ".ds-btn-primary { height: 48px; padding: 0 16px; border: 0; border-radius: 8px; background: var(--color-ink, #1c1c1c); color: var(--color-surface, #fff); font: 600 14px/1 ui-sans-serif, system-ui, sans-serif; cursor: pointer; } .ds-btn-primary:focus-visible { outline: 2px solid var(--color-ink, #1c1c1c); outline-offset: 2px; } .ds-btn-primary:disabled { opacity: 0.4; }"
+    },
+    {
+      "name": "할 일 추가 버튼",
+      "kind": "button",
+      "refersTo": "button-primary-bar",
+      "description": "S02 대표 행동. 하단 탭 위에 고정된 전체 폭 버튼.",
+      "html": "<button class=\"ds-btn-bar\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\" stroke-linecap=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14\"/><path d=\"M12 5v14\"/></svg>할 일 추가</button>",
+      "css": ".ds-btn-bar { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; max-width: 343px; height: 48px; border: 0; border-radius: 12px; background: var(--color-ink, #1c1c1c); color: var(--color-surface, #fff); font: 600 16px/1 ui-sans-serif, system-ui, sans-serif; cursor: pointer; } .ds-btn-bar:focus-visible { outline: 2px solid var(--color-ink, #1c1c1c); outline-offset: 2px; }"
+    },
+    {
+      "name": "테두리 버튼",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "주요 버튼보다 약한 행동.",
+      "html": "<button class=\"ds-btn-outline\">마을 보러 가기</button>",
+      "css": ".ds-btn-outline { height: 44px; padding: 0 16px; border: 1px solid var(--color-line-strong, #c9c9c9); border-radius: 8px; background: var(--color-surface, #fff); color: var(--color-ink, #1c1c1c); font: 600 14px/1 ui-sans-serif, system-ui, sans-serif; cursor: pointer; } .ds-btn-outline:focus-visible { outline: 2px solid var(--color-ink, #1c1c1c); outline-offset: 2px; }"
+    },
+    {
+      "name": "보조 버튼",
+      "kind": "button",
+      "refersTo": "button-tonal",
+      "description": "같은 무게의 선택지를 나란히 둘 때, 시트의 취소.",
+      "html": "<div class=\"ds-tonal-row\"><button class=\"ds-btn-tonal\">오늘로</button><button class=\"ds-btn-tonal\">날짜 바꾸기</button><button class=\"ds-btn-tonal\">날짜 없이 보관</button></div>",
+      "css": ".ds-tonal-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; max-width: 343px; } .ds-btn-tonal { height: 44px; border: 0; border-radius: 8px; background: var(--color-surface-2, #f3f3f3); color: var(--color-ink-2, #4b4b4b); font: 600 14px/1 ui-sans-serif, system-ui, sans-serif; cursor: pointer; } .ds-btn-tonal:focus-visible { outline: 2px solid var(--color-ink, #1c1c1c); outline-offset: 2px; }"
+    },
+    {
+      "name": "빠른 추가 칩",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "누르면 바로 행동하는 칩. 선택 상태 없음.",
+      "html": "<div class=\"ds-chips\"><button class=\"ds-chip\">산책</button><button class=\"ds-chip\">독서</button><button class=\"ds-chip\">정리</button></div>",
+      "css": ".ds-chips { display: flex; flex-wrap: wrap; gap: 8px; } .ds-chip { height: 44px; padding: 0 16px; border: 1px solid var(--color-line-strong, #c9c9c9); border-radius: 9999px; background: var(--color-surface, #fff); color: var(--color-ink, #1c1c1c); font: 400 15px/1 ui-sans-serif, system-ui, sans-serif; cursor: pointer; } .ds-chip:focus-visible { outline: 2px solid var(--color-ink, #1c1c1c); outline-offset: 2px; }"
+    },
+    {
+      "name": "할 일 줄",
+      "kind": "custom",
+      "refersTo": "task-row",
+      "description": "체크(44px 영역, 22px 원), 제목과 목표 이름, 더보기. 완료하면 채움과 취소선.",
+      "html": "<ul class=\"ds-tasks\"><li class=\"ds-task\"><button class=\"ds-check\" role=\"checkbox\" aria-checked=\"false\" aria-label=\"완료\"><span></span></button><span class=\"ds-task-text\"><span class=\"ds-task-title\">지원동기 첫 문단 쓰기</span><span class=\"ds-task-meta\">백엔드 개발자로 취업하기</span></span><button class=\"ds-more\" aria-label=\"더보기\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"1\"/><circle cx=\"19\" cy=\"12\" r=\"1\"/><circle cx=\"5\" cy=\"12\" r=\"1\"/></svg></button></li><li class=\"ds-task is-done\"><button class=\"ds-check\" role=\"checkbox\" aria-checked=\"true\" aria-label=\"완료\"><span><svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\" aria-hidden=\"true\"><path d=\"M20 6 9 17l-5-5\"/></svg></span></button><span class=\"ds-task-text\"><span class=\"ds-task-title\">관심 공고 3개에서 주요 업무 정리하기</span><span class=\"ds-task-meta\">백엔드 개발자로 취업하기</span></span><span class=\"ds-more-gap\"></span></li></ul>",
+      "css": ".ds-tasks { list-style: none; margin: 0; padding: 0 8px; max-width: 359px; font-family: ui-sans-serif, system-ui, sans-serif; } .ds-task { display: flex; align-items: flex-start; gap: 4px; padding: 4px 0; } .ds-check, .ds-more { display: grid; place-items: center; width: 44px; height: 44px; flex-shrink: 0; border: 0; border-radius: 9999px; background: none; color: var(--color-ink-3, #6e6e6e); cursor: pointer; } .ds-check span { display: grid; place-items: center; width: 22px; height: 22px; box-sizing: border-box; border: 2px solid var(--color-line-strong, #c9c9c9); border-radius: 9999px; background: var(--color-surface, #fff); color: var(--color-surface, #fff); transition: background-color 150ms, border-color 150ms; } .is-done .ds-check span { border-color: var(--color-ink, #1c1c1c); background: var(--color-ink, #1c1c1c); } .ds-check:focus-visible, .ds-more:focus-visible { outline: 2px solid var(--color-ink, #1c1c1c); outline-offset: 2px; } .ds-task-text { flex: 1; min-width: 0; padding: 10px 0; } .ds-task-title { display: block; font-size: 16px; line-height: 1.375; color: var(--color-ink, #1c1c1c); } .is-done .ds-task-title { color: var(--color-ink-3, #6e6e6e); text-decoration: line-through; } .ds-task-meta { display: block; margin-top: 2px; font-size: 13px; color: var(--color-ink-3, #6e6e6e); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .ds-more-gap { width: 44px; flex-shrink: 0; }"
+    },
+    {
+      "name": "알림",
+      "kind": "custom",
+      "refersTo": "toast",
+      "description": "완료 직후 자리에서 보여주는 짧은 알림과 실행 취소.",
+      "html": "<div class=\"ds-toast\" role=\"status\"><p>+20 크레딧 · 오피스 공사 진행</p><button>실행 취소</button></div>",
+      "css": ".ds-toast { display: flex; align-items: center; gap: 12px; max-width: 343px; min-height: 48px; padding: 6px 6px 6px 16px; border-radius: 12px; background: var(--color-ink, #1c1c1c); color: var(--color-surface, #fff); font: 400 15px/1.4 ui-sans-serif, system-ui, sans-serif; box-shadow: 0 4px 16px rgb(0 0 0 / 0.18); } .ds-toast p { flex: 1; margin: 0; } .ds-toast button { height: 44px; padding: 0 12px; border: 0; border-radius: 8px; background: none; color: inherit; font: inherit; font-weight: 600; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; } .ds-toast button:focus-visible { outline: 2px solid var(--color-surface, #fff); outline-offset: 2px; }"
+    },
+    {
+      "name": "안내 영역",
+      "kind": "card",
+      "refersTo": "notice-panel",
+      "description": "조건부 안내 한 줄. 누를 수 있으면 꺾쇠.",
+      "html": "<button class=\"ds-notice\"><span>지난 할 일 2개가 남아 있어요</span><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><path d=\"m9 18 6-6-6-6\"/></svg></button>",
+      "css": ".ds-notice { display: flex; align-items: center; gap: 8px; width: 100%; max-width: 343px; min-height: 48px; padding: 12px 16px; border: 0; border-radius: 12px; background: var(--color-surface-2, #f3f3f3); color: var(--color-ink, #1c1c1c); font: 400 15px/1.4 ui-sans-serif, system-ui, sans-serif; text-align: left; cursor: pointer; } .ds-notice span { flex: 1; } .ds-notice svg { color: var(--color-ink-3, #6e6e6e); } .ds-notice:focus-visible { outline: 2px solid var(--color-ink, #1c1c1c); outline-offset: 2px; }"
+    },
+    {
+      "name": "하단 탭",
+      "kind": "nav",
+      "refersTo": "tab-bar",
+      "description": "하단 탭 화면의 4칸 탭. 선 아이콘과 11px 이름.",
+      "html": "<nav class=\"ds-tabs\" aria-label=\"주요 화면\"><a aria-current=\"page\" href=\"#\"><svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" aria-hidden=\"true\"><rect x=\"3\" y=\"4\" width=\"18\" height=\"18\" rx=\"2\"/><path d=\"M16 2v4M8 2v4M3 10h18\"/><path d=\"m9 16 2 2 4-4\"/></svg>오늘</a><a href=\"#\"><svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" aria-hidden=\"true\"><path d=\"M3 10l9-7 9 7v11H3z\"/></svg>마을</a><a href=\"#\"><svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" aria-hidden=\"true\"><path d=\"M4 22V4s2-1 5-1 5 2 8 2 3-1 3-1v11s-1 1-3 1-5-2-8-2-5 1-5 1\"/></svg>목표</a><a href=\"#\"><svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" aria-hidden=\"true\"><rect x=\"4\" y=\"2\" width=\"16\" height=\"20\" rx=\"2\"/><path d=\"M8 7h8M8 11h8M8 15h5\"/></svg>기록</a></nav>",
+      "css": ".ds-tabs { display: grid; grid-template-columns: repeat(4, 1fr); height: 56px; max-width: 375px; border-top: 1px solid var(--color-line, #e3e3e3); background: var(--color-surface, #fff); font: 400 11px/1 ui-sans-serif, system-ui, sans-serif; } .ds-tabs a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; color: var(--color-ink-3, #6e6e6e); text-decoration: none; } .ds-tabs a[aria-current=page] { color: var(--color-ink, #1c1c1c); font-weight: 600; } .ds-tabs a:focus-visible { outline: 2px solid var(--color-ink, #1c1c1c); outline-offset: -2px; }"
+    },
+    {
+      "name": "그래픽 자리 표시자",
+      "kind": "custom",
+      "refersTo": "graphic-placeholder",
+      "description": "마을, 건물, 집, 가구 그림 자리. 같은 비율의 회색 상자와 이름. 일러스트나 아이콘으로 대신하지 않는다.",
+      "html": "<div class=\"ds-placeholder\">집 내부 자리 표시자</div>",
+      "css": ".ds-placeholder { display: grid; place-items: center; aspect-ratio: 4 / 3; max-width: 343px; border-radius: 8px; background: var(--color-placeholder, #d6d6d6); color: var(--color-ink-2, #4b4b4b); font: 400 14px/1.4 ui-sans-serif, system-ui, sans-serif; }"
+    },
+    {
+      "name": "선택 칩",
+      "kind": "chip",
+      "refersTo": "chip-selected",
+      "description": "하나만 고르는 칩 묶음의 선택된 칩(직접 입력의 건물 종류).",
+      "html": "<div role=\"radiogroup\" class=\"ds-chips\"><button role=\"radio\" aria-checked=\"false\" class=\"ds-chip\">오피스</button><button role=\"radio\" aria-checked=\"true\" class=\"ds-chip\">학교</button></div>",
+      "css": ".ds-chips { display: flex; flex-wrap: wrap; gap: 8px; } .ds-chip { height: 44px; padding: 0 16px; border: 1px solid var(--color-line-strong, #c9c9c9); border-radius: 9999px; background: var(--color-surface, #fff); color: var(--color-ink, #1c1c1c); font: 400 15px ui-sans-serif, system-ui, sans-serif; } .ds-chip[aria-checked=\"true\"] { background: var(--color-ink, #1c1c1c); border-color: var(--color-ink, #1c1c1c); color: var(--color-surface, #fff); font-weight: 600; }"
+    },
+    {
+      "name": "초안 줄",
+      "kind": "list-item",
+      "refersTo": "draft-row",
+      "description": "고르는 목록의 한 줄. 네모 체크는 '선택', 둥근 체크는 '완료'.",
+      "html": "<li class=\"ds-draft\"><button role=\"checkbox\" aria-checked=\"true\" class=\"ds-draft-check\"><span><svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\" aria-hidden=\"true\"><path d=\"M20 6 9 17l-5-5\"/></svg></span></button><span class=\"ds-draft-title\">지원동기 첫 문단 쓰기</span></li>",
+      "css": ".ds-draft { display: flex; align-items: flex-start; gap: 4px; padding: 4px 0; list-style: none; } .ds-draft-check { width: 44px; height: 44px; display: grid; place-items: center; border: 0; background: none; } .ds-draft-check span { width: 22px; height: 22px; display: grid; place-items: center; border: 2px solid var(--color-line-strong, #c9c9c9); border-radius: 6px; color: transparent; } .ds-draft-check[aria-checked=\"true\"] span { background: var(--color-ink, #1c1c1c); border-color: var(--color-ink, #1c1c1c); color: var(--color-surface, #fff); } .ds-draft-title { flex: 1; padding: 10px 12px 10px 0; font: 400 16px/1.375 ui-sans-serif, system-ui, sans-serif; color: var(--color-ink, #1c1c1c); }"
+    },
+    {
+      "name": "하단 행동 영역",
+      "kind": "container",
+      "refersTo": "bottom-actions",
+      "description": "전체 화면 아래에 붙는 행동 영역. 주요 버튼, 필요하면 전체 폭 테두리 버튼, 그 아래 글자 버튼.",
+      "html": "<div class=\"ds-actions\"><button class=\"ds-actions-primary\">2개 추가하기</button><button class=\"ds-actions-text\">다시 만들기</button></div>",
+      "css": ".ds-actions { position: sticky; bottom: 0; display: flex; flex-direction: column; align-items: center; padding: 12px 16px; border-top: 1px solid var(--color-line, #e3e3e3); background: var(--color-surface, #fff); } .ds-actions-primary { width: 100%; height: 48px; border: 0; border-radius: 12px; background: var(--color-ink, #1c1c1c); color: var(--color-surface, #fff); font: 600 16px ui-sans-serif, system-ui, sans-serif; } .ds-actions-primary:disabled, .ds-actions-text:disabled { opacity: .4; } .ds-actions-text { height: 44px; margin-top: 4px; padding: 0 12px; border: 0; background: none; color: var(--color-ink-2, #4b4b4b); font: 600 15px ui-sans-serif, system-ui, sans-serif; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "조용한 할 일 목록",
+    "overview": "와이어프레임 단계. 색과 서체는 아직 정하지 않았고, 값은 회색 단계와 기본 시스템 폰트다. 색과 서체를 정할 때는 src/app/globals.css의 @theme 토큰 값만 바꾼다. 화면은 흰 바탕 위의 표준 모바일 목록이며, 구분은 굵기, 크기, 간격, 1px 선, 옅은 회색 면으로만 한다. 진행 현황은 한 줄 문장, 결과는 짧은 알림과 실행 취소. 자주 쓰는 행동은 엄지가 닿는 아래쪽에 모인다. 마을, 건물, 집, 가구 그림은 같은 비율의 회색 상자와 이름으로 둔다.",
+    "keyCharacteristics": [
+      "흰 바탕, 회색 10단계, 강조색 없음. 먹색이 주요 행동의 채움",
+      "기본 시스템 산세리프 하나, 굵기와 11~19px 크기로 위계",
+      "그림자는 바텀시트와 알림에만",
+      "누르는 대상 최소 44px",
+      "그래픽 자리는 회색 자리 표시자"
+    ],
+    "rules": [
+      {
+        "name": "The Token-Only Rule",
+        "body": "화면 코드에는 색 값을 직접 쓰지 않고 토큰 이름만 쓴다. 색을 정하는 날 바꾸는 곳은 globals.css의 @theme 하나뿐이다.",
+        "section": "colors"
+      },
+      {
+        "name": "The No-Accent-Yet Rule",
+        "body": "색과 서체가 정해지기 전에는 회색 바깥의 색을 추가하지 않는다. 상태 구분은 굵기, 채움, 취소선으로 한다.",
+        "section": "colors"
+      },
+      {
+        "name": "The Weight-Not-Color Rule",
+        "body": "위계는 굵기와 크기, 세 단계 글자색으로만 만든다. 숫자는 tabular-nums.",
+        "section": "typography"
+      },
+      {
+        "name": "The Thumb-Zone Rule",
+        "body": "자주 쓰는 행동과 그 결과(추가 버튼, 알림, 바텀시트)는 화면 아래쪽에 둔다.",
+        "section": "layout"
+      },
+      {
+        "name": "The 44px Rule",
+        "body": "누르는 대상은 모두 최소 44px.",
+        "section": "layout"
+      },
+      {
+        "name": "The Floating-Only Rule",
+        "body": "그림자는 내용 위에 뜨는 요소(바텀시트, 알림)에만 쓴다.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do 색은 토큰 이름으로만 쓴다.",
+      "Do 주요 행동 하나만 먹색 채움으로 두고 나머지는 테두리 버튼이나 보조 버튼으로 낮춘다.",
+      "Do 누르는 대상을 최소 44px로, 자주 쓰는 행동을 화면 아래쪽에 둔다.",
+      "Do 진행과 결과는 문장 한 줄과 숫자 하나로 조용히 보여준다.",
+      "Do 마을, 건물, 집, 가구 자리는 같은 비율의 회색 상자와 이름으로 둔다.",
+      "Do 움직임은 감속 곡선 하나로, 줄이기 설정에서는 사실상 끈다."
+    ],
+    "donts": [
+      "Don't 색과 서체가 정해지기 전에 브랜드 색, 상태 색, 웹 폰트를 추가하지 않는다.",
+      "Don't 마을, 건물, 집, 가구를 일러스트나 아이콘으로 대신 그리지 않는다. 조작용 선 아이콘은 무관하다.",
+      "Don't 진행 현황에 큰 숫자, 차트, 카드 격자, 축하 연출을 쓰지 않는다.",
+      "Don't 카드나 버튼에 그림자를 넣지 않는다."
+    ]
+  }
+}
