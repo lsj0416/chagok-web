@@ -58,6 +58,8 @@ export interface Building {
   type: BuildingType;
   stage: BuildingStage;
   constructionProgress: number;
+  /** 사용자가 마을에서 마지막으로 본 단계. stage보다 낮으면 다음 진입 때 짧은 연출 */
+  lastSeenStage: BuildingStage;
 }
 
 // 5 크레딧, 집, 가구
@@ -115,6 +117,15 @@ export interface Placement {
   id: string;
   furnitureId: string;
   slotId: string;
+}
+
+/** 마을 화면(S05)에 필요한 조회 결과. 별도 저장 데이터가 아니다 */
+export interface VillageDetail {
+  house: House;
+  buildings: Building[];
+  /** 건물에 연결된 목표 (보관한 목표 포함) */
+  goals: Goal[];
+  balance: number;
 }
 
 /** 집 내부 화면(S06)에 필요한 조회 결과. 별도 저장 데이터가 아니다 */

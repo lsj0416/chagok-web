@@ -7,12 +7,10 @@ interface StubScreenProps {
   screenId: string;
   /** 하단 탭 화면이면 true, 전체 화면이면 false (뒤로 가기) */
   tab?: boolean;
-  /** 자리 표시자 아래에 둘 임시 연결 */
-  children?: React.ReactNode;
 }
 
 // 와이어프레임 단계 전용: 아직 만들지 않은 화면의 자리. 해당 화면을 만들면 지운다
-export function StubScreen({ title, screenId, tab = false, children }: StubScreenProps) {
+export function StubScreen({ title, screenId, tab = false }: StubScreenProps) {
   return (
     <>
       <TopBar title={title} back={!tab} />
@@ -20,7 +18,6 @@ export function StubScreen({ title, screenId, tab = false, children }: StubScree
         <div className="grid aspect-[4/3] place-items-center rounded-lg bg-placeholder text-[14px] text-ink-2">
           {screenId} {title} 자리 표시자
         </div>
-        {children}
       </main>
       {tab && (
         <div className="fixed inset-x-0 bottom-0 mx-auto w-full max-w-(--app-max-width)">

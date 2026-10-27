@@ -15,6 +15,7 @@ import { TopBar } from "@/components/TopBar";
 import { useToast } from "@/components/useToast";
 import { HOUSE_LEVEL_LABEL, HOUSE_UPGRADE_RULES } from "@/config/game";
 import * as api from "@/lib/api/house";
+import { formatCredit } from "@/lib/credit";
 import { upgradeProgress } from "@/lib/house";
 import { withEulReul, withEuro } from "@/lib/korean";
 import type { FurnitureCatalogItem, Slot } from "@/types";
@@ -25,8 +26,6 @@ type Sheet =
   | { kind: "upgrade" }
   | null;
 
-/** 잔액 표기. 마이너스는 '−'를 붙인다 (색만으로 알리지 않는다) */
-const formatCredit = (n: number) => (n < 0 ? `−${Math.abs(n)}` : `${n}`);
 
 /** S06 집 내부 */
 export function HouseScreen() {

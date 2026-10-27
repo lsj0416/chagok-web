@@ -107,6 +107,19 @@ dialog.sheet[open]::backdrop {
   }
 }
 
+/* 마을: 단계가 오른 건물을 처음 볼 때 한 번 (움직임 줄이기 설정에서는 아래 규칙으로 사실상 생략) */
+@keyframes stage-reveal {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.14);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

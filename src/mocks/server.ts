@@ -19,6 +19,7 @@ import type {
   GoalBreakdownRequest,
   HouseDetail,
   Task,
+  VillageDetail,
   TodayPlan,
 } from "@/types";
 
@@ -271,7 +272,7 @@ export function createGoal(req: CreateGoalRequest) {
       completionCriteria: null,
       createdAt: now,
     });
-    db.buildings.push({ id: `b-${goalId}`, goalId, type: GOAL_BUILDING[req.type], stage: "LOT", constructionProgress: 0 });
+    db.buildings.push({ id: `b-${goalId}`, goalId, type: GOAL_BUILDING[req.type], stage: "LOT", constructionProgress: 0, lastSeenStage: "LOT" });
     req.taskTitles.forEach((title, i) => {
       db.tasks.push({
         id: `t-${goalId}-${i}`,
@@ -350,5 +351,28 @@ export function upgradeHouse() {
     spend("SPEND_HOUSE_UPGRADE", rule.upgradeCost ?? 0);
     db.house = { level: rule.next };
     return { level: rule.next };
+  });
+}
+
+// 마을 (S05)
+
+export function fetchVillageDetail(): Promise<VillageDetail> {
+  return respond(() => {
+    const goalIds = new Set(db.buildings.map((b) => b.goalId));
+    return {
+      house: db.house,
+      buildings: db.buildings,
+      goals: db.goals.filter((g) => goalIds.has(g.id)),
+      balance: balance(),
+    };
+  });
+}
+
+/** 마을에서 단계를 본 것으로 기록한다. 다음 진입부터 연출하지 않는다 */
+export function markBuildingStageSeen(buildingId: string) {
+  return mutate(() => {
+    const building = db.buildings.find((b) => b.id === buildingId);
+    if (building) building.lastSeenStage = building.stage;
+    return { ok: true };
   });
 }

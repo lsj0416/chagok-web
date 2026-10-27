@@ -57,6 +57,10 @@ export const MOCK_SCENARIOS = [
   "house-max",
   "house-negative",
   "house-shop-empty",
+  "village-first",
+  "village-stage-up",
+  "village-archived",
+  "village-full",
 ] as const;
 
 export type MockScenario = (typeof MOCK_SCENARIOS)[number];
@@ -77,9 +81,9 @@ function goals(today: DateKey): Goal[] {
 }
 
 const buildings: Building[] = [
-  { id: "b-career", goalId: "g-career", type: "OFFICE", stage: "LOT", constructionProgress: 3 },
-  { id: "b-study", goalId: "g-study", type: "SCHOOL", stage: "LOT", constructionProgress: 4 },
-  { id: "b-health", goalId: "g-health", type: "GYM", stage: "FRAME", constructionProgress: 7 },
+  { id: "b-career", goalId: "g-career", type: "OFFICE", stage: "LOT", constructionProgress: 3, lastSeenStage: "LOT" },
+  { id: "b-study", goalId: "g-study", type: "SCHOOL", stage: "LOT", constructionProgress: 4, lastSeenStage: "LOT" },
+  { id: "b-health", goalId: "g-health", type: "GYM", stage: "FRAME", constructionProgress: 7, lastSeenStage: "FRAME" },
 ];
 
 // TODO: 템플릿 목록은 개발 시점에 정한다 (docs/planning.md 14장). 정렬된 상태로 둔다
@@ -240,6 +244,41 @@ export function createMockDb(scenario: MockScenario, now: Date = new Date()): Mo
     case "house-shop-empty":
       // 첫 빈 자리(조명)에 놓을 판매 가구가 없는 상태. 이미 놓인 가구의 정보는 남긴다
       db.catalog = MOCK_CATALOG.filter((c) => c.slotType !== "LAMP");
+      break;
+    case "village-first": {
+      // 첫 목표를 막 만든 상태: 원룸과 터 하나
+      const goal = goals(today)[0];
+      db.goals = [goal];
+      db.buildings = [{ id: "b-career", goalId: goal.id, type: "OFFICE", stage: "LOT", constructionProgress: 0, lastSeenStage: "LOT" }];
+      db.tasks = db.tasks.filter((t) => t.goalId === goal.id);
+      db.furniture = [];
+      db.placements = [];
+      break;
+    }
+    case "village-stage-up":
+      // 학교가 골조가 된 뒤 아직 마을에서 보지 않은 상태
+      db.buildings = db.buildings.map((b) =>
+        b.id === "b-study" ? { ...b, stage: "FRAME", constructionProgress: 5, lastSeenStage: "LOT" } : b,
+      );
+      break;
+    case "village-full": {
+      // 터 자리 8곳이 모두 찬 상태. 아래쪽 자리(네 번째)의 목표는 긴 제목
+      const extra: [string, Goal["type"], Building["type"]][] = [
+        ["매달 30만 원씩 모아서 연말까지 여행 자금 360만 원 만들기", "FINANCE", "BANK"],
+        ["토익 850점", "STUDY", "SCHOOL"],
+        ["사이드 프로젝트 출시", "PROJECT", "WORKSHOP"],
+        ["하프 마라톤 완주", "HEALTH", "GYM"],
+        ["블로그 글 20편", "PROJECT", "WORKSHOP"],
+      ];
+      extra.forEach(([title, type, buildingType], i) => {
+        const id = `g-extra-${i}`;
+        db.goals.push({ id, title, type, status: "ACTIVE", dueDate: null, completionCriteria: null, createdAt: at(addDays(today, -10 + i), "09:00") });
+        db.buildings.push({ id: `b-extra-${i}`, goalId: id, type: buildingType, stage: i % 2 ? "FRAME" : "LOT", constructionProgress: i % 2 ? 6 : 2, lastSeenStage: i % 2 ? "FRAME" : "LOT" });
+      });
+      break;
+    }
+    case "village-archived":
+      db.goals = db.goals.map((g) => (g.id === "g-health" ? { ...g, status: "ARCHIVED" } : g));
       break;
     case "ai-limit":
       db.aiUsedToday = AI_DAILY_LIMIT;

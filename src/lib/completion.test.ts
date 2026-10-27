@@ -13,7 +13,7 @@ const goal: Goal = {
   createdAt: "2026-10-01T00:00:00",
 };
 
-const lot: Building = { id: "b1", goalId: "g1", type: "OFFICE", stage: "LOT", constructionProgress: 1 };
+const lot: Building = { id: "b1", goalId: "g1", type: "OFFICE", stage: "LOT", constructionProgress: 1, lastSeenStage: "LOT" };
 
 function task(overrides: Partial<Task> = {}): Task {
   return {
