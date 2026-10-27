@@ -25,6 +25,7 @@ function task(overrides: Partial<Task> = {}): Task {
     isCore: false,
     source: "MANUAL",
     recurrence: null,
+    memo: null,
     completedAt: null,
     createdAt: "2026-10-27T08:00:00",
     ...overrides,

@@ -3,12 +3,16 @@
 export {
   completeTask,
   createTask,
+  deleteTask,
   fetchOverdueTasks,
+  fetchTaskDetail,
   fetchTodayPlan,
   rescheduleTask,
   replaceCoreTask,
   setTaskCore,
+  splitTask,
   uncompleteTask,
   unscheduleTask,
+  updateTask,
   type TaskListResult,
 } from "@/mocks/server";

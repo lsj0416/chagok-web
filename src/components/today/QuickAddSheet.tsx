@@ -1,16 +1,18 @@
 "use client";
 
-import { ChevronRight, Pencil } from "lucide-react";
+import { Pencil } from "lucide-react";
 import { useId, useState } from "react";
 import { PrimaryButton } from "@/components/BottomActions";
 import { BottomSheet } from "@/components/BottomSheet";
 import { ChoiceChip } from "@/components/ChoiceChip";
+import { PickerRow } from "@/components/PickerRow";
 import { Spinner } from "@/components/Spinner";
 import { Switch } from "@/components/Switch";
 import { GoalPickerSheet } from "@/components/today/GoalPickerSheet";
 import { TASK_UNIT_LABEL } from "@/config/game";
 import { defaultAmountFor, defaultGoalFor, templateTitle } from "@/lib/quickAdd";
 import type { CreateTaskRequest, DateKey, Goal, QuickTaskTemplate, TaskUnit } from "@/types";
+import { TASK_TITLE_MAX_LENGTH } from "@/config/app";
 
 interface QuickAddSheetProps {
   /** 누른 칩의 템플릿. null이면 닫힘 */
@@ -125,7 +127,7 @@ export function QuickAddSheet({ template, today, goals, onClose, onSubmit }: Qui
                 type="text"
                 autoFocus
                 enterKeyHint="done"
-                maxLength={100}
+                maxLength={TASK_TITLE_MAX_LENGTH}
                 value={customTitle ?? generated}
                 onChange={(e) => setCustomTitle(e.target.value)}
                 onBlur={() => setEditing(false)}
@@ -149,18 +151,9 @@ export function QuickAddSheet({ template, today, goals, onClose, onSubmit }: Qui
           </div>
 
           {template.goalType && (
-            <button
-              type="button"
-              aria-haspopup="dialog"
-              onClick={() => setPickingGoal(true)}
-              className="flex min-h-12 items-center gap-2 border-y border-line py-2 text-left"
-            >
-              <span className="text-[14px] font-semibold text-ink-2">연결 목표</span>
-              <span className={`min-w-0 flex-1 truncate text-right text-[15px] ${goal ? "text-ink" : "text-ink-3"}`}>
-                {goal?.title ?? "목표 없음"}
-              </span>
-              <ChevronRight aria-hidden size={18} className="shrink-0 text-ink-3" />
-            </button>
+            <div className="border-y border-line">
+              <PickerRow label="연결 목표" value={goal?.title ?? "목표 없음"} empty={!goal} onClick={() => setPickingGoal(true)} />
+            </div>
           )}
 
           <Switch label="매일 반복" checked={daily} onChange={setDaily} />

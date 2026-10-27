@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useMockScenario } from "@/components/dev/useMockScenario";
 import { OfflineBanner, useOnline } from "@/components/OfflineBanner";
+import { takePendingToast } from "@/components/pendingToast";
 import { TabBar } from "@/components/TabBar";
 import { Toast, type ToastState } from "@/components/Toast";
 import { TopBar } from "@/components/TopBar";
@@ -31,7 +32,7 @@ import { TOAST_DURATION_MS } from "@/config/app";
 import * as api from "@/lib/api/tasks";
 import { canUncomplete } from "@/lib/completion";
 import { formatDayTitle, formatShortDate, toDateKey } from "@/lib/date";
-import { buildTodayView, isCoreFull } from "@/lib/today";
+import { buildTodayView, coreDemotedMessage, isCoreFull } from "@/lib/today";
 import type { CreateTaskRequest, DateKey, QuickTaskTemplate, Task, TodayPlan } from "@/types";
 
 type Sheet =
@@ -88,6 +89,12 @@ export function TodayScreen() {
   useEffect(() => () => {
     if (toastTimer.current) clearTimeout(toastTimer.current);
   }, []);
+
+  // 다른 화면에서 떠나면서 남긴 알림 (할 일 상세의 나누기, 삭제)
+  useEffect(() => {
+    const message = takePendingToast();
+    if (message) showToast(message);
+  }, [showToast]);
 
   const refresh = () => {
     void queryClient.invalidateQueries({ queryKey: todayKey });
@@ -149,10 +156,12 @@ export function TodayScreen() {
 
   /** 핵심 지정, 날짜 바꾸기처럼 알림 없이 저장하는 변경 */
   const save = useMutation({
-    mutationFn: ({ run }: { run: () => Promise<unknown>; done?: string; taskId: string }) => run(),
+    mutationFn: ({ run }: { run: () => Promise<unknown>; done?: string | ((result: unknown) => string | undefined); taskId: string }) =>
+      run(),
     onMutate: ({ taskId }) => setPendingId(taskId),
-    onSuccess: (_result, { done }) => {
-      if (done) showToast(done);
+    onSuccess: (result, { done }) => {
+      const message = typeof done === "function" ? done(result) : done;
+      if (message) showToast(message);
     },
     // 열린 시트(지난 할 일 등)는 알림을 가린다. 닫고 나서 재시도를 보여준다
     onError: (_error, variables) => {
@@ -200,7 +209,13 @@ export function TodayScreen() {
     save.mutate({
       taskId: task.id,
       run: () => api.rescheduleTask(task.id, date),
-      done: date === today ? undefined : `${formatShortDate(date)}로 옮겼어요`,
+      // 옮긴 날의 핵심 할 일이 가득 차서 일반 할 일이 됐으면 그 사실을 알린다
+      done: (result) =>
+        (result as { demotedFromCore: boolean }).demotedFromCore
+          ? coreDemotedMessage(date)
+          : date === today
+            ? undefined
+            : `${formatShortDate(date)}로 옮겼어요`,
     });
 
   const unschedule = (task: Task) =>

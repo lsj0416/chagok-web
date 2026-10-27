@@ -15,6 +15,7 @@ import { AI_TIMEOUT_MS } from "@/config/app";
 import * as api from "@/lib/api/goals";
 import { applyToggleAll, toggleAllAction, toggleOne } from "@/lib/drafts";
 import type { TaskDraft } from "@/types";
+import { TASK_TITLE_MAX_LENGTH } from "@/config/app";
 
 /** S10 할 일 초안 선택 (AI 분해 2) */
 export function DraftSelectScreen() {
@@ -219,7 +220,7 @@ function DraftRow({
           type="text"
           aria-label="할 일 제목 고치기"
           enterKeyHint="done"
-          maxLength={100}
+          maxLength={TASK_TITLE_MAX_LENGTH}
           value={value}
           onChange={(e) => setValue(e.target.value)}
           onBlur={commit}

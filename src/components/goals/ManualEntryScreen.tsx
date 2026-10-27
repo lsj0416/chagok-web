@@ -11,6 +11,7 @@ import { Field, inputClass } from "@/components/goals/GoalInputScreen";
 import { Spinner } from "@/components/Spinner";
 import { TopBar } from "@/components/TopBar";
 import * as api from "@/lib/api/goals";
+import { TASK_TITLE_MAX_LENGTH } from "@/config/app";
 
 /** S11 직접 입력: AI 없이 목표와 할 일을 만든다 */
 export function ManualEntryScreen() {
@@ -117,7 +118,7 @@ export function ManualEntryScreen() {
               id={ids.task}
               type="text"
               enterKeyHint="enter"
-              maxLength={100}
+              maxLength={TASK_TITLE_MAX_LENGTH}
               value={line}
               onChange={(e) => setLine(e.target.value)}
               onKeyDown={(e) => {

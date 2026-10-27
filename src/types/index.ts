@@ -34,6 +34,8 @@ export interface Task {
   source: TaskSource;
   /** 반복. 매일 반복이면 DAILY */
   recurrence: TaskRecurrence | null;
+  /** 선택 입력. 할 일 상세(S04)에서만 쓴다 */
+  memo: string | null;
   completedAt: IsoDateTime | null;
   createdAt: IsoDateTime;
 }
@@ -159,6 +161,15 @@ export interface HouseDetail {
 }
 
 // 조회 결과
+
+/** 할 일 상세 화면(S04)에 필요한 조회 결과. 별도 저장 데이터가 아니다 */
+export interface TaskDetail {
+  task: Task;
+  /** 연결할 수 있는 진행 중 목표. 지금 연결된 목표가 보관·완료 상태여도 함께 준다 */
+  goals: Goal[];
+  /** 같은 날짜의 다른 핵심 할 일 (핵심 교체 시트에 쓴다). 날짜 없는 할 일이면 빈 배열 */
+  dayCoreTasks: Task[];
+}
 
 /** 오늘 화면(S02)에 필요한 조회 결과. 별도 저장 데이터가 아니다 */
 export interface TodayPlan {

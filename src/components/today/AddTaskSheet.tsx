@@ -1,10 +1,10 @@
 "use client";
 
-import { ChevronRight } from "lucide-react";
 import { useId, useRef, useState } from "react";
 import { PrimaryButton } from "@/components/BottomActions";
 import { BottomSheet } from "@/components/BottomSheet";
 import { ChoiceChip } from "@/components/ChoiceChip";
+import { PickerRow } from "@/components/PickerRow";
 import { Spinner } from "@/components/Spinner";
 import { Switch } from "@/components/Switch";
 import { GoalPickerSheet } from "@/components/today/GoalPickerSheet";
@@ -12,6 +12,7 @@ import { MAX_CORE_TASKS_PER_DAY } from "@/config/game";
 import { addDays, formatShortDate } from "@/lib/date";
 import { canMarkCore } from "@/lib/quickAdd";
 import type { CreateTaskRequest, DateKey, Goal, Task } from "@/types";
+import { TASK_TITLE_MAX_LENGTH } from "@/config/app";
 
 type DateMode = "TODAY" | "TOMORROW" | "CUSTOM" | "NONE";
 
@@ -129,7 +130,7 @@ export function AddTaskSheet({
             type="text"
             autoFocus
             enterKeyHint="done"
-            maxLength={100}
+            maxLength={TASK_TITLE_MAX_LENGTH}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             onCompositionStart={() => {
@@ -175,18 +176,9 @@ export function AddTaskSheet({
             )}
           </div>
 
-          <button
-            type="button"
-            aria-haspopup="dialog"
-            onClick={() => setPickingGoal(true)}
-            className="flex min-h-12 items-center gap-2 border-y border-line py-2 text-left"
-          >
-            <span className="text-[14px] font-semibold text-ink-2">연결 목표</span>
-            <span className={`min-w-0 flex-1 truncate text-right text-[15px] ${goal ? "text-ink" : "text-ink-3"}`}>
-              {goal?.title ?? "목표 없음"}
-            </span>
-            <ChevronRight aria-hidden size={18} className="shrink-0 text-ink-3" />
-          </button>
+          <div className="border-y border-line">
+            <PickerRow label="연결 목표" value={goal?.title ?? "목표 없음"} empty={!goal} onClick={() => setPickingGoal(true)} />
+          </div>
 
           <Switch
             label="핵심 할 일"

@@ -1,5 +1,10 @@
-import { StubScreen } from "@/components/StubScreen";
+import { Suspense } from "react";
+import { TaskDetailScreen } from "@/components/tasks/TaskDetailScreen";
 
-export default function Page() {
-  return <StubScreen title="할 일 상세" screenId="S04" />;
+export default function TaskDetailPage() {
+  return (
+    <Suspense>
+      <TaskDetailScreen />
+    </Suspense>
+  );
 }

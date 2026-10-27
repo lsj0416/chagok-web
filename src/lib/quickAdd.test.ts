@@ -62,6 +62,7 @@ describe("canMarkCore", () => {
     isCore: true,
     source: "MANUAL",
     recurrence: null,
+    memo: null,
     completedAt: null,
     createdAt: "2026-10-28T08:00:00",
   });

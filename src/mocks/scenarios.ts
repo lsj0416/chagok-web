@@ -116,6 +116,7 @@ function makeTask(today: DateKey, title: string, overrides: Partial<Task> = {}):
     isCore: false,
     source: "MANUAL",
     recurrence: null,
+    memo: null,
     completedAt: null,
     createdAt: at(addDays(today, -1), `2${seq % 10}:00`),
     ...overrides,
@@ -127,7 +128,7 @@ const done = (today: DateKey, time = "08:30"): Partial<Task> => ({ status: "DONE
 function todayTasks(today: DateKey): Task[] {
   return [
     makeTask(today, "관심 공고 3개에서 주요 업무 정리하기", { isCore: true, goalId: "g-career", source: "AI", ...done(today) }),
-    makeTask(today, "지원동기 첫 문단 쓰기", { isCore: true, goalId: "g-career", source: "AI" }),
+    makeTask(today, "지원동기 첫 문단 쓰기", { isCore: true, goalId: "g-career", source: "AI", memo: "회사 인재상에서 키워드 두 개를 골라 경험과 잇기" }),
     makeTask(today, "기출 1회분 풀기", { isCore: true, goalId: "g-study" }),
     makeTask(today, "Spring Security 강의 1개 듣기", { goalId: "g-career", source: "AI" }),
     makeTask(today, "독서 20분", { source: "TEMPLATE", ...done(today, "07:40") }),
@@ -135,6 +136,12 @@ function todayTasks(today: DateKey): Task[] {
     makeTask(today, "세탁기 돌리기"),
     makeTask(today, "영어 단어 30개", { source: "TEMPLATE" }),
   ];
+}
+
+/** 어제 완료한 할 일. 오늘 화면에는 나오지 않고 할 일 상세(S04)의 '지난날 완료' 상태를 확인할 때 쓴다 */
+function pastDoneTasks(today: DateKey): Task[] {
+  const yesterday = addDays(today, -1);
+  return [makeTask(today, "운영체제 정리 노트 읽기", { id: "t-done-past", scheduledDate: yesterday, goalId: "g-study", ...done(yesterday, "21:10") })];
 }
 
 function undatedTasks(today: DateKey): Task[] {
@@ -168,7 +175,7 @@ function baseDb(today: DateKey): MockDb {
   return {
     goals: goals(today),
     buildings: buildings.map((b) => ({ ...b })),
-    tasks: [...todayTasks(today), ...undatedTasks(today)],
+    tasks: [...todayTasks(today), ...undatedTasks(today), ...pastDoneTasks(today)],
     ledger: seedCredit(210),
     house: { level: "STUDIO" },
     ...furnishedSlots("STUDIO", 2),

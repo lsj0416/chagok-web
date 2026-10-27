@@ -76,7 +76,7 @@ export function TaskRow({ task, goalTitle, canToggleOff = true, pending = false,
       </button>
 
       <Link
-        href={`/tasks/detail?id=${encodeURIComponent(task.id)}`}
+        href={`/tasks/detail?id=${encodeURIComponent(task.id)}&from=today`}
         className="min-w-0 flex-1 py-2.5 [-webkit-touch-callout:none]"
         draggable={false}
       >

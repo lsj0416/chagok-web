@@ -9,7 +9,7 @@ import { slotsFor } from "@/mocks/house";
 import { isCoreFull } from "@/lib/today";
 import { mockBreakdown } from "@/mocks/aiDrafts";
 import { createMockDb, type MockDb, type MockScenario } from "@/mocks/scenarios";
-import { GOAL_BUILDING, HOUSE_UPGRADE_RULES } from "@/config/game";
+import { GOAL_BUILDING, HOUSE_UPGRADE_RULES, SPLIT_MIN_TASKS } from "@/config/game";
 import type {
   AiUsage,
   CreateGoalRequest,
@@ -20,6 +20,7 @@ import type {
   GoalBreakdownRequest,
   HouseDetail,
   Task,
+  TaskDetail,
   VillageDetail,
   TodayPlan,
 } from "@/types";
@@ -193,12 +194,11 @@ export function replaceCoreTask(removeId: string, addId: string) {
 export function rescheduleTask(id: string, date: DateKey) {
   return mutate(() => {
     const task = findTask(id);
-    // 옮긴 날짜의 핵심 할 일이 이미 가득 차 있으면 일반 할 일로 옮긴다
-    if (task.isCore && isCoreFull(db.tasks.filter((t) => t.id !== id && t.scheduledDate === date))) {
-      task.isCore = false;
-    }
+    // 옮긴 날짜의 핵심 할 일이 이미 가득 차 있으면 일반 할 일로 옮긴다. 화면이 알릴 수 있게 결과에 남긴다
+    const demotedFromCore = task.isCore && isCoreFull(db.tasks.filter((t) => t.id !== id && t.scheduledDate === date));
+    if (demotedFromCore) task.isCore = false;
     task.scheduledDate = date;
-    return { ok: true };
+    return { demotedFromCore };
   });
 }
 
@@ -207,6 +207,75 @@ export function unscheduleTask(id: string) {
     const task = findTask(id);
     task.scheduledDate = null;
     task.isCore = false;
+    return { ok: true };
+  });
+}
+
+// 할 일 상세 (S04)
+
+/** 없는 할 일(지웠거나 나눠진 할 일 포함)이면 null */
+export function fetchTaskDetail(id: string): Promise<TaskDetail | null> {
+  return respond(() => {
+    const task = db.tasks.find((t) => t.id === id && t.status !== "SPLIT");
+    if (!task) return null;
+    return {
+      task,
+      goals: db.goals.filter((g) => g.status === "ACTIVE" || g.id === task.goalId),
+      dayCoreTasks: task.scheduledDate
+        ? db.tasks.filter((t) => t.id !== id && t.isCore && t.status !== "SPLIT" && t.scheduledDate === task.scheduledDate)
+        : [],
+    };
+  });
+}
+
+export function updateTask(id: string, patch: Partial<Pick<Task, "title" | "memo" | "goalId" | "recurrence">>) {
+  return mutate(() => {
+    const task = findTask(id);
+    // 완료한 할 일은 공사 진행이 이미 반영됐으므로 목표를 바꾸지 않는다
+    if (task.status === "DONE" && patch.goalId !== undefined && patch.goalId !== task.goalId) {
+      throw new MockApiError("done task goal locked");
+    }
+    Object.assign(task, patch);
+    return { ok: true };
+  });
+}
+
+/**
+ * 나누기. 원래 할 일은 SPLIT으로 남고(목록, 집계, 크레딧에서 빠진다) 새 할 일은 원래 날짜와 목표를 이어받는다.
+ * 새 할 일은 일반 할 일로 만들고 반복과 메모는 물려주지 않는다 (docs/screens.md 확인 필요)
+ */
+export function splitTask(id: string, titles: string[]) {
+  return mutate(() => {
+    const task = findTask(id);
+    if (task.status !== "PLANNED") throw new MockApiError("only planned tasks split");
+    if (titles.length < SPLIT_MIN_TASKS) throw new MockApiError("too few titles");
+    task.status = "SPLIT";
+    task.isCore = false;
+    const now = new Date().toISOString();
+    titles.forEach((title, i) => {
+      db.tasks.push({
+        id: `t-${Date.now()}-${i}`,
+        title,
+        goalId: task.goalId,
+        status: "PLANNED",
+        scheduledDate: task.scheduledDate,
+        isCore: false,
+        source: "MANUAL",
+        recurrence: null,
+        memo: null,
+        completedAt: null,
+        createdAt: now,
+      });
+    });
+    return { count: titles.length };
+  });
+}
+
+/** 삭제. 완료한 할 일이어도 받은 크레딧과 공사 진행은 그대로 둔다 (docs/screens.md 확인 필요) */
+export function deleteTask(id: string) {
+  return mutate(() => {
+    findTask(id);
+    db.tasks = db.tasks.filter((t) => t.id !== id);
     return { ok: true };
   });
 }
@@ -284,6 +353,7 @@ export function createGoal(req: CreateGoalRequest) {
         isCore: false,
         source: req.source,
         recurrence: null,
+        memo: null,
         completedAt: null,
         createdAt: now,
       });
@@ -394,6 +464,7 @@ export function createTask(req: CreateTaskRequest) {
       isCore: req.isCore && req.scheduledDate !== null && !isCoreFull(sameDay),
       source: req.source,
       recurrence: req.recurrence,
+      memo: null,
       completedAt: null,
       createdAt: new Date().toISOString(),
     };

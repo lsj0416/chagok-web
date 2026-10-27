@@ -14,6 +14,9 @@ export const QUICK_TEMPLATE_DISPLAY_LIMIT = 8;
 /** 빈 화면 카드의 '목표에서 가져오기'에 보여줄 날짜 없는 할 일 수 (docs/screens.md S02 빈 화면 카드) */
 export const UNDATED_TASK_DISPLAY_LIMIT = 3;
 
+/** 나누기로 만들 새 할 일의 최소 개수 (docs/screens.md S04) */
+export const SPLIT_MIN_TASKS = 2;
+
 // 집 단계별 조건 (docs/glossary.md 8장)
 export interface HouseUpgradeRule {
   next: HouseLevel | null;

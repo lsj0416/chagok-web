@@ -11,5 +11,10 @@ export const LONG_PRESS_MS = 500;
 export const MOCK_LATENCY_MS = 350;
 /** AI 분해 응답을 기다리는 최대 시간 (docs/screens.md 확인 필요) */
 export const AI_TIMEOUT_MS = 20000;
+/** 할 일 제목과 메모의 최대 글자 수 */
+export const TASK_TITLE_MAX_LENGTH = 100;
+export const TASK_MEMO_MAX_LENGTH = 500;
+/** 화면을 떠나며 남긴 알림을 다음 화면이 보여줄 수 있는 시간. 이보다 늦게 열린 화면에는 보여주지 않는다 */
+export const PENDING_TOAST_TTL_MS = 3000;
 /** 가짜 AI 응답 지연 */
 export const MOCK_AI_LATENCY_MS = 1500;

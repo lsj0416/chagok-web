@@ -1,5 +1,6 @@
 import { DAILY_BONUS_THRESHOLD, MAX_CORE_TASKS_PER_DAY } from "@/config/game";
-import type { Task, TodayPlan } from "@/types";
+import { formatShortDate } from "@/lib/date";
+import type { DateKey, Task, TodayPlan } from "@/types";
 
 export type TodayNotice = "OVERDUE" | "HOUSE_UPGRADE" | null;
 
@@ -62,4 +63,9 @@ export function isCoreFull(tasks: Task[]): boolean {
 
 export function bonusProgress(view: Pick<TodayView, "normalDoneCount">): number {
   return Math.min(view.normalDoneCount, DAILY_BONUS_THRESHOLD);
+}
+
+/** 다른 날로 옮긴 핵심 할 일이 그날 핵심이 가득 차서 일반 할 일이 됐을 때의 알림 (S02, S04) */
+export function coreDemotedMessage(date: DateKey): string {
+  return `${formatShortDate(date)}은 핵심 할 일이 ${MAX_CORE_TASKS_PER_DAY}개라 일반 할 일로 옮겼어요`;
 }

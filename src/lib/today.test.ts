@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { MAX_CORE_TASKS_PER_DAY } from "@/config/game";
-import { buildTodayView, isCoreFull, pickNotice } from "@/lib/today";
+import { buildTodayView, coreDemotedMessage, isCoreFull, pickNotice } from "@/lib/today";
 import type { Task, TodayPlan } from "@/types";
 
 let seq = 0;
@@ -15,6 +15,7 @@ function task(overrides: Partial<Task> = {}): Task {
     isCore: false,
     source: "MANUAL",
     recurrence: null,
+    memo: null,
     completedAt: null,
     createdAt: `2026-10-27T08:${String(seq).padStart(2, "0")}:00`,
     ...overrides,
@@ -89,5 +90,11 @@ describe("isCoreFull", () => {
     const cores = Array.from({ length: MAX_CORE_TASKS_PER_DAY }, () => task({ isCore: true }));
     expect(isCoreFull(cores)).toBe(true);
     expect(isCoreFull(cores.slice(1))).toBe(false);
+  });
+});
+
+describe("coreDemotedMessage", () => {
+  it("옮긴 날짜와 핵심 할 일 최대 개수를 알린다", () => {
+    expect(coreDemotedMessage("2026-10-29")).toBe(`10월 29일은 핵심 할 일이 ${MAX_CORE_TASKS_PER_DAY}개라 일반 할 일로 옮겼어요`);
   });
 });
