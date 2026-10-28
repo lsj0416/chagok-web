@@ -12,13 +12,15 @@
 | `docs/planning.md` | 차곡 기획초안 v0.8 전체. 게임 규칙과 수치의 원본 |
 | `docs/glossary.md` | 용어, 코드 이름, 화면 문구, 게임 상수 |
 | `docs/screens.md` | 화면별 구성, 표시 데이터, 사용자 행동, 상태 |
+| `docs/openapi.yaml` | 백엔드 API 명세 (기준). 가짜 서버 응답과 맞는지 `src/mocks/openapi.test.ts`가 검사한다 |
+| `docs/api.md` | API 규칙과 흐름 설명: 인증, 멱등성, 오류 코드, 화면 함수와 엔드포인트 대응 |
 
 작업 전에 읽을 문서
 
 | 작업 | 읽을 문서 |
 | --- | --- |
 | 화면 하나 만들기, 수정하기 | `docs/screens.md`의 해당 화면 + `docs/glossary.md` |
-| 타입, 가짜 데이터 만들기 | `docs/glossary.md` |
+| 타입, 가짜 데이터 만들기 | `docs/glossary.md` + `docs/openapi.yaml`의 해당 스키마 (타입을 바꾸면 명세도 함께 고친다) |
 | 크레딧, 보너스, 집 업그레이드 계산 | `docs/glossary.md` 8장 + `docs/planning.md` 4장 |
 | 문구 쓰기 | `PRODUCT.md`의 Brand Personality + `docs/glossary.md` 9장 |
 
@@ -33,7 +35,7 @@ Next.js 코드를 쓰기 전에 아래 안내를 따른다. (Next.js가 만든 �
 - Next.js + TypeScript, 정적 빌드(`output: 'export'`). 서버 기능(Server Actions, API Routes, 서버 컴포넌트의 데이터 요청)은 쓰지 않는다
 - Tailwind CSS
 - TanStack Query (서버 데이터)
-- PWA: 매니페스트 + 서비스 워커
+- PWA: 매니페스트(`src/app/manifest.ts`) + 서비스 워커(`public/sw.js`, 웹 푸시만, 오프라인 캐시 없음). 푸시 구독은 `src/lib/push.ts`
 - 상세 화면은 동적 경로 대신 쿼리 파라미터를 쓴다 (`/goals/detail?id=`)
 
 ## 폴더 구조
@@ -77,7 +79,7 @@ Impeccable이 설치되어 있지 않으면 Impeccable 명령을 흉내 내지 �
 
 ### 진행
 
-- 색과 폰트는 아직 정하지 않았다. 회색 톤과 기본 폰트로 구조와 흐름만 만든다.
+- 색과 폰트는 비주얼 단계(2026-10-28)에서 정했다(방향: 공사 안내판). 값은 `DESIGN.md`와 `src/app/globals.css`의 토큰을 따른다. 그림 자리 표시자는 계속 회색이다.
 - Impeccable 순서: `/impeccable shape` → `/impeccable craft` → `/impeccable onboard`, `/impeccable harden`
 - 화면 순서: S02 오늘 → S09·S10 AI 분해 → S06 집 내부 → 나머지
 - 폭 375px에서 먼저 확인하고, 360px과 430px에서 깨지지 않는지 본다.

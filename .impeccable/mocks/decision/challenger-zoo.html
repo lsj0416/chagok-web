@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=390">
+<link href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:390px;height:844px;overflow:hidden;background:#F5F1E4;font-family:"Gothic A1",sans-serif;font-weight:700;color:#2C2E2A;word-break:keep-all;position:relative}
+.land{position:absolute;left:-40px;right:-30px;top:-60px;height:390px;background:#8ED462;border-radius:0 0 46% 54% / 0 0 30% 22%}
+.pond{position:absolute;right:-30px;top:120px;width:90px;height:120px;background:#2BA0FF;border-radius:60% 40% 50% 50%}
+.top{position:relative;height:72px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 20px}
+.date{font-size:30px;font-weight:800;letter-spacing:-.04em;line-height:.95}
+.gear{width:44px;height:44px;border-radius:50%;background:#FFD23F;display:grid;place-items:center}
+.gear i{width:18px;height:18px;border:2.5px solid #2C2E2A;border-radius:50%}
+.bld{position:relative;display:flex;gap:12px;padding:22px 20px 0}
+.b{flex:1}
+.ph{aspect-ratio:1;background:#D6D6D6;border-radius:14px;display:grid;place-items:center;font-size:12px;color:#4B4B4B}
+.cap{display:inline-flex;margin-top:8px;height:26px;padding:0 10px;border-radius:13px;background:#F5F1E4;font-size:12px;align-items:center;gap:5px}
+.cap i{width:8px;height:8px;border-radius:50%;background:#FF705D}
+.sum{position:relative;margin:20px 20px 0;font-size:16px}
+.list{position:absolute;left:0;right:0;top:372px}
+h2{margin:0 20px 6px;font-size:14px;color:#2C2E2A;display:flex;gap:8px;align-items:center}
+h2 span{height:24px;padding:0 10px;border-radius:12px;background:#FF705D;color:#fff;display:inline-flex;align-items:center;font-size:12px}
+.row{display:flex;align-items:flex-start;padding:2px 8px}
+.ck{width:44px;height:44px;display:grid;place-items:center;flex:none}
+.ck i{width:24px;height:24px;border:2.5px solid #2C2E2A;border-radius:50%}
+.done .ck i{background:#8ED462;border-color:#8ED462}
+.t{flex:1;padding-top:11px}
+.tt{font-size:16px;line-height:1.35}
+.done .tt{color:#8C8E86;text-decoration:line-through}
+.g{font-size:12px;color:#6A6C64;margin-top:2px}
+.more{width:44px;height:44px;flex:none;display:grid;place-items:center;color:#8C8E86}
+.add{position:absolute;left:16px;right:16px;bottom:80px;height:54px;border-radius:27px;background:#FFD23F;font-size:17px;font-weight:800;display:flex;align-items:center;justify-content:space-between;padding:0 8px 0 24px}
+.add b{width:40px;height:40px;border-radius:50%;background:#2C2E2A;color:#FFD23F;display:grid;place-items:center;font-size:22px}
+.tabs{position:absolute;left:12px;right:12px;bottom:12px;height:58px;border:2px solid #2C2E2A;border-radius:29px;background:#F5F1E4;display:flex;align-items:center;padding:0 6px}
+.tab{flex:1;height:44px;display:flex;align-items:center;justify-content:center;font-size:12px;color:#6A6C64;gap:6px}
+.tab.on{background:#8ED462;border-radius:22px;color:#2C2E2A;font-weight:800}
+</style></head><body>
+<div class="land"></div><div class="pond"></div>
+<div class="top"><p class="date">10월 28일<br>수요일</p><div class="gear"><i></i></div></div>
+<div class="bld">
+ <div class="b"><div class="ph">오피스</div><span class="cap"><i></i>골조</span></div>
+ <div class="b"><div class="ph">학교</div><span class="cap"><i style="background:#2BA0FF"></i>터</span></div>
+ <div class="b"><div class="ph">체육관</div><span class="cap"><i style="background:#FFD23F"></i>터</span></div>
+</div>
+<p class="sum">핵심 할 일 1/3 · 오늘 2개 완료했어요</p>
+<div class="list">
+<h2><span>핵심</span>핵심 할 일</h2>
+<div class="row done"><div class="ck"><i></i></div><div class="t"><p class="tt">관심 공고 3개에서 주요 업무 정리하기</p><p class="g">백엔드 개발자로 취업하기</p></div><div class="more"></div></div>
+<div class="row"><div class="ck"><i></i></div><div class="t"><p class="tt">지원동기 첫 문단 쓰기</p><p class="g">백엔드 개발자로 취업하기</p></div><div class="more">···</div></div>
+<div class="row"><div class="ck"><i></i></div><div class="t"><p class="tt">기출 1회분 풀기</p><p class="g">정보처리기사 필기 합격</p></div><div class="more">···</div></div>
+<h2 style="margin-top:14px">할 일</h2>
+<div class="row"><div class="ck"><i></i></div><div class="t"><p class="tt">Spring Security 강의 1개 듣기</p><p class="g">백엔드 개발자로 취업하기</p></div><div class="more">···</div></div>
+</div>
+<div class="add">할 일 추가<b>＋</b></div>
+<nav class="tabs"><div class="tab on">오늘</div><div class="tab">마을</div><div class="tab">목표</div><div class="tab">기록</div></nav>
+</body></html>

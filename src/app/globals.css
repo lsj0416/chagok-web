@@ -1,3 +1,186 @@
 @import "tailwindcss";
 
-/* 와이어프레임 단계: 색과 폰트는 아직 정하지 않았다. 회색 톤과 기본 폰트만 쓴다 */
+/* 비주얼 단계 (2026-10-28, 방향: 공사 안내판). 화면 코드는 토큰 이름만 쓴다.
+   먹색과 회색은 콘크리트 쪽으로 살짝 데운 중성색, 파랑은 공사 안내판, 노랑은 공정 진행에만 */
+@theme {
+  --color-ink: #18202b;
+  --color-ink-2: #434a56;
+  --color-ink-3: #5b6270; /* 흰 바탕 대비 6.1:1, surface-2 위 5.5:1 */
+  --color-line: #e6e3dc;
+  --color-line-strong: #878c95; /* 비어 있는 체크 원과 입력 칸 테두리. 흰 바탕 대비 3.4:1 */
+  --color-surface: #ffffff;
+  --color-surface-2: #f4f3ef;
+  --color-surface-3: #e8e6e0;
+  --color-placeholder: #d6d6d6; /* 그림 자리는 회색 그대로 (CLAUDE.md 규칙 7) */
+  --color-backdrop: rgb(24 32 43 / 0.45);
+
+  /* 공사 안내판: 화면 머리 띠, 완료 체크, 선택, 활성 탭, 포커스 */
+  --color-sign: #1f4fa3; /* 흰 글자 대비 7.8:1 */
+  --color-sign-ink: #ffffff;
+  --color-sign-2: #d5e1f6; /* 파랑 위 보조 글자, 5.9:1 */
+  /* 안전 노랑: 공정 진행 막대와 안내판·대표 버튼 아래 줄. 글자색으로 쓰지 않는다 */
+  --color-caution: #f2c230;
+  /* 마이너스 잔액(완료 취소로 회수): 진한 주황 글자. 빨강은 처벌처럼 보여 쓰지 않는다. 흰 바탕 6.0:1, surface-2 위 5.4:1 */
+  --color-debt: #a14a00;
+
+  --font-sans: var(--font-gothic), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-dohyeon), var(--font-gothic), ui-sans-serif, sans-serif;
+
+  /* 안내판과 가림막은 각진 판이다. 둥글기를 줄인다 (원과 스위치는 rounded-full 그대로) */
+  --radius-sm: 2px;
+  --radius-md: 3px;
+  --radius-lg: 4px;
+  --radius-xl: 4px;
+  --radius-2xl: 6px;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root {
+  color-scheme: light;
+  --app-max-width: 430px;
+  --tab-bar-height: 56px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+html {
+  -webkit-tap-highlight-color: transparent;
+  text-size-adjust: 100%;
+}
+
+body {
+  background: var(--color-surface-2);
+  color: var(--color-ink);
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+::selection {
+  background: var(--color-sign-2);
+  color: var(--color-ink);
+}
+
+/* 제목은 안내판 글자(Do Hyeon, 굵기 하나). 굵게 합성하지 않는다 */
+@layer base {
+  h1,
+  h2 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-synthesis: none;
+    letter-spacing: 0;
+  }
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-sign);
+  outline-offset: 2px;
+}
+
+/* 시트를 열 때 초점을 받는 제목(tabindex=-1)은 누르는 대상이 아니라 링을 그리지 않는다 */
+[tabindex="-1"]:focus-visible {
+  outline: none;
+}
+
+input {
+  caret-color: var(--color-sign);
+}
+
+/* 바텀시트: 네이티브 dialog를 화면 아래에 붙인다 */
+dialog.sheet {
+  position: fixed;
+  /* --keyboard-inset, --viewport-height: BottomSheet가 visualViewport로 채운다 (iOS 키보드) */
+  inset: auto 0 var(--keyboard-inset, 0px) 0;
+  margin: 0 auto;
+  width: 100%;
+  max-width: var(--app-max-width);
+  max-height: calc(var(--viewport-height, 100dvh) * 0.85);
+  border: 0;
+  padding: 0;
+  border-radius: 6px 6px 0 0;
+  background: var(--color-surface);
+  color: var(--color-ink);
+  box-shadow: 0 -4px 24px rgb(24 32 43 / 0.16);
+  transform: translateY(100%);
+  transition:
+    transform 280ms var(--ease-out-expo),
+    overlay 280ms allow-discrete,
+    display 280ms allow-discrete;
+}
+
+dialog.sheet[open] {
+  transform: translateY(0);
+}
+
+@starting-style {
+  dialog.sheet[open] {
+    transform: translateY(100%);
+  }
+}
+
+dialog.sheet::backdrop {
+  background: var(--color-backdrop);
+  opacity: 0;
+  transition:
+    opacity 280ms var(--ease-out-expo),
+    overlay 280ms allow-discrete,
+    display 280ms allow-discrete;
+}
+
+dialog.sheet[open]::backdrop {
+  opacity: 1;
+}
+
+@starting-style {
+  dialog.sheet[open]::backdrop {
+    opacity: 0;
+  }
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+/* 마을: 단계가 오른 건물을 처음 볼 때 한 번 (움직임 줄이기 설정에서는 아래 규칙으로 사실상 생략) */
+@keyframes stage-reveal {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.14);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after,
+  dialog.sheet,
+  dialog.sheet::backdrop {
+    transition-duration: 1ms !important;
+    animation-duration: 1ms !important;
+  }
+}
+
+/* 가림막 패널: 위쪽에 파랑·흰 띠를 두르고 패널 사이를 1px 선으로 나눈다 (건물 띠) */
+.hoarding-panel {
+  position: relative;
+  border-right: 1px solid var(--color-line);
+}
+
+.hoarding-panel:last-child {
+  border-right: 0;
+}
+
+.hoarding-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 5px;
+  background: repeating-linear-gradient(90deg, var(--color-sign) 0 14px, var(--color-surface) 14px 20px);
+}

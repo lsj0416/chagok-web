@@ -1,4 +1,5 @@
 // 게임 상수 (docs/glossary.md 8장, 러프안). 다른 곳에 숫자를 직접 쓰지 않는다
+import type { BuildingType, GoalType, HouseLevel, TaskUnit } from "@/types";
 
 export const MAX_CORE_TASKS_PER_DAY = 3;
 export const CORE_TASK_CREDIT = 20;
@@ -9,3 +10,57 @@ export const AI_DAILY_LIMIT = 10;
 export const AI_DRAFT_COUNT_MIN = 5;
 export const AI_DRAFT_COUNT_MAX = 10;
 export const QUICK_TEMPLATE_DISPLAY_LIMIT = 8;
+
+/** 빈 화면 카드의 '목표에서 가져오기'에 보여줄 날짜 없는 할 일 수 (docs/screens.md S02 빈 화면 카드) */
+export const UNDATED_TASK_DISPLAY_LIMIT = 3;
+
+/** 나누기로 만들 새 할 일의 최소 개수 (docs/screens.md S04) */
+export const SPLIT_MIN_TASKS = 2;
+
+// 집 단계별 조건 (docs/glossary.md 8장)
+export interface HouseUpgradeRule {
+  next: HouseLevel | null;
+  /** 다음 단계로 가는 데 필요한 보유 가구 수. 한 번 산 가구는 빼도 수에 남는다 */
+  requiredFurniture: number | null;
+  upgradeCost: number | null;
+  slotCount: number;
+}
+
+export const HOUSE_UPGRADE_RULES: Record<HouseLevel, HouseUpgradeRule> = {
+  STUDIO: { next: "TWO_ROOM", requiredFurniture: 3, upgradeCost: 300, slotCount: 4 },
+  TWO_ROOM: { next: "APARTMENT", requiredFurniture: 7, upgradeCost: 700, slotCount: 8 },
+  APARTMENT: { next: "DETACHED", requiredFurniture: 12, upgradeCost: 1500, slotCount: 13 },
+  DETACHED: { next: null, requiredFurniture: null, upgradeCost: null, slotCount: 18 },
+};
+
+// 목표 유형과 건물 (docs/glossary.md 4장)
+export const GOAL_BUILDING: Record<GoalType, BuildingType> = {
+  CAREER: "OFFICE",
+  STUDY: "SCHOOL",
+  FINANCE: "BANK",
+  HEALTH: "GYM",
+  PROJECT: "WORKSHOP",
+};
+
+// 단위 화면 표기 (docs/glossary.md 1장)
+export const TASK_UNIT_LABEL: Record<TaskUnit, string> = {
+  MINUTE: "분",
+  COUNT: "회",
+  PAGE: "쪽",
+  ITEM: "개",
+};
+
+export const HOUSE_LEVEL_LABEL: Record<HouseLevel, string> = {
+  STUDIO: "원룸",
+  TWO_ROOM: "투룸",
+  APARTMENT: "아파트",
+  DETACHED: "주택",
+};
+
+export const BUILDING_LABEL: Record<BuildingType, string> = {
+  OFFICE: "오피스",
+  SCHOOL: "학교",
+  BANK: "은행",
+  GYM: "체육관",
+  WORKSHOP: "작업실",
+};

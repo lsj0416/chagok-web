@@ -1,0 +1,534 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-28T00:00:00Z",
+  "title": "Design System: chagok (공사 안내판)",
+  "extensions": {
+    "stage": "visual",
+    "direction": {
+      "name": "공사 안내판",
+      "seed": "aa5e64985ad9cf17",
+      "contract": ".impeccable/surfaces/src-app-today-page-tsx.md"
+    },
+    "sourceOfTruth": "src/app/globals.css @theme, src/app/layout.tsx (next/font)",
+    "colorMeta": {
+      "sign": {
+        "role": "primary",
+        "displayName": "안내판 파랑",
+        "canonical": "#1f4fa3",
+        "tonalRamp": [
+          "#0c2041",
+          "#132f62",
+          "#193f82",
+          "#1f4fa3",
+          "#6284bf",
+          "#9ab0d6",
+          "#c7d3e8",
+          "#e9edf6"
+        ]
+      },
+      "sign-ink": {
+        "role": "primary",
+        "displayName": "안내판 글자",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "#666666",
+          "#999999",
+          "#cccccc",
+          "#ffffff",
+          "#ffffff",
+          "#ffffff",
+          "#ffffff",
+          "#ffffff"
+        ]
+      },
+      "sign-2": {
+        "role": "primary",
+        "displayName": "안내판 보조 글자",
+        "canonical": "#d5e1f6",
+        "tonalRamp": [
+          "#555a62",
+          "#808794",
+          "#aab4c5",
+          "#d5e1f6",
+          "#e2eaf9",
+          "#ecf2fb",
+          "#f4f8fd",
+          "#fbfcfe"
+        ]
+      },
+      "caution": {
+        "role": "secondary",
+        "displayName": "안전 노랑",
+        "canonical": "#f2c230",
+        "tonalRamp": [
+          "#614e13",
+          "#91741d",
+          "#c29b26",
+          "#f2c230",
+          "#f6d46e",
+          "#f9e4a2",
+          "#fcf0cb",
+          "#fef9ea"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "먹색",
+        "canonical": "#18202b",
+        "tonalRamp": [
+          "#0a0d11",
+          "#0e131a",
+          "#131a22",
+          "#18202b",
+          "#5d636b",
+          "#979ba0",
+          "#c5c7ca",
+          "#e8e9ea"
+        ]
+      },
+      "ink-2": {
+        "role": "neutral",
+        "displayName": "진회색",
+        "canonical": "#434a56",
+        "tonalRamp": [
+          "#1b1e22",
+          "#282c34",
+          "#363b45",
+          "#434a56",
+          "#7b8089",
+          "#aaaeb3",
+          "#d0d2d5",
+          "#ecedee"
+        ]
+      },
+      "ink-3": {
+        "role": "neutral",
+        "displayName": "중회색",
+        "canonical": "#5b6270",
+        "tonalRamp": [
+          "#24272d",
+          "#373b43",
+          "#494e5a",
+          "#5b6270",
+          "#8c919b",
+          "#b5b8bf",
+          "#d6d8db",
+          "#efeff1"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "선",
+        "canonical": "#e6e3dc",
+        "tonalRamp": [
+          "#5c5b58",
+          "#8a8884",
+          "#b8b6b0",
+          "#e6e3dc",
+          "#eeebe6",
+          "#f4f2ef",
+          "#f9f8f6",
+          "#fcfcfc"
+        ]
+      },
+      "line-strong": {
+        "role": "neutral",
+        "displayName": "진한 선",
+        "canonical": "#878c95",
+        "tonalRamp": [
+          "#36383c",
+          "#515459",
+          "#6c7077",
+          "#878c95",
+          "#abaeb5",
+          "#c9cbcf",
+          "#e1e2e4",
+          "#f3f4f4"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "흰 면",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "#666666",
+          "#999999",
+          "#cccccc",
+          "#ffffff",
+          "#ffffff",
+          "#ffffff",
+          "#ffffff",
+          "#ffffff"
+        ]
+      },
+      "surface-2": {
+        "role": "neutral",
+        "displayName": "콘크리트 면",
+        "canonical": "#f4f3ef",
+        "tonalRamp": [
+          "#626160",
+          "#92928f",
+          "#c3c2bf",
+          "#f4f3ef",
+          "#f7f7f4",
+          "#fafaf8",
+          "#fcfcfb",
+          "#fefefd"
+        ]
+      },
+      "surface-3": {
+        "role": "neutral",
+        "displayName": "더 짙은 콘크리트",
+        "canonical": "#e8e6e0",
+        "tonalRamp": [
+          "#5d5c5a",
+          "#8b8a86",
+          "#bab8b3",
+          "#e8e6e0",
+          "#efeee9",
+          "#f5f4f1",
+          "#f9f9f7",
+          "#fdfcfc"
+        ]
+      },
+      "placeholder": {
+        "role": "neutral",
+        "displayName": "자리 표시 회색",
+        "canonical": "#d6d6d6",
+        "tonalRamp": [
+          "#565656",
+          "#808080",
+          "#ababab",
+          "#d6d6d6",
+          "#e2e2e2",
+          "#ededed",
+          "#f5f5f5",
+          "#fbfbfb"
+        ]
+      },
+      "backdrop": {
+        "role": "neutral",
+        "displayName": "덮개",
+        "canonical": "rgb(24 32 43 / 0.45)"
+      },
+      "debt": {
+        "role": "status",
+        "displayName": "진한 주황",
+        "canonical": "#a14a00",
+        "description": "마이너스 잔액 글자색 하나에만. 흰 바탕 6.0:1. 빨강 대신. '−' 부호와 이유 문구를 함께 둔다"
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "로그인 안내판의 서비스 이름 하나."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "안내판 띠의 화면 제목과 오늘 화면의 큰 숫자."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "바텀시트 제목, 화면 안 큰 제목."
+      },
+      "button-display": {
+        "displayName": "Button display",
+        "purpose": "하단 대표 버튼 글자."
+      },
+      "section": {
+        "displayName": "Section",
+        "purpose": "목록 섹션 제목, 빈 화면 제목, 문장 요약."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "할 일 제목, 입력 칸, 줄 이름."
+      },
+      "body-sm": {
+        "displayName": "Body small",
+        "purpose": "안내 칸, 알림, 칩."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "버튼 글자, 소제목."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "목표 이름, 단계 이름, 그림 자리 이름."
+      },
+      "tab-label": {
+        "displayName": "Tab label",
+        "purpose": "하단 탭 이름. 활성은 700."
+      }
+    },
+    "shadows": [
+      {
+        "name": "sheet",
+        "value": "0 -4px 24px rgb(24 32 43 / 0.16)",
+        "purpose": "바텀시트 위쪽 가장자리."
+      },
+      {
+        "name": "toast",
+        "value": "0 4px 16px rgb(0 0 0 / 0.18)",
+        "purpose": "목록 위에 뜨는 알림."
+      },
+      {
+        "name": "switch-thumb",
+        "value": "0 1px 2px rgb(0 0 0 / 0.2)",
+        "purpose": "스위치 손잡이. 유일한 예외."
+      }
+    ],
+    "rules": [
+      {
+        "name": "sign-rule",
+        "value": "border-bottom: 3px solid var(--color-caution)",
+        "purpose": "안내판 띠 아래 노랑 줄."
+      },
+      {
+        "name": "cta-underline",
+        "value": "border-bottom: 4px solid var(--color-caution)",
+        "purpose": "하단 대표 버튼 아래 줄."
+      },
+      {
+        "name": "body-underline",
+        "value": "border-bottom: 3px solid var(--color-caution)",
+        "purpose": "본문 먹색 버튼 아래 줄."
+      },
+      {
+        "name": "tab-active-bar",
+        "value": "box-shadow: inset 0 3px 0 var(--color-sign)",
+        "purpose": "활성 탭 위쪽 막대."
+      },
+      {
+        "name": "focus-ring",
+        "value": "outline: 2px solid var(--color-sign); outline-offset: 2px",
+        "purpose": "모든 포커스. 파랑 띠 안에서는 sign-ink."
+      },
+      {
+        "name": "hoarding-stripe",
+        "value": "repeating-linear-gradient(90deg, var(--color-sign) 0 14px, var(--color-surface) 14px 20px); height: 5px",
+        "purpose": "가림막 패널 위쪽 띠."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out-expo",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "모든 움직임의 감속 곡선."
+      },
+      {
+        "name": "sheet",
+        "value": "280ms",
+        "purpose": "바텀시트 올라옴과 덮개."
+      },
+      {
+        "name": "toast-in",
+        "value": "240ms, translateY(8px) → 0",
+        "purpose": "알림 떠오름."
+      },
+      {
+        "name": "stage-reveal",
+        "value": "600ms, 300ms delay, scale 1 → 1.14 → 1",
+        "purpose": "단계가 오른 건물 첫 진입. 유일한 보상 움직임."
+      },
+      {
+        "name": "control",
+        "value": "150ms",
+        "purpose": "체크 채움, 스위치 이동."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "min",
+        "value": "360px"
+      },
+      {
+        "name": "base",
+        "value": "375px"
+      },
+      {
+        "name": "app-max",
+        "value": "430px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "안내판 띠",
+      "kind": "nav",
+      "refersTo": "sign-band",
+      "description": "모든 화면의 머리. 파랑 띠, 흰 Do Hyeon 제목, 아래 3px 노랑 줄.",
+      "html": "<header class=\"ds-sign\"><div class=\"ds-sign-row\"><h1 class=\"ds-sign-title\">10월 28일 수요일</h1></div><p class=\"ds-sign-sub\"><span class=\"ds-sign-num\">핵심 1/3</span> 오늘 2/8 완료</p></header>",
+      "css": ".ds-sign{background:var(--color-sign,#1f4fa3);color:var(--color-sign-ink,#fff);border-bottom:3px solid var(--color-caution,#f2c230)}.ds-sign-row{display:flex;align-items:center;min-height:56px;padding:0 8px 0 20px}.ds-sign-title{margin:0;font-family:var(--font-display,'Do Hyeon'),sans-serif;font-weight:400;font-size:22px;line-height:1.375}.ds-sign-sub{margin:-4px 0 0;padding:0 20px 12px;font-size:14px;color:var(--color-sign-2,#d5e1f6);display:flex;align-items:baseline;gap:12px}.ds-sign-num{font-family:var(--font-display,'Do Hyeon'),sans-serif;font-size:22px;line-height:1;color:var(--color-sign-ink,#fff)}"
+    },
+    {
+      "name": "하단 대표 버튼",
+      "kind": "button",
+      "refersTo": "button-primary-bar",
+      "description": "먹색, 각진 모서리, 4px 노랑 아래 줄, Do Hyeon 19px.",
+      "html": "<button class=\"ds-btn-bar\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14M12 5v14\"/></svg>할 일 추가</button>",
+      "css": ".ds-btn-bar{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;height:52px;border:0;border-bottom:4px solid var(--color-caution,#f2c230);border-radius:0;background:var(--color-ink,#18202b);color:#fff;font-family:var(--font-display,'Do Hyeon'),sans-serif;font-size:19px;cursor:pointer}.ds-btn-bar:focus-visible{outline:2px solid var(--color-sign,#1f4fa3);outline-offset:2px}.ds-btn-bar:disabled{opacity:.4}"
+    },
+    {
+      "name": "본문 먹색 버튼",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "본문 안 대표 행동. 3px 노랑 아래 줄.",
+      "html": "<button class=\"ds-btn-primary\">다시 시도</button>",
+      "css": ".ds-btn-primary{height:44px;padding:0 16px;border:0;border-bottom:3px solid var(--color-caution,#f2c230);border-radius:0;background:var(--color-ink,#18202b);color:#fff;font-size:14px;font-weight:600;cursor:pointer}.ds-btn-primary:focus-visible{outline:2px solid var(--color-sign,#1f4fa3);outline-offset:2px}.ds-btn-primary:disabled{opacity:.4}"
+    },
+    {
+      "name": "테두리 버튼",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "대표 버튼과 겹치는 본문 행동, 둘째 행동.",
+      "html": "<button class=\"ds-btn-outline\">직접 추가</button>",
+      "css": ".ds-btn-outline{width:100%;height:48px;border:1px solid var(--color-line-strong,#878c95);border-radius:4px;background:#fff;color:var(--color-ink,#18202b);font-size:16px;font-weight:600;cursor:pointer}.ds-btn-outline:focus-visible{outline:2px solid var(--color-sign,#1f4fa3);outline-offset:2px}.ds-btn-outline:disabled{opacity:.4}"
+    },
+    {
+      "name": "선택 칩",
+      "kind": "chip",
+      "refersTo": "chip-selected",
+      "description": "하나만 고르는 칩. 선택은 파랑.",
+      "html": "<div class=\"ds-chips\"><button class=\"ds-chip\" aria-checked=\"true\">오늘</button><button class=\"ds-chip\" aria-checked=\"false\">내일</button></div>",
+      "css": ".ds-chips{display:flex;gap:8px}.ds-chip{height:44px;padding:0 14px;border:1px solid var(--color-line-strong,#878c95);border-radius:3px;background:#fff;color:var(--color-ink,#18202b);font-size:15px;cursor:pointer}.ds-chip[aria-checked=true]{border-color:var(--color-sign,#1f4fa3);background:var(--color-sign,#1f4fa3);color:#fff;font-weight:600}.ds-chip:focus-visible{outline:2px solid var(--color-sign,#1f4fa3);outline-offset:2px}"
+    },
+    {
+      "name": "공정 막대",
+      "kind": "custom",
+      "refersTo": "stage-meter-filled",
+      "description": "터·골조·완성 세 칸. 시그니처.",
+      "html": "<span class=\"ds-meter\"><i class=\"on\"></i><i class=\"on\"></i><i></i></span><span class=\"ds-meter paused\"><i class=\"on\"></i><i></i><i></i></span>",
+      "css": ".ds-meter{display:flex;gap:3px;width:96px;margin:6px 0}.ds-meter i{flex:1;height:5px;background:var(--color-surface-3,#e8e6e0)}.ds-meter i.on{background:var(--color-caution,#f2c230)}.ds-meter.paused i.on{background:var(--color-line-strong,#878c95)}"
+    },
+    {
+      "name": "가림막 건물 띠",
+      "kind": "card",
+      "refersTo": "hoarding-strip",
+      "description": "오늘 화면 안내판 아래에 붙는 건물 패널.",
+      "html": "<ul class=\"ds-hoard\"><li><div class=\"ds-ph\">오피스</div><b>오피스</b><span class=\"ds-meter\"><i class=\"on\"></i><i></i><i></i></span><small>터</small></li><li><div class=\"ds-ph\">체육관</div><b>체육관</b><span class=\"ds-meter\"><i class=\"on\"></i><i class=\"on\"></i><i></i></span><small>골조</small></li></ul>",
+      "css": ".ds-hoard{display:flex;margin:0;padding:0;list-style:none;background:var(--color-surface-2,#f4f3ef);border-bottom:1px solid var(--color-line,#e6e3dc)}.ds-hoard li{position:relative;flex:1;padding:12px 10px 10px;border-right:1px solid var(--color-line,#e6e3dc)}.ds-hoard li:last-child{border-right:0}.ds-hoard li::before{content:'';position:absolute;inset:0 0 auto;height:5px;background:repeating-linear-gradient(90deg,var(--color-sign,#1f4fa3) 0 14px,#fff 14px 20px)}.ds-ph{display:grid;place-items:center;aspect-ratio:1;border-radius:4px;background:var(--color-placeholder,#d6d6d6);color:var(--color-ink-2,#434a56);font-size:13px}.ds-hoard b{display:block;margin-top:8px;font-family:var(--font-display,'Do Hyeon'),sans-serif;font-weight:400;font-size:16px}.ds-hoard small{display:block;font-size:13px;color:var(--color-ink-3,#5b6270)}.ds-meter{display:flex;gap:3px}.ds-meter i{flex:1;height:5px;background:var(--color-surface-3,#e8e6e0)}.ds-meter i.on{background:var(--color-caution,#f2c230)}"
+    },
+    {
+      "name": "할 일 줄",
+      "kind": "custom",
+      "refersTo": "check-done",
+      "description": "둥근 체크는 완료(파랑).",
+      "html": "<ul class=\"ds-tasks\"><li><span class=\"ds-check done\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M20 6 9 17l-5-5\"/></svg></span><span><b class=\"done\">관심 공고 정리하기</b><small>백엔드 개발자로 취업하기</small></span></li><li><span class=\"ds-check\"></span><span><b>지원동기 첫 문단 쓰기</b><small>백엔드 개발자로 취업하기</small></span></li></ul>",
+      "css": ".ds-tasks{margin:0;padding:0 8px;list-style:none}.ds-tasks li{display:flex;gap:4px;align-items:flex-start;padding:4px 0;border-bottom:1px solid var(--color-line,#e6e3dc)}.ds-check{flex:none;display:grid;place-items:center;width:22px;height:22px;margin:11px;border:2px solid var(--color-line-strong,#878c95);border-radius:50%;box-sizing:border-box;font-size:12px;color:#fff}.ds-check.done{border-color:var(--color-sign,#1f4fa3);background:var(--color-sign,#1f4fa3)}.ds-tasks b{display:block;padding-top:10px;font-weight:400;font-size:16px;color:var(--color-ink,#18202b)}.ds-tasks b.done{color:var(--color-ink-3,#5b6270);text-decoration:line-through}.ds-tasks small{display:block;padding-bottom:10px;font-size:13px;color:var(--color-ink-3,#5b6270)}"
+    },
+    {
+      "name": "하단 탭",
+      "kind": "nav",
+      "refersTo": "tab-bar",
+      "description": "활성 탭은 파랑 글자와 위쪽 3px 막대.",
+      "html": "<nav class=\"ds-tabs\"><a aria-current=\"page\">오늘</a><a>마을</a><a>목표</a><a>기록</a></nav>",
+      "css": ".ds-tabs{display:grid;grid-template-columns:repeat(4,1fr);height:56px;border-top:1px solid var(--color-line,#e6e3dc);background:#fff}.ds-tabs a{display:grid;place-items:center;font-size:11px;color:var(--color-ink-3,#5b6270);text-decoration:none}.ds-tabs a[aria-current=page]{color:var(--color-sign,#1f4fa3);font-weight:700;box-shadow:inset 0 3px 0 var(--color-sign,#1f4fa3)}.ds-tabs a:focus-visible{outline:2px solid var(--color-sign,#1f4fa3);outline-offset:2px}"
+    },
+    {
+      "name": "입력 칸",
+      "kind": "input",
+      "refersTo": "input-field",
+      "description": "진한 선 1px, 4px 둥글기, 파랑 포커스.",
+      "html": "<input class=\"ds-input\" placeholder=\"할 일 제목\">",
+      "css": ".ds-input{height:48px;width:100%;padding:0 12px;border:1px solid var(--color-line-strong,#878c95);border-radius:4px;background:#fff;color:var(--color-ink,#18202b);font-size:16px;caret-color:var(--color-sign,#1f4fa3)}.ds-input:focus-visible{outline:2px solid var(--color-sign,#1f4fa3);outline-offset:2px}"
+    }
+  ],
+  "narrative": {
+    "northStar": "공사 안내판",
+    "overview": "목표마다 공사 현장이 있고, 할 일 하나가 공정 하나다. 화면은 현장 입구의 안내판과 가림막처럼 읽힌다. 모든 화면의 머리는 파란 안내판 띠에 흰 안내판 글자(Do Hyeon)로 제목을 쓰고, 그 아래를 안전 노랑 줄이 막는다. 본문은 흰 가림막 패널과 콘크리트 쪽으로 살짝 데운 회색 면 위의 목록이다. 파스텔 게임 투두와 흰 미니멀 목록 둘 다 거부한다.\n\n색은 세 가지 일만 나눠 맡는다. 파랑은 '안내와 확정'(머리 띠, 완료 체크, 선택, 활성 탭, 포커스, 켠 스위치), 노랑은 '공정 진행'(공정 막대, 안내판과 먹색 버튼 아래 줄), 먹색은 '대표 행동'(채움 버튼, 알림). 판과 버튼은 각지고(0~4px), 원은 완료 체크와 스위치처럼 원이어야 하는 것에만 남는다.\n\n한 손, 이동 중, 몇 초 안에 하나를 끝내는 밀도는 그대로다. 자주 쓰는 행동은 엄지가 닿는 아래쪽에 모이고, 진행은 큰 숫자 하나(안내판의 '핵심 1/3')와 3칸 공정 막대로만 말한다. 마을, 건물, 집, 가구 그림은 3D 렌더가 준비될 때까지 같은 비율의 회색 상자와 이름으로 둔다.",
+    "keyCharacteristics": [
+      "파란 안내판 띠(흰 제목, 아래 3px 노랑 줄)가 모든 화면의 머리",
+      "제목은 Do Hyeon(굵기 하나), 본문은 Gothic A1(400/600/700)",
+      "노랑은 공정 막대와 아래 줄에만, 글자색으로 쓰지 않는다",
+      "먹색 채움 버튼은 언제나 각진 모서리와 노랑 아래 줄",
+      "3칸 공정 막대(터·골조·완성)가 건물이 보이는 모든 곳의 공통 표지",
+      "둥근 체크는 완료, 네모 체크는 선택",
+      "그림 자리는 회색 자리 표시자 그대로"
+    ],
+    "rules": [
+      {
+        "name": "The Three Jobs Rule",
+        "body": "파랑은 안내와 확정(완료, 선택, 활성, 포커스, 켬), 노랑은 공정 진행과 아래 줄, 먹색은 대표 행동. 한 색이 다른 색의 일을 하지 않는다.",
+        "section": "colors"
+      },
+      {
+        "name": "The Caution-Never-Text Rule",
+        "body": "노랑은 막대와 줄로만 쓴다. 글자, 아이콘, 배지 채움으로 쓰지 않는다.",
+        "section": "colors"
+      },
+      {
+        "name": "The Grey-Art Rule",
+        "body": "그림 자리는 `placeholder` 회색 상자와 이름뿐이다. 파랑이나 노랑으로 칠하지 않고 일러스트나 아이콘으로 대신 그리지 않는다(CLAUDE.md 규칙 7).",
+        "section": "colors"
+      },
+      {
+        "name": "The Token-Only Rule",
+        "body": "화면 코드에는 색 값을 직접 쓰지 않고 토큰 이름만 쓴다. 예외는 `layout.tsx`의 `themeColor`(메타데이터라 토큰을 읽지 못한다)로, `sign`과 같은 값을 유지한다.",
+        "section": "colors"
+      },
+      {
+        "name": "The Sign-Letter Rule",
+        "body": "`h1`, `h2`는 전역 규칙으로 Do Hyeon 400이고 `font-synthesis: none`이다. 굵게 합성하지 않는다. 더 강조하려면 크기를 올린다.",
+        "section": "typography"
+      },
+      {
+        "name": "The Tabular Rule",
+        "body": "개수와 날짜 숫자(`1/5`, `할 일 3/8`, 크레딧)는 `tabular-nums`로 자리를 맞춘다.",
+        "section": "typography"
+      },
+      {
+        "name": "The Every-Screen-Has-A-Sign Rule",
+        "body": "모든 화면은 안내판 띠로 시작하고 띠에는 언제나 제목이 있다(상세 화면은 '할 일', 목표 이름, 목표 입력 질문). 제목을 비운 띠는 없다.",
+        "section": "layout"
+      },
+      {
+        "name": "The Thumb-Zone Rule",
+        "body": "자주 쓰는 행동과 그 결과(대표 버튼, 알림, 바텀시트)는 아래쪽에 둔다. 위쪽 띠에는 설정처럼 드물게 누르는 것만 둔다.",
+        "section": "layout"
+      },
+      {
+        "name": "The 44px Rule",
+        "body": "누르는 대상은 모두 최소 44px. 눈에 보이는 체크는 22px이지만 누르는 영역은 44px이다.",
+        "section": "layout"
+      },
+      {
+        "name": "The Floating-Only Rule",
+        "body": "그림자는 바텀시트와 알림에만 쓴다(스위치 손잡이만 예외). 카드, 버튼, 이름표, 건물 띠는 그림자 없이 채움과 선으로 나눈다. 먹색 버튼의 노랑 아래 줄은 그림자가 아니라 테두리다.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Round-Means-Done Rule",
+        "body": "둥근 체크는 완료, 네모 체크(3px)는 선택이다. 두 모양을 바꿔 쓰지 않는다.",
+        "section": "shapes"
+      },
+      {
+        "name": "The Yellow-Underline Rule",
+        "body": "먹색 채움 버튼은 언제나 각진 모서리와 노랑 아래 줄(하단 대표 4px, 본문 3px)을 함께 가진다. 줄 없는 먹색 버튼이나 둥근 먹색 버튼은 없다.",
+        "section": "components"
+      },
+      {
+        "name": "The One-Ink-Per-Job Rule",
+        "body": "화면 아래 대표 버튼과 같은 일을 하는 본문 버튼은 먹색으로 채우지 않고 테두리 버튼으로 낮춘다.",
+        "section": "components"
+      }
+    ],
+    "dos": [
+      "Do 모든 화면을 파란 안내판 띠(제목 필수, 아래 3px 노랑 줄)로 시작하고 띠 아래를 16px 띄운다. 오늘 화면만 건물 띠를 바로 붙인다.",
+      "Do 먹색 채움 버튼은 각진 모서리와 노랑 아래 줄(하단 대표 4px, 본문 3px)로 만든다.",
+      "Do 아래 대표 버튼과 같은 일을 하는 본문 버튼은 테두리 버튼으로 낮춘다.",
+      "Do 완료, 선택, 활성 탭, 포커스, 켠 스위치는 파랑으로 표시한다.",
+      "Do 건물 단계는 3칸 공정 막대와 단계 이름 글자를 함께 보여준다. 멈춘 공사는 막대를 진한 선 색으로 바꾸고 '공사 중지'를 글자로 쓴다.",
+      "Do 대비는 도구로 잰다. 글자는 흰 바탕에서 ink-3(6.13:1)보다 옅게 쓰지 않는다.",
+      "Do 움직임은 감속 곡선 하나(`cubic-bezier(0.16, 1, 0.3, 1)`)와 transform, opacity만 쓰고 줄이기 설정에서는 사실상 끈다."
+    ],
+    "donts": [
+      "Don't 노랑을 글자, 아이콘, 배지 채움으로 쓰지 않는다(흰 바탕 1.68:1).",
+      "Don't 제목이나 날짜 위에 작은 이름표(eyebrow, kicker)를 두지 않는다.",
+      "Don't 마을, 건물, 집, 가구를 일러스트나 아이콘으로 대신 그리거나 회색이 아닌 색으로 칠하지 않는다.",
+      "Don't 둥근 체크로 선택을, 네모 체크로 완료를 표시하지 않는다.",
+      "Don't Do Hyeon을 굵게 합성하지 않는다. 강조는 크기로 한다.",
+      "Don't 카드, 버튼, 이름표에 그림자를 넣지 않는다. 그림자는 바텀시트와 알림만 쓴다(스위치 손잡이만 예외).",
+      "Don't 진행 현황에 퍼센트 막대, 차트, 축하 연출을 쓰지 않는다. 진행은 개수와 공정 막대로만 말한다."
+    ]
+  }
+}

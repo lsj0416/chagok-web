@@ -27,12 +27,23 @@
 | 날짜 없는 할 일 | `scheduledDate = null` | 날짜 없는 할 일 | 언젠가 할 일. 오늘 목록에 나오지 않는다 |
 | 핵심 할 일 | `isCore = true` | 핵심 할 일 | 그날 가장 중요한 할 일. 하루 최대 3개. 크레딧 지급 대상 |
 | 일반 할 일 | `isCore = false` | 할 일 | 핵심이 아닌 할 일. 하나씩은 크레딧이 없고 일일 보너스에 반영 |
-| 반복 할 일 | `recurrence` | 반복 | 정해진 주기로 다시 생기는 할 일 |
+| 반복 할 일 | `recurrence` | 반복 | 정해진 주기로 다시 생기는 할 일. 값은 `DAILY`(매일) 또는 `null`. 다음 날 할 일을 만드는 시점은 백엔드 설계 때 정한다 |
+| 메모 | `memo` | 메모 | 할 일에 덧붙이는 선택 입력. 없으면 `null`. 할 일 상세(S04)에서만 쓰고 고친다. 이름은 2026-10-28 확정 |
 | 생성 방식 | `source` | (표시 안 함) | `MANUAL`, `AI`, `TEMPLATE` |
+| 할 일 만들기 요청 | `CreateTaskRequest` | (표시 안 함) | 할 일 추가(S03)와 빠른 추가(S16)가 보내는 요청. 제목, 수행 날짜, 목표, 핵심 여부, 생성 방식, 반복 |
 | 빠른 추가 템플릿 | `QuickTaskTemplate` | 빠른 추가 | 키워드와 수량만 골라 할 일을 만드는 템플릿. DB 데이터로 관리하고 AI를 호출하지 않는다 |
 | 키워드 | `keyword` | (칩 이름) | 템플릿의 이름. 예: 독서, 운동, 청소 |
 | 수량 | `amount` | (숫자) | 칩에서 고른 수량. 예: 20 |
+| 수량 선택지 | `amountOptions` | (칩) | 템플릿의 단위별 수량 선택지. 예: 분 → 10, 20, 30 |
+| 기본 수량 | `defaultAmount` | (선택된 칩) | 템플릿의 단위별 기본 수량. 빠른 추가를 열면 선택되어 있다 |
 | 단위 | `unit` | 분 / 회 / 쪽 / 개 | `MINUTE`, `COUNT`, `PAGE`, `ITEM`. 템플릿마다 쓸 수 있는 단위가 다르다 |
+| 목표 목록 한 줄 | `GoalSummary` | (화면: 목표 목록) | 목표 목록(S08)의 한 줄. 목표, 건물, 연결된 할 일의 완료 수와 전체 수(나눠진 할 일 제외). 별도 저장 데이터가 아니다 (2026-10-28 확정) |
+| 목표 상세 | `GoalDetail` | (화면: 목표 상세) | 목표 상세(S12)에 필요한 조회 결과. 목표, 건물, 연결된 할 일, 진행 중 목표, 오늘 할 일. 별도 저장 데이터가 아니다 (2026-10-28 확정) |
+| 목표 고치기 | `updateGoal`, `UpdateGoalRequest` | 목표 수정 | 제목, 기한, 완료 조건을 바꿈 (2026-10-28 확정) |
+| 목표 완료 | `completeGoal` | 목표 완료 | 사용자가 확인해야만 완료한다. 남은 할 일 처리(`RemainingTaskAction`: `KEEP` 그대로 두기, `UNSCHEDULE` 날짜 없이 보관, `DELETE` 삭제)를 함께 보낸다. 건물이 완성된다 (2026-10-28 확정) |
+| 보관, 다시 진행 | `archiveGoal`, `resumeGoal` | 보관 / 다시 진행하기 | 보관하면 건물 공사가 멈추고, 다시 진행하면 이어진다 (2026-10-28 확정) |
+| 목표에 할 일 더하기 | `addGoalTasks` | AI로 할 일 추가 | 이미 있는 목표에 날짜 없는 할 일 여러 개를 더함. S12의 AI로 할 일 추가가 쓴다 (2026-10-28 확정) |
+| 할 일 상세 | `TaskDetail` | (화면: 할 일 상세) | 할 일 상세 화면(S04)에 필요한 조회 결과. 할 일, 연결할 수 있는 목표, 그 날짜의 다른 핵심 할 일. 별도 저장 데이터가 아니다. 이름은 2026-10-28 확정 |
 | 오늘 계획 | `TodayPlan` | 오늘 | 오늘 날짜가 수행 날짜인 할 일 묶음. 별도 저장 데이터가 아니라 조회 결과다 |
 
 ## 2 실행과 재계획
@@ -40,16 +51,23 @@
 | 용어 | 코드 이름 | 화면 표기 | 정의 |
 | --- | --- | --- | --- |
 | 완료 | `complete` | 완료 | 할 일을 끝냈다고 표시 |
-| 완료 취소 | `uncomplete` | 실행 취소 | 완료를 되돌림. 완료한 당일에만 가능 |
+| 완료 취소 | `uncomplete` | 실행 취소 | 완료를 되돌림. 완료한 당일에만 가능. 크레딧과 공사 진행을 회수하고, 일반 할 일 완료 수가 기준 아래로 내려가면 일일 보너스도 회수한다 (2026-10-28 확정) |
 | 지난 할 일 | `isOverdue` (계산값) | 지난 할 일 | 수행 날짜가 지났고 완료하지 않은 할 일. 별도 상태가 아니다. 화면에 '실패', '미완료'로 쓰지 않는다 |
 | 날짜 변경 | `reschedule` | 날짜 바꾸기 | 같은 할 일의 수행 날짜를 바꿈. 이전 날짜 기록은 남는다 |
-| 날짜 해제 | `unschedule` | 날짜 없이 보관 | 수행 날짜를 없앰 |
+| 핵심 자리 처리 | `CoreConflictChoice`, `fetchDayCoreTasks` | 핵심 할 일은 3개까지예요 | 핵심 할 일이 가득 찬 날로 핵심 할 일을 옮기거나 더할 때 사용자가 고른 처리. 그날 핵심 하나를 빼고 넣거나(`replaceCoreTaskId`) 일반 할 일로 둔다(`asNormal`). 고르지 않으면 서버는 거절하고 말없이 바꾸지 않는다 (2026-10-28 확정) |
+| 날짜 해제 | `unschedule` | 날짜 없이 보관 | 수행 날짜를 없앰. 매일 반복하는 할 일은 반복을 먼저 꺼야 한다 (2026-10-28 확정) |
 | 쪼개기 | `split` | 나누기 | 할 일 하나를 여러 개로 나눔. 원래 할 일은 `SPLIT` 상태로 남고 집계와 크레딧에서 빠진다 |
+| 할 일 고치기 | `updateTask` | (표시 안 함) | 제목, 메모, 연결 목표, 반복을 바꿈. 날짜와 핵심은 `reschedule`, `unschedule`, 핵심 지정으로 바꾼다 |
+| 삭제 | `deleteTask` | 삭제 | 할 일을 지움. 완료한 할 일을 지워도 받은 크레딧과 공사 진행은 회수하지 않는다. 이름과 규칙은 2026-10-28 확정 |
 | 계획 이력 | `PlanEvent` | (표시 안 함) | 날짜 배정, 날짜 변경, 핵심 지정의 기록 |
 | 실행 이력 | `ExecutionEvent` | (표시 안 함) | 완료, 완료 취소, 쪼개기의 기록 |
 | 실행한 날 | `activeDay` | 실행한 날 | 할 일을 하나 이상 완료한 날. 접속만 한 날은 포함하지 않는다 |
 | 계획 대비 실행률 | `completionRate` | 실행률 | 그날 수행 대상이던 할 일 중 그날 완료한 비율. 수행 대상이 0개인 날은 계산하지 않는다 |
 | 재계획 | `rescheduled` (집계값) | 옮긴 일 | 원래 날짜에서 다른 날로 옮긴 할 일. 원래 날짜의 기록에 남는다 |
+| 하루 기록 | `DayRecord` | (화면: 기록의 날짜 줄) | 기록(S13)의 하루. 수행 대상 수, 그중 그날 완료한 수, 그날 완료한 할 일, 그날에서 옮긴 할 일. 계획 이력과 실행 이력에서 계산한다 (2026-10-28 확정) |
+| 주간 요약 | `WeekSummary` | 이번 주 | 이번 주(월요일부터) 완료 수, 실행한 날 수, 계획 대비 실행률. 실행률은 어제까지만 센다 (2026-10-28 확정) |
+| 기록 조회 결과 | `RecordsOverview` | (화면: 기록) | 주간 요약, 최근 `RECORDS_PAGE_DAYS`일의 날짜별 기록, 얻은 업적 수 (2026-10-28 확정) |
+| 기록 묶음 | `DayRecordPage`, `fetchDayRecords` | 이전 기록 더 보기 | 날짜별 기록 `RECORDS_PAGE_DAYS`일치와 더 이전 기록을 불러올 기준 날짜(`olderBefore`, 없으면 null) (2026-10-28 확정) |
 
 ## 3 AI 목표 분해
 
@@ -61,6 +79,8 @@
 | 다시 생성 | `regenerate` | 다시 만들기 | 같은 목표로 초안을 다시 요청. 하루 호출 횟수에 포함 |
 | 직접 입력 | `manualEntry` | 직접 입력 | AI 없이 할 일을 입력하는 경로 |
 | 하루 호출 상한 | `AI_DAILY_LIMIT` | 오늘 남은 횟수 | 사용자별 하루 AI 분해 횟수 제한 |
+| 지금 상황 | `currentSituation` | 지금 상황 | AI 분해 요청에 함께 보내는 선택 입력. 한 줄. 저장하지 않는다 |
+| AI 사용량 | `AiUsage` | 오늘 남은 횟수 | 오늘 사용한 AI 분해 횟수와 남은 횟수 |
 
 ## 4 마을과 건물
 
@@ -71,6 +91,8 @@
 | 건물 단계 | `BuildingStage` | 터 / 골조 / 완성 | `LOT`, `FRAME`, `COMPLETE` |
 | 공사 진행 | `constructionProgress` | 공사 진행 | 목표에 연결된 할 일의 완료 수 |
 | 공사 중지 | `isPaused` (계산값) | 공사 중지 | 목표가 보관된 건물. 건물은 그대로 남는다 |
+| 마지막으로 본 단계 | `lastSeenStage` | (표시 안 함) | 사용자가 마을에서 마지막으로 본 건물 단계. 서버에 저장한다. `stage`보다 낮으면 다음 마을 진입 때 짧은 연출을 보여준다 |
+| 마을 | `VillageDetail` | (화면: 마을) | 마을 화면(S05)에 필요한 조회 결과. 집 단계, 건물, 목표, 잔액. 별도 저장 데이터가 아니다 |
 
 목표 유형과 건물
 
@@ -95,12 +117,13 @@
 | 일일 보너스 | `DailyBonus` | 오늘의 보너스 | 일반 할 일을 하루 5개 완료하면 하루 1회 지급 |
 | 집 | `House` | 집 | 마을 중심에 있는 사용자의 집 |
 | 집 단계 | `HouseLevel` | 원룸 / 투룸 / 아파트 / 주택 | `STUDIO`, `TWO_ROOM`, `APARTMENT`, `DETACHED` |
-| 집 업그레이드 | `upgradeHouse` | 집 넓히기 | 가구 설치 수와 비용 조건을 채우면 다음 단계로 이사 |
+| 집 업그레이드 | `upgradeHouse` | 집 넓히기 | 보유 가구 수와 비용 조건을 채우면 다음 단계로 이사. 한 번 산 가구는 빼도 수에 남는다 (2026-10-27 확정) |
 | 가구 | `Furniture` | 가구 | 크레딧으로 사서 집에 설치하는 아이템 |
 | 가구 카탈로그 | `FurnitureCatalogItem` | 가구 상점 | 판매 중인 가구 정보. 코드가 아니라 데이터로 관리 |
 | 슬롯 | `Slot` | (빈 자리 + 표시) | 집 안에서 가구를 놓을 수 있는 정해진 자리 |
 | 슬롯 종류 | `SlotType` | (표시 안 함) | 슬롯에 놓을 수 있는 가구 종류. 값은 미정 |
 | 설치 | `Placement` | 설치 | 보유한 가구를 슬롯에 놓은 상태 |
+| 집 내부 | `HouseDetail` | (화면: 집 내부) | 집 내부 화면(S06)에 필요한 조회 결과. 집 단계, 슬롯, 설치, 보유 가구, 판매 가구, 잔액. 별도 저장 데이터가 아니다 |
 | 시즌 가구 | `season` | (후속) | 시즌별로 추가되는 가구. 기간 한정 판매로 압박하지 않는다 |
 
 ## 6 업적과 알림
@@ -109,8 +132,12 @@
 | --- | --- | --- | --- |
 | 업적 | `Achievement` | 업적 | 누적 실행, 목표 달성, 복귀 같은 영구 기록. 한 번 얻으면 사라지지 않는다 |
 | 업적 획득 | `UserAchievement` | 획득한 배지 | 사용자별 업적 획득 기록 |
-| 알림 구독 | `PushSubscription` | 알림 | 기기별 웹 푸시 구독 정보 |
+| 업적 진행 | `AchievementProgress` | (화면: 업적 줄) | 업적 화면(S14)의 한 줄. 업적, 얻은 시각, 지금까지 센 수. 업적 `code`는 목록이 정해지기 전까지 `string` (2026-10-28 확정) |
+| 알림 구독 | `PushSubscription` | 알림 | 기기별 웹 푸시 구독 정보. 보낼 때는 `PushSubscriptionRequest`(endpoint와 키). 코드에서는 브라우저의 같은 이름 타입과 겹치지 않게 요청 이름만 쓴다 |
+| 알림 막힘 | `NotifyBlock` | (화면: 설정의 알림 안내) | 이 기기에서 알림을 켤 수 없는 이유. `denied` 권한 거부, `install-required` 홈 화면에 추가하지 않은 iPhone, `unsupported` 알림을 지원하지 않는 브라우저 (2026-10-28 확정) |
+| 푸시 메시지 | (서버 → 서비스 워커) | 알림 | 서버가 보내는 알림 내용. `title`, `body`, `url`, `tag`. 형식은 docs/api.md '웹 푸시' (2026-10-28 확정) |
 | 사용자 시간대 | `timezone` | 시간대 | 오늘의 경계를 정하는 기준. 자정 기준 |
+| 사용자 설정 | `UserSettings`, `ReminderSetting` | 설정 | 연결된 계정, 시간대, 하루 시작·마무리 알림(켜짐, 시각 'HH:MM') (2026-10-28 확정) |
 
 ## 7 계정
 
@@ -118,6 +145,7 @@
 | --- | --- | --- | --- |
 | 사용자 | `User` | (표시 안 함) | 서비스 사용자 |
 | 소셜 계정 | `SocialAccount` | 구글로 계속하기 | 로그인 제공자 연결. 사용자와 1:N |
+| 로그인, 로그아웃 | `signInWithGoogle`, `signOut` | 구글로 계속하기 / 로그아웃 | 로그인 결과로 진행 중 목표 수를 받아 S09 또는 S02로 보낸다 (2026-10-28 확정) |
 
 ## 8 게임 상수 (러프안)
 
@@ -134,10 +162,14 @@
 | `AI_DRAFT_COUNT_MIN` | 5 | AI가 제안하는 할 일 초안의 최소 개수 |
 | `AI_DRAFT_COUNT_MAX` | 10 | AI가 제안하는 할 일 초안의 최대 개수 |
 | `QUICK_TEMPLATE_DISPLAY_LIMIT` | 8 | 빈 화면 카드에 보여줄 빠른 추가 칩 개수 |
+| `UNDATED_TASK_DISPLAY_LIMIT` | 3 | 빈 화면 카드의 '목표에서 가져오기'에 보여줄 날짜 없는 할 일 개수 |
+| `SPLIT_MIN_TASKS` | 2 | 나누기로 만들 새 할 일의 최소 개수 (docs/screens.md S04) |
+
+코드에서 아래 표의 값은 `HOUSE_UPGRADE_RULES`로, 4장의 목표 유형과 건물 표는 `GOAL_BUILDING`(유형→건물)과 `BUILDING_LABEL`(건물→화면 표기)로 둔다.
 
 집 단계별 조건
 
-| 현재 단계 | 다음 단계 | 필요 가구 (누적 설치) | 업그레이드 비용 | 슬롯 수 (현재 단계) |
+| 현재 단계 | 다음 단계 | 필요 가구 (보유 수) | 업그레이드 비용 | 슬롯 수 (현재 단계) |
 | --- | --- | --- | --- | --- |
 | `STUDIO` | `TWO_ROOM` | 3 | 300 | 4 |
 | `TWO_ROOM` | `APARTMENT` | 7 | 700 | 8 |
@@ -155,3 +187,24 @@
 | 연속 기록이 끊겼어요 | (표시하지 않음) |
 | 포인트, 코인, 골드 | 크레딧 |
 | 레벨업 | 집 넓히기 |
+
+## 10 API 이름
+
+`docs/openapi.yaml`에서 새로 정한 요청·응답 이름이다. 도메인 이름(1~7장)은 그대로 쓰고, 요청은 `~Request`, 결과는 `~Result`로 짓는다. (2026-10-28 확정)
+
+| 이름 | 쓰는 곳 | 뜻 |
+| --- | --- | --- |
+| `GoogleSignInRequest`, `SignInResponse`, `AccessToken` | `POST /auth/google`, `/auth/refresh` | 구글 ID 토큰과 기기 시간대 / 액세스 토큰과 진행 중 목표 수 |
+| `UpdateTaskRequest` | `PATCH /tasks/{id}` | 제목, 메모, 연결 목표, 반복 중 보낸 값만 바꿈 |
+| `SetCoreRequest` | `PUT /tasks/{id}/core` | 핵심 지정·해제. 핵심 교체는 `coreConflict`로 |
+| `scheduleTask`, `ScheduleTaskRequest` | `PUT /tasks/{id}/schedule` | 날짜 바꾸기와 날짜 없이 보관을 하나로 (`date: null`이면 보관) |
+| `SplitTaskRequest` | `POST /tasks/{id}/split` | 나눌 새 할 일 제목들 |
+| `CompletionResult`, `CreditChange` | `POST /tasks/{id}/complete` | 완료로 지급된 크레딧, 공사가 진행된 건물, 골조 도달, 보너스, 오늘 일반 완료 수, 잔액. 화면이 알림 문구를 만든다 |
+| `CompleteGoalRequest` | `POST /goals/{id}/complete` | 남은 할 일 처리(`remainingTasks`) |
+| `AddGoalTasksRequest` | `POST /goals/{id}/tasks` | 더할 할 일 제목, 생성 방식, `breakdownId` |
+| `breakdownId` | `GoalBreakdown`, `CreateGoalRequest`, `AddGoalTasksRequest` | AI 분해 요청의 ID. 고른 초안 비율(채택률)을 센다 |
+| `RecordTask`, `MovedTask` | `DayRecord` | 기록의 완료한 할 일 / 옮긴 할 일 한 줄 |
+| `UpdateSettingsRequest` | `PATCH /me/settings` | 시간대와 알림 중 보낸 값만 바꿈 |
+| `PurchaseFurnitureRequest`, `PlaceFurnitureRequest` | `/house/furniture-purchases`, `/house/slots/{id}/placement` | 살 가구와 슬롯 / 놓을 보유 가구 |
+| `subscribePush`, `unsubscribePush`, `PushSubscriptionRequest` | `/me/push-subscriptions` | 이 기기의 웹 푸시 구독 (PWA 단계) |
+| `Problem`, `CoreFullProblem` | 모든 오류 | RFC 9457 Problem Details에 오류 코드(`code`)를 더한 것. 코드 목록은 docs/api.md 4장 |
