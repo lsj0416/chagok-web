@@ -35,7 +35,7 @@ Next.js 코드를 쓰기 전에 아래 안내를 따른다. (Next.js가 만든 �
 - Next.js + TypeScript, 정적 빌드(`output: 'export'`). 서버 기능(Server Actions, API Routes, 서버 컴포넌트의 데이터 요청)은 쓰지 않는다
 - Tailwind CSS
 - TanStack Query (서버 데이터)
-- PWA: 매니페스트 + 서비스 워커
+- PWA: 매니페스트(`src/app/manifest.ts`) + 서비스 워커(`public/sw.js`, 웹 푸시만, 오프라인 캐시 없음). 푸시 구독은 `src/lib/push.ts`
 - 상세 화면은 동적 경로 대신 쿼리 파라미터를 쓴다 (`/goals/detail?id=`)
 
 ## 폴더 구조

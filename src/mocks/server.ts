@@ -7,6 +7,7 @@ import { remainingAiCalls } from "@/lib/drafts";
 import { canPurchase, canUpgradeHouse } from "@/lib/house";
 import { slotsFor } from "@/mocks/house";
 import { pageDayRecords, summarizeWeek } from "@/lib/records";
+import type { NotifyBlock } from "@/lib/push";
 import { isCoreFull } from "@/lib/today";
 import { mockBreakdown } from "@/mocks/aiDrafts";
 import { createMockDb, type MockDb, type MockScenario } from "@/mocks/scenarios";
@@ -28,6 +29,7 @@ import type {
   RemainingTaskAction,
   UpdateGoalRequest,
   HouseDetail,
+  PushSubscriptionRequest,
   RecordsOverview,
   Task,
   TaskDetail,
@@ -585,9 +587,25 @@ export function signOut() {
   return mutate(() => ({ ok: true }));
 }
 
-/** 알림 권한을 거부한 상태를 흉내 낼 때 (notify-denied 시나리오) */
-export function isNotificationDeniedMock(): boolean {
-  return scenario === "notify-denied";
+/** 이 기기의 웹 푸시 구독 등록. 같은 endpoint가 다시 오면 키만 바꾼다 */
+export function subscribePush(subscription: PushSubscriptionRequest) {
+  return mutate(() => {
+    db.pushSubscriptions = [...db.pushSubscriptions.filter((s) => s.endpoint !== subscription.endpoint), subscription];
+  });
+}
+
+/** 이 기기의 웹 푸시 구독 지우기 */
+export function unsubscribePush(endpoint: string) {
+  return mutate(() => {
+    db.pushSubscriptions = db.pushSubscriptions.filter((s) => s.endpoint !== endpoint);
+  });
+}
+
+/** 알림을 켤 수 없는 상태를 흉내 낼 때. notify-denied는 권한 거부, notify-install은 홈 화면에 추가하지 않은 iPhone */
+export function mockNotifyBlock(): NotifyBlock | null {
+  if (scenario === "notify-denied") return "denied";
+  if (scenario === "notify-install") return "install-required";
+  return null;
 }
 
 // 집 내부와 가구 (S06, S07)

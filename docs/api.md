@@ -183,7 +183,7 @@ Spring `ProblemDetail`(RFC 9457)에 `code`를 더한다. 화면은 `status`가 �
 | `removePlacement` | `DELETE /house/slots/{slotId}/placement` | S06 |
 | `upgradeHouse` | `POST /house/upgrade` | S06 |
 | `fetchSettings`, `updateSettings` | `GET`, `PATCH /me/settings` | S15 |
-| (PWA 단계에서 추가) | `POST`, `DELETE /me/push-subscriptions` | S15 |
+| `subscribePush`, `unsubscribePush` | `POST`, `DELETE /me/push-subscriptions` | S15 (`src/lib/push.ts`가 부른다) |
 
 ## 7 백엔드에 연결할 때 프론트에서 바꿀 것
 
@@ -195,14 +195,43 @@ Spring `ProblemDetail`(RFC 9457)에 `code`를 더한다. 화면은 `status`가 �
 4. 토큰: fetch 래퍼가 액세스 토큰을 붙이고, 401이면 한 번 리프레시한 뒤 다시 보낸다.
 5. 오류: `Problem.code`로 분기한다. `CORE_FULL`은 응답의 `coreTasks`로 핵심 교체 시트를 연다.
 6. 멱등성 키: 완료, 완료 취소, 넓히기, 가구 사기 요청마다 `crypto.randomUUID()`를 붙인다. 같은 동작을 다시 시도할 때는 같은 키를 쓴다.
-7. 가짜 서버 전용인 `setMockScenario`, `isNotificationDeniedMock`을 지운다.
+7. 가짜 서버 전용인 `setMockScenario`, `mockNotifyBlock`을 지운다.
+8. 백엔드가 만든 VAPID 공개 키를 빌드 환경 변수 `NEXT_PUBLIC_VAPID_PUBLIC_KEY`에 넣는다. 비어 있으면 알림 설정은 저장되지만 기기 구독은 만들지 않는다.
 
-## 8 백엔드 설계에서 정할 것
+## 8 웹 푸시
+
+### 기기 구독
+
+- 알림 켜기·끄기(`UserSettings`)는 사용자 단위이고, 푸시 구독은 기기(브라우저) 단위다. 서버는 알림이 켜진 사용자의 모든 구독으로 보낸다.
+- 화면은 알림을 켤 때 권한을 묻고, 받으면 구독을 만들어 `POST /me/push-subscriptions`로 등록한다. 둘 다 끄거나 로그아웃하면 `DELETE`로 지운다.
+- 브라우저가 구독을 바꾸면(`pushsubscriptionchange`) 서비스 워커는 액세스 토큰이 없어 직접 등록하지 못한다. 다음에 설정 화면을 열 때 화면이 다시 등록한다. 서버는 푸시 서비스가 404·410으로 답한 구독을 지운다.
+
+### 푸시 메시지
+
+서버가 보내는 메시지 본문(JSON). 서비스 워커(`public/sw.js`)가 읽어 알림으로 보여준다.
+
+| 필드 | 뜻 |
+| --- | --- |
+| `title` | 알림 제목. 비어 있으면 '오늘 할 일' |
+| `body` | 알림 본문 |
+| `url` | 알림을 누르면 열 앱 안 경로(`/`로 시작). 없거나 다른 사이트 주소면 `/today` |
+| `tag` | 같은 종류 알림을 겹쳐 쌓지 않고 바꾸는 이름. 하루 시작 `morning`, 하루 마무리 `evening` |
+
+문구는 서버가 정하고 `docs/glossary.md` 9장(쓰지 않는 말)을 따른다. 예: 하루 시작 '오늘 할 일을 확인해 보세요', 하루 마무리 '오늘 한 일을 체크해 보세요'.
+
+### 배포할 때
+
+- HTTPS에서만 서비스 워커와 푸시가 동작한다 (`localhost`는 예외).
+- `/sw.js`는 `Cache-Control: no-cache`로 내보낸다. 정적 호스팅의 헤더 설정에서 정한다 (화면은 `updateViaCache: 'none'`으로 등록해 HTTP 캐시를 거치지 않는다).
+- `/manifest.webmanifest`는 `application/manifest+json`으로 내보낸다.
+- 서비스 워커는 화면 파일을 저장해 두지 않는다(오프라인 캐시 없음). 새 버전을 올리면 다음 실행부터 바로 쓴다.
+
+## 9 백엔드 설계에서 정할 것
 
 명세 밖이라 이 문서에서 정하지 않은 것이다.
 
 - 매일 반복 할 일을 언제, 어떻게 다음 날 할 일로 만드는지 (자정 배치 또는 조회 시 생성)
 - 빠른 추가 칩 정렬 계산 (docs/planning.md 13장)
 - 업적 판정 시점과 지급 (업적 목록이 정해진 뒤)
-- 알림 발송 스케줄과 웹 푸시 VAPID 키 관리
+- 알림 발송 스케줄(사용자 시간대의 알림 시각에 보내기)과 VAPID 키 만들기·보관
 - 가구 이미지 주소: `FurnitureCatalogItem`에 아직 이미지 필드가 없다. 3D 렌더가 준비되면 `imageUrl`을 더한다

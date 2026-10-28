@@ -1,6 +1,19 @@
 // 서비스명은 출시 전에 정한다. 화면에서 서비스명이 필요한 곳은 이 상수만 쓴다
 export const APP_NAME = "서비스명";
 
+// 홈 화면 설치(PWA)
+
+/** 안내판 띠 색. 안드로이드 상태 표시줄과 설치한 앱의 머리 색 (globals.css의 --color-sign) */
+export const SIGN_COLOR = "#1f4fa3";
+/** 설치한 앱이 처음 뜰 때의 바탕색 (globals.css의 --color-surface) */
+export const SURFACE_COLOR = "#ffffff";
+/** 설치한 앱을 열면 처음 보이는 화면, 알림을 눌렀을 때 기본으로 여는 화면 */
+export const START_PATH = "/today";
+/** 서비스 워커 파일 (public/sw.js) */
+export const SERVICE_WORKER_PATH = "/sw.js";
+/** 웹 푸시 서버 공개 키(VAPID). 백엔드가 키를 만들기 전까지는 비어 있고, 그동안은 기기 구독을 만들지 않는다 */
+export const VAPID_PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || null;
+
 // 화면 동작 값 (게임 규칙이 아닌 것)
 
 /** 알림(토스트) 표시 시간. docs/screens.md 0.2: 3~4초 */

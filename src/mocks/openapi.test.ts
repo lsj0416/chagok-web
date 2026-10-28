@@ -3,6 +3,7 @@ import { join } from "node:path";
 import { load } from "js-yaml";
 import { beforeAll, describe, expect, it } from "vitest";
 import { addDays, toDateKey } from "@/lib/date";
+import { toPushSubscriptionRequest } from "@/lib/push";
 import * as server from "@/mocks/server";
 
 // 가짜 서버의 조회 결과가 docs/openapi.yaml의 응답 스키마와 맞는지 본다.
@@ -105,6 +106,15 @@ describe("가짜 서버 응답 ↔ docs/openapi.yaml", () => {
   it.each(cases)("%s", async (_name, call, responseSchema) => {
     const value = await call();
     expect(check(value, responseSchema, "$")).toEqual([]);
+  });
+
+  it("POST /me/push-subscriptions 요청 본문", () => {
+    const body = toPushSubscriptionRequest({
+      endpoint: "https://push.example.com/abc",
+      expirationTime: null,
+      keys: { p256dh: "BPub", auth: "secret" },
+    });
+    expect(check(body, schema("PushSubscriptionRequest"), "$")).toEqual([]);
   });
 
   it("검사기가 어긋남을 잡는다", () => {

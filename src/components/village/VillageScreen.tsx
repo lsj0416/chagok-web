@@ -10,7 +10,6 @@ import { TopBar } from "@/components/TopBar";
 import { VillageView } from "@/components/village/VillageView";
 import * as api from "@/lib/api/village";
 import { CreditAmount } from "@/components/CreditAmount";
-import { formatCredit } from "@/lib/credit";
 import { needsStageReveal } from "@/lib/village";
 import type { VillageDetail } from "@/types";
 

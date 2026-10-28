@@ -183,6 +183,12 @@ export interface UserSettings {
   eveningReminder: ReminderSetting;
 }
 
+/** 이 기기의 웹 푸시 구독. 브라우저 PushSubscription.toJSON()에서 서버에 필요한 값만 담는다 */
+export interface PushSubscriptionRequest {
+  endpoint: string;
+  keys: { p256dh: string; auth: string };
+}
+
 /** 기록(S13)의 하루. 별도 저장 데이터가 아니라 계획 이력과 실행 이력에서 계산한 결과다 */
 export interface DayRecord {
   date: DateKey;

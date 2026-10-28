@@ -11,7 +11,9 @@ import { Toast } from "@/components/Toast";
 import { LoadError, SectionHeading } from "@/components/today/TodayParts";
 import { TopBar } from "@/components/TopBar";
 import { useToast } from "@/components/useToast";
+import { VAPID_PUBLIC_KEY } from "@/config/app";
 import * as api from "@/lib/api/account";
+import { ensurePushSubscription, isStandalone, notifyBlock, readPushEnvironment, removePushSubscription, type NotifyBlock } from "@/lib/push";
 import type { ReminderSetting, UserSettings } from "@/types";
 
 type ReminderKey = "morningReminder" | "eveningReminder";
@@ -20,6 +22,16 @@ const REMINDERS: { key: ReminderKey; label: string; hint: string }[] = [
   { key: "morningReminder", label: "하루 시작 알림", hint: "오늘 할 일을 확인할 시각에 알려줘요" },
   { key: "eveningReminder", label: "하루 마무리 알림", hint: "오늘 한 일을 체크할 시각에 알려줘요" },
 ];
+
+/** 알림을 켤 수 없을 때 알림 칸 위에 보여주는 이유와 안내 */
+const BLOCK_NOTICE: Record<NotifyBlock, { title: string; hint: string }> = {
+  denied: { title: "브라우저 설정에서 알림을 허용해주세요", hint: "알림 없이도 다른 기능은 그대로 쓸 수 있어요" },
+  "install-required": {
+    title: "홈 화면에 추가한 앱에서 알림을 켤 수 있어요",
+    hint: "iPhone은 홈 화면에 추가해야 알림을 받을 수 있어요. 아래 앱 설치를 참고해 주세요",
+  },
+  unsupported: { title: "이 브라우저에서는 알림을 받을 수 없어요", hint: "알림 없이도 다른 기능은 그대로 쓸 수 있어요" },
+};
 
 /** 설치 안내 이벤트 (Chrome의 beforeinstallprompt) */
 interface InstallPromptEvent extends Event {
@@ -36,7 +48,9 @@ export function SettingsScreen() {
   const query = useQuery({ queryKey: settingsKey, queryFn: api.fetchSettings });
   const settings = query.data;
   const { toast, show } = useToast();
-  const [permissionDenied, setPermissionDenied] = useState(false);
+  /** 방금 알림을 켜려다 막힌 이유 */
+  const [attemptBlock, setAttemptBlock] = useState<NotifyBlock | null>(null);
+  const [subscribing, setSubscribing] = useState(false);
   const timezoneId = useId();
 
   const save = useMutation({
@@ -54,28 +68,52 @@ export function SettingsScreen() {
     onSettled: () => void queryClient.invalidateQueries({ queryKey: settingsKey }),
   });
 
-  // 켜 둔 알림이 있는데 권한이 막혀 있으면(나중에 브라우저에서 막은 경우 포함) 열자마자 알린다. 권한을 묻지는 않는다
-  const reminderBlocked =
-    settings !== undefined &&
-    (settings.morningReminder.enabled || settings.eveningReminder.enabled) &&
-    currentPermission() === "denied";
+  const anyReminderOn = settings !== undefined && (settings.morningReminder.enabled || settings.eveningReminder.enabled);
+  // 켜 둔 알림이 있는데 이 기기에서 받을 수 없으면(나중에 브라우저에서 막은 경우 포함) 열자마자 알린다. 권한을 묻지는 않는다
+  const notice = attemptBlock ?? (anyReminderOn ? currentBlock() : null);
 
-  /** 알림을 켤 때만 권한을 묻는다. 거부하면 켜지 않고 이유를 알린다 (다른 기능은 그대로) */
+  // 켜 둔 알림이 있고 권한도 있으면 이 기기의 구독을 서버에 다시 알린다 (새 기기, 브라우저가 구독을 바꾼 경우). 묻지 않고 조용히 한다
+  useEffect(() => {
+    if (!anyReminderOn || currentBlock() !== null || Notification.permission !== "granted") return;
+    ensurePushSubscription(VAPID_PUBLIC_KEY).catch(() => undefined);
+  }, [anyReminderOn]);
+
+  /**
+   * 알림을 켤 때만 권한을 묻는다. 거부하거나 받을 수 없는 기기면 켜지 않고 이유를 알린다 (다른 기능은 그대로).
+   * 권한을 받으면 이 기기의 푸시 구독을 만든 뒤 켠다. 둘 다 끄면 이 기기의 구독을 지운다
+   */
   const setReminder = async (key: ReminderKey, current: ReminderSetting, enabled: boolean) => {
     if (enabled) {
-      const before = currentPermission();
-      const permission = before === "default" ? await Notification.requestPermission() : before;
-      if (permission !== "granted") {
-        setPermissionDenied(true);
+      const before = currentBlock();
+      const permission = before === null && Notification.permission === "default" ? await Notification.requestPermission() : null;
+      const block = before ?? (permission === "denied" || permission === "default" ? "denied" : null);
+      if (block) {
+        setAttemptBlock(block);
         return;
       }
+      setAttemptBlock(null);
+      setSubscribing(true);
+      try {
+        await ensurePushSubscription(VAPID_PUBLIC_KEY);
+      } catch {
+        show("알림을 켜지 못했어요", { label: "다시 시도", onClick: () => void setReminder(key, current, true) });
+        return;
+      } finally {
+        setSubscribing(false);
+      }
     }
-    setPermissionDenied(false);
+    setAttemptBlock(null);
     save.mutate({ [key]: { ...current, enabled } });
+    const otherOn = REMINDERS.some((r) => r.key !== key && settings?.[r.key].enabled);
+    if (!enabled && !otherOn) removePushSubscription().catch(() => undefined);
   };
 
   const logout = useMutation({
-    mutationFn: api.signOut,
+    // 로그아웃한 기기로 알림이 가지 않게 이 기기의 구독부터 지운다. 지우지 못해도 로그아웃은 한다
+    mutationFn: async () => {
+      await removePushSubscription().catch(() => undefined);
+      return api.signOut();
+    },
     onSuccess: () => {
       queryClient.clear();
       router.replace("/login");
@@ -147,10 +185,10 @@ export function SettingsScreen() {
 
             <section aria-labelledby="settings-notify">
               <SectionHeading id="settings-notify">알림</SectionHeading>
-              {(permissionDenied || reminderBlocked) && (
+              {notice && (
                 <p role="alert" className="mx-5 mt-2 rounded-xl bg-surface-2 px-4 py-3 text-[15px]">
-                  브라우저 설정에서 알림을 허용해주세요
-                  <span className="mt-0.5 block text-[13px] text-ink-2">알림 없이도 다른 기능은 그대로 쓸 수 있어요</span>
+                  {BLOCK_NOTICE[notice].title}
+                  <span className="mt-0.5 block text-[13px] text-ink-2">{BLOCK_NOTICE[notice].hint}</span>
                 </p>
               )}
               <div className="mx-5 mt-1 divide-y divide-line border-y border-line">
@@ -161,6 +199,7 @@ export function SettingsScreen() {
                     label={label}
                     hint={hint}
                     value={settings[key]}
+                    busy={subscribing}
                     onToggle={(enabled) => void setReminder(key, settings[key], enabled)}
                     onTime={(time) => save.mutate({ [key]: { ...settings[key], time } })}
                   />
@@ -180,10 +219,9 @@ export function SettingsScreen() {
   );
 }
 
-/** 지금 알림 권한. 알림을 쓸 수 없는 브라우저와 notify-denied 시나리오는 거부로 본다 */
-function currentPermission(): NotificationPermission {
-  if (api.isNotificationDeniedMock() || typeof Notification === "undefined") return "denied";
-  return Notification.permission;
+/** 이 기기에서 알림을 켤 수 없는 이유. notify-denied, notify-install 시나리오는 그 상태로 본다 */
+function currentBlock(): NotifyBlock | null {
+  return api.mockNotifyBlock() ?? notifyBlock(readPushEnvironment());
 }
 
 /** 기기 시간대를 맨 위에, 그 아래 브라우저가 아는 시간대 */
@@ -197,19 +235,22 @@ function ReminderRow({
   label,
   hint,
   value,
+  busy,
   onToggle,
   onTime,
 }: {
   label: string;
   hint: string;
   value: ReminderSetting;
+  /** 이 기기의 알림 구독을 만드는 중. 그동안 다시 누르지 않게 한다 */
+  busy: boolean;
   onToggle: (enabled: boolean) => void;
   onTime: (time: string) => void;
 }) {
   const timeId = useId();
   return (
     <div className="py-1">
-      <Switch label={label} hint={hint} checked={value.enabled} onChange={onToggle} />
+      <Switch label={label} hint={hint} checked={value.enabled} disabled={busy} onChange={onToggle} />
       {value.enabled && (
         <div className="flex items-center gap-3 pb-2">
           <label htmlFor={timeId} className="flex-1 text-[15px] text-ink-2">
@@ -228,10 +269,11 @@ function ReminderRow({
   );
 }
 
-/** 홈 화면에 추가하는 방법. Chrome이 설치를 제안할 수 있으면 바로 설치 버튼을 보여준다 */
+/** 홈 화면에 추가하는 방법. Chrome이 설치를 제안할 수 있으면 바로 설치 버튼을 보여준다. 홈 화면에서 연 앱이면 보여주지 않는다 */
 function InstallGuide() {
   const [open, setOpen] = useState(false);
   const [installEvent, setInstallEvent] = useState<InstallPromptEvent | null>(null);
+  const [installed] = useState(isStandalone);
   const bodyId = useId();
 
   useEffect(() => {
@@ -242,6 +284,8 @@ function InstallGuide() {
     window.addEventListener("beforeinstallprompt", onPrompt);
     return () => window.removeEventListener("beforeinstallprompt", onPrompt);
   }, []);
+
+  if (installed) return null;
 
   return (
     <section aria-labelledby="settings-install">

@@ -15,6 +15,7 @@ import type {
   Goal,
   House,
   Placement,
+  PushSubscriptionRequest,
   QuickTaskTemplate,
   Task,
   UserSettings,
@@ -38,6 +39,8 @@ export interface MockDb {
   pastRecords: DayRecord[];
   achievements: AchievementProgress[];
   settings: UserSettings;
+  /** 기기별 웹 푸시 구독 */
+  pushSubscriptions: PushSubscriptionRequest[];
   /** 오늘에서 다른 날로 옮긴 할 일 (계획 이력의 오늘 부분). 오늘 기록에 '옮긴 일'로 남는다 */
   movedFromToday: (Pick<Task, "id" | "title"> & { movedTo: DateKey | null })[];
 }
@@ -74,6 +77,7 @@ export const MOCK_SCENARIOS = [
   "goals-mixed",
   "records-empty",
   "notify-denied",
+  "notify-install",
   "login-error",
 ] as const;
 
@@ -245,6 +249,7 @@ function baseDb(today: DateKey): MockDb {
     pastRecords: pastRecords(today),
     achievements: mockAchievements(today),
     movedFromToday: [],
+    pushSubscriptions: [],
     settings: {
       email: "sample.user@gmail.com",
       // 처음에는 기기 시간대를 쓴다
