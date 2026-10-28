@@ -41,6 +41,7 @@ export function ManualEntryScreen() {
         // 입력칸에 적고 추가를 누르지 않은 줄도 함께 만든다
         taskTitles: [...tasks, line.trim()].filter(Boolean),
         source: "MANUAL",
+        breakdownId: null,
       }),
     onSuccess: ({ goalId }) => {
       void queryClient.invalidateQueries();

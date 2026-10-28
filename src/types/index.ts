@@ -311,6 +311,8 @@ export interface GoalBreakdownRequest {
 
 /** AI 분해 결과: 추천 목표 유형(건물 종류)과 할 일 초안 */
 export interface GoalBreakdown {
+  /** 이 분해 요청의 ID. 목표를 만들 때 함께 보내 고른 초안 비율(채택률)을 센다 */
+  breakdownId: string;
   goalType: GoalType;
   drafts: TaskDraft[];
 }
@@ -328,4 +330,6 @@ export interface CreateGoalRequest {
   /** 만들 할 일 제목. 모두 날짜 없는 할 일이 된다 */
   taskTitles: string[];
   source: TaskSource;
+  /** AI 초안에서 골랐으면 그 분해 요청의 ID. 직접 입력이면 null */
+  breakdownId: string | null;
 }

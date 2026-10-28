@@ -14,6 +14,8 @@ export interface GoalFlowState {
   goalTypeTouched: boolean;
   /** AI 초안. 제목을 고치면 여기에 반영한다 */
   drafts: TaskDraft[];
+  /** 지금 초안을 만든 AI 분해 요청의 ID. 목표를 만들 때 함께 보낸다 */
+  breakdownId: string | null;
   selectedDraftIds: Set<string>;
   /** 직접 입력(S11)에서 추가한 할 일 */
   manualTaskTitles: string[];
@@ -26,6 +28,7 @@ const INITIAL: GoalFlowState = {
   goalType: null,
   goalTypeTouched: false,
   drafts: [],
+  breakdownId: null,
   selectedDraftIds: new Set(),
   manualTaskTitles: [],
 };
@@ -49,6 +52,7 @@ export function GoalFlowProvider({ children }: { children: React.ReactNode }) {
         ...prev,
         goalType: prev.goalTypeTouched && prev.goalType ? prev.goalType : breakdown.goalType,
         drafts: breakdown.drafts,
+        breakdownId: breakdown.breakdownId,
         selectedDraftIds: new Set(),
       })),
   };

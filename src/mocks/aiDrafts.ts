@@ -91,5 +91,5 @@ export function mockBreakdown(title: string, round: number): GoalBreakdown {
     id: `draft-${round}-${i}`,
     title: pool[(start + i) % pool.length],
   }));
-  return { goalType, drafts };
+  return { breakdownId: `breakdown-${round}`, goalType, drafts };
 }

@@ -12,13 +12,15 @@
 | `docs/planning.md` | 차곡 기획초안 v0.8 전체. 게임 규칙과 수치의 원본 |
 | `docs/glossary.md` | 용어, 코드 이름, 화면 문구, 게임 상수 |
 | `docs/screens.md` | 화면별 구성, 표시 데이터, 사용자 행동, 상태 |
+| `docs/openapi.yaml` | 백엔드 API 명세 (기준). 가짜 서버 응답과 맞는지 `src/mocks/openapi.test.ts`가 검사한다 |
+| `docs/api.md` | API 규칙과 흐름 설명: 인증, 멱등성, 오류 코드, 화면 함수와 엔드포인트 대응 |
 
 작업 전에 읽을 문서
 
 | 작업 | 읽을 문서 |
 | --- | --- |
 | 화면 하나 만들기, 수정하기 | `docs/screens.md`의 해당 화면 + `docs/glossary.md` |
-| 타입, 가짜 데이터 만들기 | `docs/glossary.md` |
+| 타입, 가짜 데이터 만들기 | `docs/glossary.md` + `docs/openapi.yaml`의 해당 스키마 (타입을 바꾸면 명세도 함께 고친다) |
 | 크레딧, 보너스, 집 업그레이드 계산 | `docs/glossary.md` 8장 + `docs/planning.md` 4장 |
 | 문구 쓰기 | `PRODUCT.md`의 Brand Personality + `docs/glossary.md` 9장 |
 

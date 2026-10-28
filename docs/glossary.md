@@ -185,3 +185,24 @@
 | 연속 기록이 끊겼어요 | (표시하지 않음) |
 | 포인트, 코인, 골드 | 크레딧 |
 | 레벨업 | 집 넓히기 |
+
+## 10 API 이름
+
+`docs/openapi.yaml`에서 새로 정한 요청·응답 이름이다. 도메인 이름(1~7장)은 그대로 쓰고, 요청은 `~Request`, 결과는 `~Result`로 짓는다. (2026-10-28, 이름 확인 필요)
+
+| 이름 | 쓰는 곳 | 뜻 |
+| --- | --- | --- |
+| `GoogleSignInRequest`, `SignInResponse`, `AccessToken` | `POST /auth/google`, `/auth/refresh` | 구글 ID 토큰과 기기 시간대 / 액세스 토큰과 진행 중 목표 수 |
+| `UpdateTaskRequest` | `PATCH /tasks/{id}` | 제목, 메모, 연결 목표, 반복 중 보낸 값만 바꿈 |
+| `SetCoreRequest` | `PUT /tasks/{id}/core` | 핵심 지정·해제. 핵심 교체는 `coreConflict`로 |
+| `scheduleTask`, `ScheduleTaskRequest` | `PUT /tasks/{id}/schedule` | 날짜 바꾸기와 날짜 없이 보관을 하나로 (`date: null`이면 보관) |
+| `SplitTaskRequest` | `POST /tasks/{id}/split` | 나눌 새 할 일 제목들 |
+| `CompletionResult`, `CreditChange` | `POST /tasks/{id}/complete` | 완료로 지급된 크레딧, 공사가 진행된 건물, 골조 도달, 보너스, 오늘 일반 완료 수, 잔액. 화면이 알림 문구를 만든다 |
+| `CompleteGoalRequest` | `POST /goals/{id}/complete` | 남은 할 일 처리(`remainingTasks`) |
+| `AddGoalTasksRequest` | `POST /goals/{id}/tasks` | 더할 할 일 제목, 생성 방식, `breakdownId` |
+| `breakdownId` | `GoalBreakdown`, `CreateGoalRequest`, `AddGoalTasksRequest` | AI 분해 요청의 ID. 고른 초안 비율(채택률)을 센다 |
+| `RecordTask`, `MovedTask` | `DayRecord` | 기록의 완료한 할 일 / 옮긴 할 일 한 줄 |
+| `UpdateSettingsRequest` | `PATCH /me/settings` | 시간대와 알림 중 보낸 값만 바꿈 |
+| `PurchaseFurnitureRequest`, `PlaceFurnitureRequest` | `/house/furniture-purchases`, `/house/slots/{id}/placement` | 살 가구와 슬롯 / 놓을 보유 가구 |
+| `subscribePush`, `unsubscribePush`, `PushSubscriptionRequest` | `/me/push-subscriptions` | 이 기기의 웹 푸시 구독 (PWA 단계) |
+| `Problem`, `CoreFullProblem` | 모든 오류 | RFC 9457 Problem Details에 오류 코드(`code`)를 더한 것. 코드 목록은 docs/api.md 4장 |

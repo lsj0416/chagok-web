@@ -65,7 +65,7 @@ export function DraftSelectScreen() {
     mutationFn: async () => {
       const taskTitles = state.drafts.filter((d) => selected.has(d.id)).map((d) => d.title);
       if (targetGoalId) {
-        await api.addGoalTasks(targetGoalId, taskTitles, "AI");
+        await api.addGoalTasks(targetGoalId, taskTitles, "AI", state.breakdownId);
         return { goalId: targetGoalId, added: taskTitles.length };
       }
       const { goalId } = await api.createGoal({
@@ -74,6 +74,7 @@ export function DraftSelectScreen() {
         dueDate: state.dueDate,
         taskTitles,
         source: "AI",
+        breakdownId: state.breakdownId,
       });
       return { goalId, added: null };
     },

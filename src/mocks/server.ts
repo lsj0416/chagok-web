@@ -490,7 +490,8 @@ export function resumeGoal(id: string) {
 }
 
 /** 목표에 할 일 여러 개를 날짜 없이 추가한다 (S12의 AI로 할 일 추가) */
-export function addGoalTasks(goalId: string, titles: string[], source: Task["source"]) {
+export function addGoalTasks(goalId: string, titles: string[], source: Task["source"], breakdownId: string | null = null) {
+  void breakdownId; // 가짜 서버는 채택률을 세지 않는다. 실제 서버는 분해 요청과 고른 수를 기록한다
   return mutate(() => {
     findGoal(goalId);
     const now = new Date().toISOString();
