@@ -16,6 +16,7 @@ import * as api from "@/lib/api/goals";
 import { formatShortDate } from "@/lib/date";
 import { EMPTY_FILTER_MESSAGE, filterGoals, GOAL_STATUS_LABEL } from "@/lib/goals";
 import { STAGE_LABEL } from "@/lib/village";
+import { StageMeter } from "@/components/StageMeter";
 import type { GoalStatus, GoalSummary } from "@/types";
 
 const FILTERS: GoalStatus[] = ["ACTIVE", "COMPLETED", "ARCHIVED"];
@@ -47,7 +48,7 @@ export function GoalListScreen() {
             <p className="text-[15px] text-ink-2">목표 하나가 마을의 건물 하나가 돼요</p>
             <Link
               href="/goals/new"
-              className="mt-1 flex h-12 items-center justify-center rounded-xl bg-ink px-5 text-[16px] font-semibold text-surface"
+              className="mt-1 flex h-12 items-center justify-center border-b-[3px] border-caution bg-ink px-5 text-[16px] font-semibold text-surface"
             >
               AI로 첫 목표 만들기
             </Link>
@@ -86,7 +87,7 @@ export function GoalListScreen() {
           <div className="pointer-events-auto bg-linear-to-t from-surface from-60% to-transparent px-4 pt-2 pb-2">
             <Link
               href="/goals/new"
-              className="flex h-12 w-full items-center justify-center gap-1.5 rounded-xl bg-ink text-[16px] font-semibold text-surface"
+              className="flex h-13 w-full items-center justify-center gap-1.5 border-b-4 border-caution bg-ink font-display text-[19px] text-surface"
             >
               <Plus aria-hidden size={20} strokeWidth={2.4} />새 목표
             </Link>
@@ -119,6 +120,7 @@ function GoalRow({ summary }: { summary: GoalSummary }) {
         <span className="min-w-0 flex-1">
           <span className="line-clamp-2 text-[16px] leading-snug font-semibold">{goal.title}</span>
           {meta.length > 0 && <span className="mt-0.5 block truncate text-[13px] text-ink-3">{meta.join(" · ")}</span>}
+          {building && <StageMeter stage={building.stage} paused={goal.status === "ARCHIVED"} className="mt-1.5 w-24" />}
         </span>
         {/* 진행은 달성률이 아니라 개수로 보여준다 (docs/screens.md S08) */}
         <span className="shrink-0 text-[14px] text-ink-2 tabular-nums">

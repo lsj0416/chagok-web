@@ -230,7 +230,7 @@ function DraftRow({
       >
         <span
           className={`grid size-[22px] place-items-center rounded-md border-2 transition-colors duration-150 ${
-            checked ? "border-ink bg-ink text-surface" : "border-line-strong bg-surface"
+            checked ? "border-sign bg-sign text-sign-ink" : "border-line-strong bg-surface"
           }`}
         >
           {checked && <Check aria-hidden size={14} strokeWidth={3} />}
@@ -253,7 +253,7 @@ function DraftRow({
               setEditing(false);
             }
           }}
-          className="mr-3 h-11 min-w-0 flex-1 rounded-lg border border-ink bg-surface px-3 text-[16px]"
+          className="mr-3 h-11 min-w-0 flex-1 rounded-lg border border-sign bg-surface px-3 text-[16px]"
         />
       ) : (
         <button

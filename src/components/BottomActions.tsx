@@ -12,7 +12,7 @@ export function PrimaryButton({ children, ...props }: React.ButtonHTMLAttributes
     <button
       type="button"
       {...props}
-      className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-ink text-[16px] font-semibold text-surface disabled:opacity-40"
+      className="flex h-13 w-full items-center justify-center gap-2 border-b-4 border-caution bg-ink font-display text-[19px] text-surface disabled:opacity-40"
     >
       {children}
     </button>

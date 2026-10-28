@@ -79,7 +79,7 @@ export function FurnitureShopSheet({ slot, detail, pending, onClose, onBuy, onPl
                     <span
                       aria-hidden
                       className={`grid size-[22px] shrink-0 place-items-center rounded-full border-2 ${
-                        checked ? "border-ink bg-ink text-surface" : "border-line-strong"
+                        checked ? "border-sign bg-sign text-sign-ink" : "border-line-strong"
                       }`}
                     >
                       {checked && <Check size={14} strokeWidth={3} />}

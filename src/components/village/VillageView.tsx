@@ -3,6 +3,7 @@
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { BUILDING_LABEL, HOUSE_LEVEL_LABEL } from "@/config/game";
+import { StageMeter } from "@/components/StageMeter";
 import { constructionLabel, STAGE_LABEL } from "@/lib/village";
 import type { Building, Goal, House } from "@/types";
 
@@ -76,7 +77,7 @@ export function VillageView({ house, buildings, goals, revealIds, selectedId, on
             }`}
             onClick={() => onSelect(isSelected ? null : building.id)}
             className={`absolute grid size-16 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-md bg-surface-3 text-center text-[13px] leading-tight text-ink-2 ${
-              isSelected ? "border-2 border-ink" : "border border-line-strong"
+              isSelected ? "border-2 border-sign" : "border border-line-strong"
             } ${revealIds.has(building.id) ? "motion-safe:animate-[stage-reveal_600ms_var(--ease-out-expo)_300ms]" : ""}`}
             style={{ left: `${pos.x}%`, top: `${pos.y}%` }}
           >
@@ -101,6 +102,7 @@ export function VillageView({ house, buildings, goals, revealIds, selectedId, on
               {constructionLabel(selected)}
               {selectedGoal.status === "ARCHIVED" && " · 공사 중지"}
             </span>
+            <StageMeter stage={selected.stage} paused={selectedGoal.status === "ARCHIVED"} className="mt-1.5 w-24" />
           </span>
           <ChevronRight aria-hidden size={18} className="shrink-0 text-ink-3" />
         </Link>

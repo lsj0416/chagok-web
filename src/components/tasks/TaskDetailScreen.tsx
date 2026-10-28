@@ -104,7 +104,7 @@ export function TaskDetailScreen() {
   const back = (
     <>
       <OfflineBanner show={!online || scenario === "offline"} />
-      <TopBar title="" back />
+      <TopBar title="할 일" back />
     </>
   );
 
@@ -113,7 +113,7 @@ export function TaskDetailScreen() {
       <>
         {back}
         <main className="flex-1 px-5 pt-2 pb-6">
-          <h1 className="text-[19px] font-bold">할 일을 찾을 수 없어요</h1>
+          <h2 className="text-[20px]">할 일을 찾을 수 없어요</h2>
           <p className="mt-2 text-[15px] text-ink-2">지웠거나 나눈 할 일이에요</p>
           <Link
             href="/today"
@@ -131,7 +131,6 @@ export function TaskDetailScreen() {
       <>
         {back}
         <main className="flex-1 pb-6">
-          <h1 className="sr-only">할 일 상세</h1>
           <LoadError onRetry={() => void query.refetch()} />
         </main>
       </>
@@ -143,7 +142,6 @@ export function TaskDetailScreen() {
       <>
         {back}
         <main className="flex-1 px-5 pt-2 pb-6" aria-busy="true">
-          <h1 className="sr-only">할 일 상세</h1>
           <DetailSkeleton />
         </main>
       </>
@@ -178,7 +176,6 @@ export function TaskDetailScreen() {
     <>
       {back}
       <main className="flex-1 px-5 pb-6">
-        <h1 className="sr-only">할 일 상세</h1>
         <TitleField
           key={task.title}
           value={task.title}

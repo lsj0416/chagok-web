@@ -63,8 +63,8 @@ export function VillageScreen() {
         title="마을"
         action={
           detail && (
-            <p className="pr-3 text-[15px] text-ink-2 tabular-nums">
-              크레딧 <strong className="font-bold text-ink">{formatCredit(detail.balance)}</strong>
+            <p className="pr-3 text-[15px] text-sign-2 tabular-nums">
+              크레딧 <strong className="font-bold text-sign-ink">{formatCredit(detail.balance)}</strong>
             </p>
           )
         }
@@ -93,7 +93,7 @@ export function VillageScreen() {
             {detail.buildings.length === 0 && (
               <Link
                 href="/goals/new"
-                className="mt-4 grid h-12 place-items-center rounded-xl bg-ink text-[16px] font-semibold text-surface"
+                className="mt-4 grid h-12 place-items-center border-b-[3px] border-caution bg-ink text-[16px] font-semibold text-surface"
               >
                 AI로 목표 만들기
               </Link>

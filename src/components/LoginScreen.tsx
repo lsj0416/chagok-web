@@ -35,12 +35,15 @@ export function LoginScreen() {
   };
 
   return (
-    <main className="flex min-h-dvh flex-1 flex-col px-5 pt-[calc(48px+env(safe-area-inset-top,0px))] pb-[calc(16px+var(--safe-bottom))]">
-      <h1 className="text-[19px] font-bold tracking-[-0.01em]">{APP_NAME}</h1>
-      <p className="mt-1 text-[15px] text-ink-2">목표를 오늘 할 일로 나누고, 완료할 때마다 마을이 자라요</p>
-      <GraphicPlaceholder label="마을" className="mt-8 aspect-square w-full" />
+    <main className="flex min-h-dvh flex-1 flex-col pb-[calc(16px+var(--safe-bottom))]">
+      {/* 안내판 띠: 서비스 이름과 한 줄 소개 */}
+      <header className="border-b-[3px] border-caution bg-sign px-5 pt-[calc(40px+env(safe-area-inset-top,0px))] pb-6 text-sign-ink">
+        <h1 className="text-[32px] leading-tight">{APP_NAME}</h1>
+        <p className="mt-1.5 text-[15px] text-sign-2">목표를 오늘 할 일로 나누고, 완료할 때마다 마을이 자라요</p>
+      </header>
+      <GraphicPlaceholder label="마을" className="mx-5 mt-6 aspect-square" />
 
-      <div className="mt-auto flex flex-col gap-2 pt-8">
+      <div className="mt-auto flex flex-col gap-2 px-5 pt-8">
         {status === "failed" && (
           <p role="alert" className="text-center text-[15px] text-ink-2">
             로그인하지 못했어요

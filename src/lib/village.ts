@@ -1,7 +1,15 @@
 import { BUILDING_FRAME_THRESHOLD } from "@/config/game";
 import type { Building, BuildingStage } from "@/types";
 
-const STAGE_ORDER: Record<BuildingStage, number> = { LOT: 0, FRAME: 1, COMPLETE: 2 };
+/** 공사 단계 순서: 터 → 골조 → 완성 */
+export const BUILDING_STAGES: readonly BuildingStage[] = ["LOT", "FRAME", "COMPLETE"];
+
+const STAGE_ORDER = Object.fromEntries(BUILDING_STAGES.map((stage, i) => [stage, i])) as Record<BuildingStage, number>;
+
+/** 몇 번째 단계인지 (터 1, 골조 2, 완성 3). 공정 막대가 채울 칸 수 */
+export function stageStep(stage: BuildingStage): number {
+  return STAGE_ORDER[stage] + 1;
+}
 
 /** 마지막으로 본 뒤 단계가 올랐으면 다음 마을 진입 때 짧은 연출을 보여준다 */
 export function needsStageReveal(building: Building): boolean {

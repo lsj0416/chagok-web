@@ -12,8 +12,8 @@ export function ChoiceChip({ selected, children, className = "", ...props }: Cho
       role="radio"
       aria-checked={selected}
       {...props}
-      className={`h-11 shrink-0 rounded-full border px-3.5 text-[15px] disabled:opacity-40 ${
-        selected ? "border-ink bg-ink font-semibold text-surface" : "border-line-strong bg-surface text-ink"
+      className={`h-11 shrink-0 rounded-md border px-3.5 text-[15px] disabled:opacity-40 ${
+        selected ? "border-sign bg-sign font-semibold text-sign-ink" : "border-line-strong bg-surface text-ink"
       } ${className}`}
     >
       {children}

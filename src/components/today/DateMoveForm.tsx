@@ -38,7 +38,7 @@ export function DateMoveForm({ today, onSubmit, onCancel }: DateMoveFormProps) {
         <button type="button" onClick={onCancel} className="h-12 flex-1 rounded-lg bg-surface-2 text-[15px] font-semibold text-ink-2">
           취소
         </button>
-        <button type="submit" disabled={!date} className="h-12 flex-1 rounded-lg bg-ink text-[15px] font-semibold text-surface disabled:opacity-40">
+        <button type="submit" disabled={!date} className="h-12 flex-1 border-b-[3px] border-caution bg-ink text-[15px] font-semibold text-surface disabled:opacity-40">
           옮기기
         </button>
       </div>

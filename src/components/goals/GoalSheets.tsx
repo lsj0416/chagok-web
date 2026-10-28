@@ -192,10 +192,10 @@ export function GoalCompleteSheet({ open, buildingName, remainingCount, onClose,
                     <span
                       aria-hidden
                       className={`grid size-[22px] shrink-0 place-items-center rounded-full border-2 ${
-                        selected ? "border-ink" : "border-line-strong"
+                        selected ? "border-sign" : "border-line-strong"
                       }`}
                     >
-                      {selected && <span className="size-2.5 rounded-full bg-ink" />}
+                      {selected && <span className="size-2.5 rounded-full bg-sign" />}
                     </span>
                     <span className="min-w-0 flex-1">
                       <span className="block text-[16px]">{option.label}</span>

@@ -37,7 +37,7 @@ export function RecordsScreen() {
             <p className="text-[15px] text-ink-2">할 일을 완료하면 날짜별로 여기에 쌓여요</p>
             <Link
               href="/today"
-              className="mt-1 flex h-12 items-center justify-center rounded-xl bg-ink px-5 text-[16px] font-semibold text-surface"
+              className="mt-1 flex h-12 items-center justify-center border-b-[3px] border-caution bg-ink px-5 text-[16px] font-semibold text-surface"
             >
               오늘로 가기
             </Link>

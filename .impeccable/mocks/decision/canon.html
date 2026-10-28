@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=390">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:390px;height:844px;overflow:hidden;background:#F2F4F6;font-family:"Noto Sans KR",sans-serif;color:#191F28;word-break:keep-all;position:relative}
+.top{height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 20px}
+.date{font-size:20px;font-weight:700}
+.gear{width:22px;height:22px;border:2px solid #8B95A1;border-radius:50%}
+.card{background:#fff;border-radius:20px;margin:0 12px 12px;padding:18px 20px}
+.lbl{font-size:13px;color:#6B7684;font-weight:600}
+.bld{display:flex;gap:10px;margin-top:12px}
+.b{flex:1}
+.ph{aspect-ratio:1;background:#D6D6D6;border-radius:12px;display:grid;place-items:center;font-size:12px;color:#4B4B4B}
+.bn{font-size:13px;font-weight:600;margin-top:8px}.bs{font-size:12px;color:#8B95A1}
+.big{font-size:20px;font-weight:700;margin-top:4px}
+.big em{font-style:normal;color:#3182F6}
+.row{display:flex;align-items:flex-start;gap:12px;padding:10px 0}
+.ck{width:24px;height:24px;border-radius:50%;border:2px solid #D1D6DB;flex:none;margin-top:1px}
+.done .ck{background:#3182F6;border-color:#3182F6}
+.tt{font-size:16px;line-height:1.4}
+.done .tt{color:#B0B8C1;text-decoration:line-through}
+.g{font-size:13px;color:#8B95A1;margin-top:2px}
+.add{position:absolute;left:12px;right:12px;bottom:74px;height:56px;border-radius:16px;background:#3182F6;color:#fff;font-size:17px;font-weight:600;display:grid;place-items:center}
+.tabs{position:absolute;left:0;right:0;bottom:0;height:62px;background:#fff;display:flex;border-top:1px solid #E5E8EB}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:11px;color:#B0B8C1}
+.tab i{width:22px;height:22px;border-radius:6px;background:#D1D6DB}
+.tab.on{color:#191F28;font-weight:600}.tab.on i{background:#4E5968}
+</style></head><body>
+<div class="top"><p class="date">10월 28일 수요일</p><i class="gear"></i></div>
+<div class="card"><p class="lbl">짓고 있는 건물</p>
+ <div class="bld"><div class="b"><div class="ph">오피스</div><p class="bn">오피스</p><p class="bs">골조</p></div><div class="b"><div class="ph">학교</div><p class="bn">학교</p><p class="bs">터</p></div><div class="b"><div class="ph">체육관</div><p class="bn">체육관</p><p class="bs">터</p></div></div>
+</div>
+<div class="card"><p class="lbl">핵심 할 일</p><p class="big">3개 중 <em>1개</em> 했어요</p>
+ <div class="row done"><i class="ck"></i><div><p class="tt">관심 공고 3개에서 주요 업무 정리하기</p><p class="g">백엔드 개발자로 취업하기</p></div></div>
+ <div class="row"><i class="ck"></i><div><p class="tt">지원동기 첫 문단 쓰기</p><p class="g">백엔드 개발자로 취업하기</p></div></div>
+ <div class="row"><i class="ck"></i><div><p class="tt">기출 1회분 풀기</p><p class="g">정보처리기사 필기 합격</p></div></div>
+</div>
+<div class="card"><p class="lbl">할 일</p>
+ <div class="row"><i class="ck"></i><div><p class="tt">Spring Security 강의 1개 듣기</p><p class="g">백엔드 개발자로 취업하기</p></div></div>
+</div>
+<div class="add">할 일 추가</div>
+<nav class="tabs"><div class="tab on"><i></i>오늘</div><div class="tab"><i></i>마을</div><div class="tab"><i></i>목표</div><div class="tab"><i></i>기록</div></nav>
+</body></html>

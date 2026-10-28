@@ -74,8 +74,8 @@ export function HouseScreen() {
         back
         action={
           detail && (
-            <p className="pr-3 text-[15px] text-ink-2 tabular-nums">
-              크레딧 <strong className="font-bold text-ink">{formatCredit(detail.balance)}</strong>
+            <p className="pr-3 text-[15px] text-sign-2 tabular-nums">
+              크레딧 <strong className="font-bold text-sign-ink">{formatCredit(detail.balance)}</strong>
             </p>
           )
         }

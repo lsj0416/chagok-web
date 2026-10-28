@@ -77,7 +77,7 @@ Impeccable이 설치되어 있지 않으면 Impeccable 명령을 흉내 내지 �
 
 ### 진행
 
-- 색과 폰트는 아직 정하지 않았다. 회색 톤과 기본 폰트로 구조와 흐름만 만든다.
+- 색과 폰트는 비주얼 단계(2026-10-28)에서 정했다(방향: 공사 안내판). 값은 `DESIGN.md`와 `src/app/globals.css`의 토큰을 따른다. 그림 자리 표시자는 계속 회색이다.
 - Impeccable 순서: `/impeccable shape` → `/impeccable craft` → `/impeccable onboard`, `/impeccable harden`
 - 화면 순서: S02 오늘 → S09·S10 AI 분해 → S06 집 내부 → 나머지
 - 폭 375px에서 먼저 확인하고, 360px과 430px에서 깨지지 않는지 본다.

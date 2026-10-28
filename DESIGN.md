@@ -1,133 +1,174 @@
 ---
-name: chagok (와이어프레임)
-description: 장기 목표를 할 일로 나누고 완료할 때마다 마을이 자라는 목표 실행 서비스. 색과 서체를 정하기 전, 회색 와이어프레임 단계의 시스템
+name: chagok (공사 안내판)
+description: 장기 목표를 할 일로 나누고 완료할 때마다 마을이 자라는 목표 실행 서비스. 목표마다 공사 현장이 있고 할 일 하나가 공정 하나인 세계
 colors:
-  ink: "#1c1c1c"
-  ink-2: "#4b4b4b"
-  ink-3: "#6e6e6e"
-  line: "#e3e3e3"
-  line-strong: "#c9c9c9"
+  sign: "#1f4fa3"
+  sign-ink: "#ffffff"
+  sign-2: "#d5e1f6"
+  caution: "#f2c230"
+  ink: "#18202b"
+  ink-2: "#434a56"
+  ink-3: "#5b6270"
+  line: "#e6e3dc"
+  line-strong: "#878c95"
   surface: "#ffffff"
-  surface-2: "#f3f3f3"
-  surface-3: "#e9e9e9"
+  surface-2: "#f4f3ef"
+  surface-3: "#e8e6e0"
   placeholder: "#d6d6d6"
-  backdrop: "rgb(0 0 0 / 0.4)"
+  backdrop: "rgb(24 32 43 / 0.45)"
 typography:
+  display:
+    fontFamily: "Do Hyeon, Gothic A1, ui-sans-serif, sans-serif"
+    fontSize: "32px"
+    fontWeight: 400
+    lineHeight: 1.25
+    letterSpacing: "0em"
   headline:
-    fontFamily: "ui-sans-serif, system-ui, sans-serif"
-    fontSize: "19px"
-    fontWeight: 700
-    letterSpacing: "-0.01em"
+    fontFamily: "Do Hyeon, Gothic A1, ui-sans-serif, sans-serif"
+    fontSize: "22px"
+    fontWeight: 400
+    lineHeight: 1.375
+    letterSpacing: "0em"
   title:
-    fontFamily: "ui-sans-serif, system-ui, sans-serif"
+    fontFamily: "Do Hyeon, Gothic A1, ui-sans-serif, sans-serif"
+    fontSize: "20px"
+    fontWeight: 400
+    letterSpacing: "0em"
+  button-display:
+    fontFamily: "Do Hyeon, Gothic A1, ui-sans-serif, sans-serif"
+    fontSize: "19px"
+    fontWeight: 400
+    letterSpacing: "0em"
+  section:
+    fontFamily: "Do Hyeon, Gothic A1, ui-sans-serif, sans-serif"
     fontSize: "18px"
-    fontWeight: 700
+    fontWeight: 400
+    letterSpacing: "0em"
   body:
-    fontFamily: "ui-sans-serif, system-ui, sans-serif"
+    fontFamily: "Gothic A1, ui-sans-serif, system-ui, sans-serif"
     fontSize: "16px"
     fontWeight: 400
     lineHeight: 1.375
   body-sm:
-    fontFamily: "ui-sans-serif, system-ui, sans-serif"
+    fontFamily: "Gothic A1, ui-sans-serif, system-ui, sans-serif"
     fontSize: "15px"
     fontWeight: 400
   label:
-    fontFamily: "ui-sans-serif, system-ui, sans-serif"
+    fontFamily: "Gothic A1, ui-sans-serif, system-ui, sans-serif"
     fontSize: "14px"
     fontWeight: 600
   caption:
-    fontFamily: "ui-sans-serif, system-ui, sans-serif"
+    fontFamily: "Gothic A1, ui-sans-serif, system-ui, sans-serif"
     fontSize: "13px"
     fontWeight: 400
   tab-label:
-    fontFamily: "ui-sans-serif, system-ui, sans-serif"
+    fontFamily: "Gothic A1, ui-sans-serif, system-ui, sans-serif"
     fontSize: "11px"
     fontWeight: 400
 rounded:
-  sm: "4px"
-  lg: "8px"
-  xl: "12px"
-  sheet: "16px"
+  sm: "2px"
+  md: "3px"
+  lg: "4px"
+  xl: "4px"
+  2xl: "6px"
   full: "9999px"
 spacing:
   inset-list: "8px"
   inset-panel: "16px"
+  sign-gap: "16px"
   gutter: "20px"
-  section-gap: "28px"
+  section-gap: "24px"
   touch: "44px"
+  cta: "52px"
   bar: "56px"
   app-max-width: "430px"
 components:
+  sign-band:
+    backgroundColor: "{colors.sign}"
+    textColor: "{colors.sign-ink}"
+    typography: "{typography.headline}"
+    padding: "0 8px"
+    height: "56px"
+  button-primary-bar:
+    backgroundColor: "{colors.ink}"
+    textColor: "{colors.surface}"
+    typography: "{typography.button-display}"
+    rounded: "0px"
+    height: "52px"
+    width: "100%"
   button-primary:
     backgroundColor: "{colors.ink}"
     textColor: "{colors.surface}"
     typography: "{typography.label}"
-    rounded: "{rounded.lg}"
+    rounded: "0px"
     padding: "0 16px"
     height: "48px"
-  button-primary-bar:
-    backgroundColor: "{colors.ink}"
-    textColor: "{colors.surface}"
-    typography: "{typography.body}"
-    rounded: "{rounded.xl}"
-    height: "48px"
-    width: "100%"
   button-outline:
     backgroundColor: "{colors.surface}"
     textColor: "{colors.ink}"
     typography: "{typography.label}"
     rounded: "{rounded.lg}"
     padding: "0 16px"
-    height: "44px"
+    height: "48px"
   button-tonal:
     backgroundColor: "{colors.surface-2}"
     textColor: "{colors.ink-2}"
     typography: "{typography.label}"
     rounded: "{rounded.lg}"
-    height: "44px"
-  chip:
-    backgroundColor: "{colors.surface}"
-    textColor: "{colors.ink}"
-    typography: "{typography.body-sm}"
-    rounded: "{rounded.full}"
-    padding: "0 16px"
-    height: "44px"
-  chip-selected:
-    backgroundColor: "{colors.ink}"
-    textColor: "{colors.surface}"
-    typography: "{typography.body-sm}"
-    rounded: "{rounded.full}"
-    padding: "0 16px"
-    height: "44px"
-  button-outline-bar:
-    backgroundColor: "{colors.surface}"
-    textColor: "{colors.ink}"
-    typography: "{typography.body}"
-    rounded: "{rounded.xl}"
     height: "48px"
-    width: "100%"
   button-text:
     textColor: "{colors.ink-2}"
     typography: "{typography.body-sm}"
     padding: "0 12px"
     height: "44px"
-  bottom-actions:
+  chip:
     backgroundColor: "{colors.surface}"
-    padding: "12px 16px"
-  draft-row:
     textColor: "{colors.ink}"
-    typography: "{typography.body}"
-    padding: "4px 0"
-  task-row:
+    typography: "{typography.body-sm}"
+    rounded: "{rounded.md}"
+    padding: "0 14px"
+    height: "44px"
+  chip-selected:
+    backgroundColor: "{colors.sign}"
+    textColor: "{colors.sign-ink}"
+    typography: "{typography.body-sm}"
+    rounded: "{rounded.md}"
+    padding: "0 14px"
+    height: "44px"
+  check-done:
+    backgroundColor: "{colors.sign}"
+    textColor: "{colors.sign-ink}"
+    rounded: "{rounded.full}"
+    size: "22px"
+  check-select:
+    backgroundColor: "{colors.sign}"
+    textColor: "{colors.sign-ink}"
+    rounded: "{rounded.md}"
+    size: "22px"
+  stage-meter-filled:
+    backgroundColor: "{colors.caution}"
+    height: "5px"
+  stage-meter-paused:
+    backgroundColor: "{colors.line-strong}"
+    height: "5px"
+  stage-meter-empty:
+    backgroundColor: "{colors.surface-3}"
+    height: "5px"
+  hoarding-strip:
+    backgroundColor: "{colors.surface-2}"
     textColor: "{colors.ink}"
-    typography: "{typography.body}"
-    padding: "4px 0"
+    padding: "12px 10px 10px"
   notice-panel:
     backgroundColor: "{colors.surface-2}"
     textColor: "{colors.ink}"
     typography: "{typography.body-sm}"
     rounded: "{rounded.xl}"
     padding: "12px 16px"
+  empty-card:
+    backgroundColor: "{colors.surface-2}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.2xl}"
+    padding: "20px 16px 16px"
   toast:
     backgroundColor: "{colors.ink}"
     textColor: "{colors.surface}"
@@ -137,13 +178,16 @@ components:
   bottom-sheet:
     backgroundColor: "{colors.surface}"
     textColor: "{colors.ink}"
-    rounded: "{rounded.sheet}"
+    rounded: "{rounded.2xl}"
     padding: "0 20px 20px"
   tab-bar:
     backgroundColor: "{colors.surface}"
     textColor: "{colors.ink-3}"
     typography: "{typography.tab-label}"
     height: "56px"
+  tab-active:
+    textColor: "{colors.sign}"
+    typography: "{typography.tab-label}"
   input-field:
     backgroundColor: "{colors.surface}"
     textColor: "{colors.ink}"
@@ -151,219 +195,229 @@ components:
     rounded: "{rounded.lg}"
     padding: "0 12px"
     height: "48px"
+  switch-on:
+    backgroundColor: "{colors.sign}"
+    rounded: "{rounded.full}"
+    width: "48px"
+    height: "28px"
   graphic-placeholder:
     backgroundColor: "{colors.placeholder}"
     textColor: "{colors.ink-2}"
-    typography: "{typography.label}"
+    typography: "{typography.caption}"
     rounded: "{rounded.lg}"
 ---
 
-# Design System: chagok (와이어프레임)
+# Design System: chagok (공사 안내판)
 
-> 이 문서는 와이어프레임 단계의 시스템을 빌드된 코드(S02 오늘 화면과 공용 컴포넌트) 기준으로 기록한다. **색과 서체는 아직 정하지 않았다.** 지금 값은 모두 회색 단계와 기본 시스템 폰트다. 색과 서체를 정할 때는 `src/app/globals.css`의 `@theme` 토큰 값만 바꾸고, 이 문서를 다시 생성한다. 컴포넌트 코드는 토큰 이름(`ink`, `surface-2` 등)만 참조하므로 고칠 필요가 없어야 한다.
+> 이 문서는 비주얼 단계(2026-10-28, 방향 '공사 안내판', seed:aa5e64985ad9cf17)에서 빌드된 코드를 기준으로 기록한다. 값의 원본은 `src/app/globals.css`의 `@theme`와 `src/app/layout.tsx`의 서체 설정이다. 화면 코드는 토큰 이름(`sign`, `ink`, `surface-2` 등)만 쓴다. 와이어프레임 단계의 회색 시스템을 대체한다.
 
 ## Overview
 
-**Creative North Star: "조용한 할 일 목록"**
+**Creative North Star: "공사 안내판"**
 
-화면은 흰 바탕 위의 표준 모바일 목록이다. 구분은 굵기, 크기, 간격, 1px 선, 옅은 회색 면으로만 한다. 진행 현황은 큰 숫자나 차트가 아니라 한 줄 문장이고, 축하 연출 대신 짧은 알림과 실행 취소만 남는다. 한 손으로, 이동 중에, 몇 초 안에 하나를 끝내고 닫는 사용에 맞춘 밀도다.
+목표마다 공사 현장이 있고, 할 일 하나가 공정 하나다. 화면은 현장 입구의 안내판과 가림막처럼 읽힌다. 모든 화면의 머리는 파란 안내판 띠에 흰 안내판 글자(Do Hyeon)로 제목을 쓰고, 그 아래를 안전 노랑 줄이 막는다. 본문은 흰 가림막 패널과 콘크리트 쪽으로 살짝 데운 회색 면 위의 목록이다. 파스텔 게임 투두와 흰 미니멀 목록 둘 다 거부한다.
 
-자주 쓰는 행동은 엄지가 닿는 아래쪽에 모인다. 아래에서부터 하단 탭, 할 일 추가 버튼, 알림 순으로 쌓이고, 바텀시트도 아래에서 올라온다. 앱은 폭 430px 안에 갇힌 한 열이고, 그보다 넓은 화면에서는 회색 바탕 가운데 흰 기둥으로 놓인다.
+색은 세 가지 일만 나눠 맡는다. 파랑은 '안내와 확정'(머리 띠, 완료 체크, 선택, 활성 탭, 포커스, 켠 스위치), 노랑은 '공정 진행'(공정 막대, 안내판과 먹색 버튼 아래 줄), 먹색은 '대표 행동'(채움 버튼, 알림). 판과 버튼은 각지고(0~4px), 원은 완료 체크와 스위치처럼 원이어야 하는 것에만 남는다.
 
-마을, 건물, 집, 가구 그림은 3D 렌더가 준비될 때까지 같은 비율의 회색 상자와 이름으로만 둔다.
+한 손, 이동 중, 몇 초 안에 하나를 끝내는 밀도는 그대로다. 자주 쓰는 행동은 엄지가 닿는 아래쪽에 모이고, 진행은 큰 숫자 하나(안내판의 '핵심 1/3')와 3칸 공정 막대로만 말한다. 마을, 건물, 집, 가구 그림은 3D 렌더가 준비될 때까지 같은 비율의 회색 상자와 이름으로 둔다.
 
 **Key Characteristics:**
-- 흰 바탕, 회색 10단계, 강조색 없음. 가장 진한 회색(`ink`)이 주요 행동의 채움색 역할을 한다
-- 기본 시스템 산세리프 하나, 굵기 400/600/700과 11~19px 크기 차이로 위계를 만든다
-- 그림자는 화면 위에 뜨는 두 가지(바텀시트, 알림)에만 쓴다. 예외는 스위치 손잡이의 아주 작은 그림자 하나
-- 모든 누르는 대상은 최소 44px
-- 그래픽 자리는 회색 자리 표시자
+- 파란 안내판 띠(흰 제목, 아래 3px 노랑 줄)가 모든 화면의 머리
+- 제목은 Do Hyeon(굵기 하나), 본문은 Gothic A1(400/600/700)
+- 노랑은 공정 막대와 아래 줄에만, 글자색으로 쓰지 않는다
+- 먹색 채움 버튼은 언제나 각진 모서리와 노랑 아래 줄
+- 3칸 공정 막대(터·골조·완성)가 건물이 보이는 모든 곳의 공통 표지
+- 둥근 체크는 완료, 네모 체크는 선택
+- 그림 자리는 회색 자리 표시자 그대로
 
 ## Colors
 
-강조색이 없는 회색 단계 팔레트. 와이어프레임 단계의 임시값이며 확정된 브랜드 색이 아니다.
+공사 안내판 파랑과 안전 노랑 두 색이 데운 중성 회색 위에 놓인다. 대비 수치는 도구로 쟀다(WCAG 2.1 AA).
 
 ### Primary
-- **먹색 (ink)**: 본문 글자, 주요 버튼과 할 일 추가 버튼의 채움, 완료 체크 채움, 알림 배경, 포커스 링. 지금은 이 색이 강조색 자리를 대신한다. 색을 정하면 가장 먼저 바뀔 자리다.
+- **안내판 파랑 (sign)**: 화면 머리 띠와 로그인 머리, 완료 체크 채움, 선택 칩과 네모 체크와 라디오, 활성 탭 글자와 위쪽 막대, 켠 스위치 트랙, 고른 건물 테두리, 포커스 링, 입력 커서. 흰 글자 대비 7.76:1, 흰 바탕 위 파랑도 7.76:1. 안드로이드 상태 표시줄 색(`themeColor`)도 같은 값이라 띠가 상태 표시줄까지 이어진다.
+- **안내판 글자 (sign-ink)**: 파랑 위 제목, 숫자, 아이콘. 파랑 띠 안의 포커스 링도 이 색으로 바뀐다.
+- **안내판 보조 글자 (sign-2)**: 파랑 위 보조 문장('오늘 2/8 완료', 크레딧 이름, 로그인 소개). 파랑 위 5.89:1. 텍스트 선택 바탕도 이 색.
+
+### Secondary
+- **안전 노랑 (caution)**: 공정 막대의 채운 칸, 안내판 띠 아래 3px 줄, 먹색 버튼 아래 줄. 흰 바탕 대비 1.68:1이라 글자로 읽히지 않는다. 그래서 글자색으로 쓰지 않는다.
 
 ### Neutral
-- **진회색 (ink-2)**: 섹션 제목, 진행 현황 문장, 보조 버튼 글자, 오프라인 배너 배경.
-- **중회색 (ink-3)**: 목표 이름 같은 보조 정보, 완료한 할 일 제목, 비활성 탭, 더보기와 펼침 아이콘. 흰 바탕 대비 5.1:1로 본문 대비 기준을 넘는 가장 옅은 글자색이다.
-- **선 (line)**: 목록 사이와 탭 바 위의 1px 구분선.
-- **진한 선 (line-strong)**: 비어 있는 체크 원, 테두리 버튼과 칩, 입력 칸 테두리, 바텀시트 손잡이.
-- **흰 면 (surface)**: 앱 기둥과 바텀시트의 바탕, 테두리 버튼과 칩의 채움.
-- **옅은 면 (surface-2)**: 안내 영역, 빈 화면 카드, 모두 마침 메시지, 오류 상자, 보조 버튼의 채움. 넓은 화면에서 앱 바깥 바탕.
-- **더 옅은 면 (surface-3)**: 로딩 뼈대, 텍스트 선택 영역.
-- **자리 표시 회색 (placeholder)**: 그래픽과 아직 만들지 않은 화면의 자리 표시자.
-- **덮개 (backdrop)**: 바텀시트 뒤 화면을 어둡게 덮는 반투명 검정.
+- **먹색 (ink)**: 본문 글자(흰 바탕 16.4:1), 대표 버튼 채움, 알림 바탕.
+- **진회색 (ink-2)**: 섹션 안 소제목, 보조 버튼 글자, 그림 자리 이름(자리 회색 위 6.14:1), 오프라인 띠 바탕.
+- **중회색 (ink-3)**: 목표 이름, 날짜, 완료한 할 일 제목, 비활성 탭, 더보기 아이콘, 끈 스위치 테두리. 흰 바탕 6.13:1, 옅은 면 위 5.52:1. 본문 대비 기준을 넘는 가장 옅은 글자색.
+- **선 (line)**: 목록 사이, 탭 바 위, 가림막 패널 사이의 1px 선.
+- **진한 선 (line-strong)**: 비어 있는 체크 원, 입력 칸과 테두리 버튼과 칩의 테두리, 시트 손잡이, 멈춘 공정 막대. 흰 바탕 3.38:1.
+- **흰 면 (surface)**: 앱 기둥, 할 일 목록, 바텀시트, 테두리 버튼.
+- **콘크리트 면 (surface-2)**: 건물 띠 바탕, 안내 칸, 빈 화면 카드, 보조 버튼, 넓은 화면의 앱 바깥.
+- **더 짙은 콘크리트 (surface-3)**: 공정 막대의 빈 칸, 로딩 뼈대, 끈 스위치 트랙, 마을 위 건물과 가구 상자.
+- **자리 표시 회색 (placeholder)**: 마을, 건물, 집, 가구 그림 자리. 세계의 색과 상관없이 회색으로 둔다.
+- **덮개 (backdrop)**: 바텀시트 뒤를 덮는 반투명 먹색(45%).
 
-**The Token-Only Rule.** 화면 코드에는 색 값을 직접 쓰지 않고 위 토큰 이름만 쓴다. 색을 정하는 날 바꾸는 곳은 `globals.css`의 `@theme` 하나뿐이다.
+### Named Rules
+**The Three Jobs Rule.** 파랑은 안내와 확정(완료, 선택, 활성, 포커스, 켬), 노랑은 공정 진행과 아래 줄, 먹색은 대표 행동. 한 색이 다른 색의 일을 하지 않는다.
 
-**The No-Accent-Yet Rule.** 색과 서체가 정해지기 전에는 회색 바깥의 색(브랜드 색, 상태 색, 그라데이션 색)을 추가하지 않는다. 상태 구분은 굵기, 채움, 취소선으로 한다.
+**The Caution-Never-Text Rule.** 노랑은 막대와 줄로만 쓴다. 글자, 아이콘, 배지 채움으로 쓰지 않는다.
+
+**The Grey-Art Rule.** 그림 자리는 `placeholder` 회색 상자와 이름뿐이다. 파랑이나 노랑으로 칠하지 않고 일러스트나 아이콘으로 대신 그리지 않는다(CLAUDE.md 규칙 7).
+
+**The Token-Only Rule.** 화면 코드에는 색 값을 직접 쓰지 않고 토큰 이름만 쓴다. 예외는 `layout.tsx`의 `themeColor`(메타데이터라 토큰을 읽지 못한다)로, `sign`과 같은 값을 유지한다.
 
 ## Typography
 
-**Body Font:** 기본 시스템 산세리프 (`ui-sans-serif, system-ui, sans-serif`, Tailwind 기본 스택). 따로 지정한 서체 없음.
+**Display Font:** Do Hyeon (Gothic A1, ui-sans-serif로 대체). 굵기 400 하나.
+**Body Font:** Gothic A1 (ui-sans-serif, system-ui로 대체). 굵기 400, 600, 700, 800을 받는다.
 
-**Character:** 서체는 아직 정하지 않았다. 지금은 하나의 기본 서체로 크기와 굵기만 바꿔 위계를 만든다. 한국어 줄바꿈은 단어 단위(`word-break: keep-all`)다.
+둘 다 `next/font`로 빌드할 때 받아 앱 안에서 제공한다(`display: swap`). 한국어 줄바꿈은 단어 단위(`word-break: keep-all`).
+
+**Character:** 안내판에 찍힌 듯한 좁고 굵은 제목 글자와, 오래 읽어도 편한 고딕 본문의 짝. 제목 글자는 굵기가 하나뿐이라 크기로만 위계를 나눈다.
 
 ### Hierarchy
-- **Headline** (700, 19px, 자간 -0.01em): 상단 바의 화면 제목. S02에서는 날짜("10월 27일 화요일").
-- **Title** (700, 18px): 바텀시트 제목, 빈 화면 카드 제목, 상단 바 아래 본문의 첫 제목(초안 화면의 목표 이름).
-- **Body** (400, 16px, 줄 높이 1.375): 할 일 제목(최대 두 줄), 시트 안 행동 목록, 입력 칸, 할 일 추가 버튼(600).
-- **Body small** (400, 15px): 안내 영역 문장, 알림 문장, 칩, 시트 안 보조 버튼(600).
-- **Label** (600, 14px): 섹션 제목(진회색), 버튼 글자. 같은 크기의 400은 진행 현황 문장과 시트 설명에 쓴다.
-- **Caption** (400, 13px): 할 일 아래 목표 이름, 날짜 같은 보조 정보(중회색, 한 줄 말줄임).
-- **Tab label** (400, 활성은 600, 11px): 하단 탭 이름.
+- **Display** (Do Hyeon, 32px, 줄 높이 1.25): 로그인 안내판의 서비스 이름 하나.
+- **Headline** (Do Hyeon, 22px, 줄 높이 1.375): 안내판 띠의 화면 제목. 오늘 화면 안내판의 큰 숫자('핵심 1/3')도 22px Do Hyeon(줄 높이 1).
+- **Title** (Do Hyeon, 20px): 바텀시트 제목, '찾을 수 없어요' 같은 화면 안 큰 제목.
+- **Button display** (Do Hyeon, 19px): 하단에 붙은 대표 버튼 글자('할 일 추가').
+- **Section** (Do Hyeon, 18px): 목록 섹션 제목('핵심 할 일', '날짜 있는 할 일'), 빈 화면 제목, 문장 요약. 건물 띠의 건물 이름은 16px Do Hyeon.
+- **Body** (Gothic A1 400, 16px, 줄 높이 1.375): 할 일 제목(최대 두 줄), 입력 칸, 스위치와 고르기 줄 이름. 목표 제목은 600.
+- **Body small** (Gothic A1 400, 15px): 안내 칸 문장, 알림 문장, 칩, 시트 안 버튼(600).
+- **Label** (Gothic A1 600, 14px): 버튼 글자, 소제목(진회색). 같은 크기 400은 시트 설명과 보조 문장.
+- **Caption** (Gothic A1 400, 13px): 할 일 아래 목표 이름, 단계 이름, 그림 자리 이름(중회색, 한 줄 말줄임).
+- **Tab label** (Gothic A1 400, 활성은 700, 11px): 하단 탭 이름.
 
-**The Weight-Not-Color Rule.** 위계는 굵기와 크기, 세 단계 글자색(ink, ink-2, ink-3)으로만 만든다. 숫자는 `tabular-nums`로 자리를 맞춘다.
+### Named Rules
+**The Sign-Letter Rule.** `h1`, `h2`는 전역 규칙으로 Do Hyeon 400이고 `font-synthesis: none`이다. 굵게 합성하지 않는다. 더 강조하려면 크기를 올린다.
+
+**The Tabular Rule.** 개수와 날짜 숫자(`1/5`, `할 일 3/8`, 크레딧)는 `tabular-nums`로 자리를 맞춘다.
 
 ## Layout
 
-- **한 열, 최대 430px.** 앱 전체가 가운데 정렬된 흰 기둥이다. 360px, 375px, 430px에서 같은 구조로 늘어나고 줄어든다. 넓은 화면에서는 기둥 바깥이 옅은 면(surface-2)이다.
-- **상단 바와 하단 탭은 각각 56px.** 상단 바는 좌우 8px 안쪽에 44px 아이콘 버튼을 둔다.
-- **좌우 여백 두 가지.** 글자만 있는 줄(섹션 제목, 진행 현황, 보너스 줄)은 20px, 면이 있는 덩어리(안내 영역, 카드, 하단 버튼)는 16px. 할 일 목록은 8px 안쪽에 44px 체크 영역이 붙어 체크 원과 글자가 20px 선에 맞는다.
-- **섹션 사이 28px.** 섹션 제목 위 28px, 진행 현황 위 12px, 보너스 줄 위 20px.
-- **아래쪽 고정 영역.** 탭 화면은 아래에서부터 하단 탭(56px + 안전 영역), 할 일 추가 버튼(48px, 위로 흰색에서 투명으로 흐려지는 바탕), 알림. 본문은 이 높이만큼 아래 여백을 둔다. 전체 화면(목표 만들기 등)은 흰 바탕에 위쪽 1px 선이 있는 하단 행동 영역을 화면 아래에 붙인다(sticky). 키보드가 열려도 키보드 위에 남는다.
+- **한 열, 최대 430px.** 앱은 가운데 정렬된 흰 기둥이고 넓은 화면에서는 기둥 바깥이 콘크리트 면이다. 360px, 375px, 430px에서 같은 구조로 늘고 준다.
+- **안내판 띠.** 최소 높이 56px, 좌우 8px 안쪽에 44px 뒤로 가기(또는 12px 빈칸), 제목, 오른쪽 행동 하나(설정 아이콘, 크레딧). 보조 줄이 있으면 제목 아래 좌우 20px, 아래 12px. 띠는 상태 표시줄 안전 영역까지 파랑으로 채운다. 띠 아래는 16px을 띄운다. 오늘 화면만 예외로 가림막(건물 띠)이 노랑 줄 바로 아래에 붙는다.
+- **좌우 여백 두 가지.** 글자만 있는 줄(섹션 제목, 보너스 줄, 목표 상세 본문)은 20px, 면이 있는 덩어리(안내 칸, 카드, 하단 버튼)는 16px. 할 일 목록은 8px 안쪽에 44px 체크 영역이 붙어 체크 원과 글자가 20px 선에 맞는다.
+- **섹션 사이 24px.** 섹션 제목 위 24px, 안내 칸 위 12px, 보너스 줄 위 20px.
+- **아래쪽 고정 영역.** 탭 화면은 아래에서부터 하단 탭(56px + 안전 영역), 대표 버튼(52px), 알림. 전체 화면은 흰 바탕에 위쪽 1px 선이 있는 하단 행동 영역(좌우 16px, 위 12px)을 아래에 붙이고, 키보드가 열려도 키보드 위에 남는다.
 
-**The Thumb-Zone Rule.** 자주 쓰는 행동과 그 결과(추가 버튼, 알림, 바텀시트)는 화면 아래쪽에 둔다. 위쪽에는 날짜와 설정처럼 드물게 누르는 것만 둔다.
+**The Every-Screen-Has-A-Sign Rule.** 모든 화면은 안내판 띠로 시작하고 띠에는 언제나 제목이 있다(상세 화면은 '할 일', 목표 이름, 목표 입력 질문). 제목을 비운 띠는 없다.
 
-**The 44px Rule.** 누르는 대상은 모두 최소 44px. 눈에 보이는 체크 원은 22px이지만 누르는 영역은 44px이다.
+**The Thumb-Zone Rule.** 자주 쓰는 행동과 그 결과(대표 버튼, 알림, 바텀시트)는 아래쪽에 둔다. 위쪽 띠에는 설정처럼 드물게 누르는 것만 둔다.
+
+**The 44px Rule.** 누르는 대상은 모두 최소 44px. 눈에 보이는 체크는 22px이지만 누르는 영역은 44px이다.
 
 ## Elevation & Depth
 
-기본은 평평하다. 면의 구분은 옅은 회색 채움과 1px 선으로 한다. 그림자는 화면 위에 떠서 다른 내용을 가리는 두 요소에만 있다.
+기본은 평평하다. 면의 구분은 콘크리트 면 채움, 1px 선, 그리고 안내판의 노랑 줄로 한다. 그림자는 내용 위에 떠서 다른 것을 가리는 두 요소에만 있다.
 
 ### Shadow Vocabulary
-- **시트 그림자** (`box-shadow: 0 -4px 24px rgb(0 0 0 / 0.12)`): 아래에서 올라온 바텀시트의 위쪽 가장자리. 뒤에는 덮개가 깔린다.
+- **시트 그림자** (`box-shadow: 0 -4px 24px rgb(24 32 43 / 0.16)`): 아래에서 올라온 바텀시트의 위쪽 가장자리. 뒤에 덮개가 깔린다.
 - **알림 그림자** (`box-shadow: 0 4px 16px rgb(0 0 0 / 0.18)`): 목록 위에 뜨는 알림.
+- **스위치 손잡이** (`box-shadow: 0 1px 2px rgb(0 0 0 / 0.2)`): 트랙 위 흰 손잡이가 보이게 하는 최소한의 깊이. 유일한 예외.
 
-**The Floating-Only Rule.** 그림자는 내용 위에 뜨는 요소(바텀시트, 알림)에만 쓴다. 카드, 버튼, 안내 영역은 그림자 없이 채움으로 구분한다. 예외는 스위치 손잡이(`0 1px 2px rgb(0 0 0 / 0.2)`) 하나로, 같은 색 트랙 위의 흰 손잡이가 보이게 하는 최소한의 깊이다.
+### Named Rules
+**The Floating-Only Rule.** 그림자는 바텀시트와 알림에만 쓴다(스위치 손잡이만 예외). 카드, 버튼, 이름표, 건물 띠는 그림자 없이 채움과 선으로 나눈다. 먹색 버튼의 노랑 아래 줄은 그림자가 아니라 테두리다.
 
 ## Shapes
 
-부드럽게 둥근 모서리의 사각형과 완전한 원 두 가지 형태다.
+안내판과 가림막은 각진 판이다. `@theme`가 둥글기 단계를 줄여 덮어쓴다.
 
-- **작은 둥글기 (4px):** 로딩 뼈대의 글자 막대.
-- **보통 둥글기 (8px):** 일반 버튼, 입력 칸, 그래픽 자리 표시자.
-- **큰 둥글기 (12px):** 안내 영역, 모두 마침 메시지, 오류 상자, 알림, 할 일 추가 버튼.
-- **시트 둥글기 (16px):** 바텀시트 위쪽 두 모서리. 빈 화면 카드도 16px을 쓴다.
-- **원:** 체크 원, 아이콘 버튼의 누르는 영역, 칩, 바텀시트 손잡이(36×4px).
+- **각진 모서리 (0px):** 안내판 띠, 먹색 채움 버튼, 공정 막대 칸, 가림막 패널.
+- **아주 작은 둥글기 (2px, sm):** 로딩 뼈대의 글자 막대.
+- **작은 둥글기 (3px, md):** 칩, 네모 체크, 마을 위 건물 상자.
+- **보통 둥글기 (4px, lg·xl):** 테두리 버튼, 보조 버튼, 입력 칸, 안내 칸, 알림, 그림 자리, 마을 이름표.
+- **큰 둥글기 (6px, 2xl):** 빈 화면 카드, 바텀시트 위쪽 두 모서리.
+- **원:** 완료 체크, 라디오, 스위치 트랙과 손잡이, 아이콘 버튼의 누르는 영역, 시트 손잡이(36×4px), 가구 빈 자리.
+
+**The Round-Means-Done Rule.** 둥근 체크는 완료, 네모 체크(3px)는 선택이다. 두 모양을 바꿔 쓰지 않는다.
 
 ## Components
 
 ### Buttons
-- **주요 버튼:** 먹색 채움, 흰 글자 14~15px 600, 8px 둥글기, 높이 44~48px. "다시 시도", "옮기기", "AI로 목표 만들기". 하단 행동 영역의 주요 버튼은 전체 폭, 48px, 12px 둥글기, 16px 600("할 일 추천받기", "N개 추가하기").
-- **비활성:** 모든 버튼은 같은 방식으로 투명도 40%. 색을 따로 바꾸지 않는다.
-- **할 일 추가 버튼:** S02의 대표 행동. 전체 폭, 높이 48px, 12px 둥글기, 먹색 채움, 더하기 아이콘과 16px 600 글자. 하단 탭 바로 위에 고정.
-- **테두리 버튼:** 흰 채움, 진한 선 1px 테두리, 먹색 글자. 같은 자리에 주요 버튼보다 약한 행동("직접 입력", "마을 보러 가기"의 조용한 형태). AI를 쓸 수 없을 때(실패, 하루 상한)의 "직접 입력하기"는 주요 버튼 아래 전체 폭 테두리 버튼이 된다.
-- **글자 버튼:** 채움과 테두리 없이 15px 600 진회색, 높이 44px. 하단 행동 영역의 보조 행동("직접 입력하기", "나중에 하기", "다시 만들기").
-- **보조 버튼:** 옅은 면 채움, 진회색 글자, 테두리 없음. 시트 안 "취소", 지난 할 일의 세 갈래 행동("오늘로", "날짜 바꾸기", "날짜 없이 보관")처럼 같은 무게의 선택지가 나란히 놓일 때.
+판처럼 각지고, 대표 행동은 아래에 노랑 줄을 단다.
+- **하단 대표 버튼:** 먹색 채움, 각진 모서리, 아래 4px 노랑 줄, 높이 52px, 전체 폭, 흰 Do Hyeon 19px('할 일 추가', '구글로 계속하기', 하단 행동 영역의 주요 버튼).
+- **본문 먹색 버튼:** 먹색 채움, 각진 모서리, 아래 3px 노랑 줄, 높이 44~48px, 흰 Gothic A1 14~16px 600('다시 시도', '옮기기', 'AI로 목표 만들기', 안내 칸의 첫 행동).
+- **테두리 버튼:** 흰 채움, 진한 선 1px, 4px 둥글기, 먹색 600 글자. 아래에 같은 일을 하는 대표 버튼이 있으면 본문의 같은 행동은 이 형태로 낮춘다(목표 상세 빈 상태의 'AI로 할 일 추가', '직접 추가'). 안내 칸의 둘째 행동도 이 형태.
+- **보조 버튼:** 콘크리트 면 채움, 진회색 600 글자, 테두리 없음, 4px 둥글기. 시트 안 '취소'처럼 같은 무게의 선택지.
+- **글자 버튼:** 채움과 테두리 없이 15px 600 진회색, 높이 44px.
 - **아이콘 버튼:** 44px 원형 누르는 영역, 아이콘 20~24px, 채움 없음.
-- **Focus:** 모든 요소에 먹색 2px 윤곽선, 2px 띄움.
+- **비활성:** 모두 투명도 40%. 색을 따로 바꾸지 않는다.
+- **Focus:** 파랑 2px 윤곽선, 2px 띄움. 파랑 띠 안에서는 흰 윤곽선.
+
+**The Yellow-Underline Rule.** 먹색 채움 버튼은 언제나 각진 모서리와 노랑 아래 줄(하단 대표 4px, 본문 3px)을 함께 가진다. 줄 없는 먹색 버튼이나 둥근 먹색 버튼은 없다.
+
+**The One-Ink-Per-Job Rule.** 화면 아래 대표 버튼과 같은 일을 하는 본문 버튼은 먹색으로 채우지 않고 테두리 버튼으로 낮춘다.
 
 ### Chips
-- **Style:** 흰 채움, 진한 선 1px 테두리, 완전한 원 모서리, 높이 44px, 15px 글자.
+- **Style:** 흰 채움, 진한 선 1px, 3px 둥글기, 높이 44px, 15px 글자, 좌우 14px.
 - **행동 칩:** 빠른 추가 칩. 선택 상태 없이 누르면 바로 행동한다.
-- **선택 칩:** 하나만 고르는 칩 묶음(직접 입력의 건물 종류, radiogroup). 선택되면 먹색 채움, 흰 글자 600.
+- **선택 칩:** 하나만 고르는 묶음(radiogroup). 선택되면 파랑 채움, 흰 글자 600.
 
 ### Cards / Containers
-- **안내 영역:** 옅은 면 채움, 12px 둥글기, 최소 높이 48px, 15px 문장 한 줄. 누를 수 있으면 오른쪽에 꺾쇠 아이콘, 행동이 있으면 오른쪽에 테두리 버튼.
-- **빈 화면 카드:** 옅은 면 채움, 16px 둥글기, 18px 제목 아래 14px 소제목별 묶음(목표에서 가져오기, 빠른 추가, 버튼).
-- **Shadow Strategy:** 없음. Elevation 참조.
+- **안내 칸:** 콘크리트 면, 4px 둥글기, 최소 높이 48px, 15px 문장. 누를 수 있으면 오른쪽 꺾쇠, 행동이 있으면 오른쪽 테두리 버튼.
+- **빈 화면 카드:** 콘크리트 면, 6px 둥글기, 18px Do Hyeon 제목 아래 14px 600 소제목 묶음.
+- **Shadow Strategy:** 없음(Elevation 참조).
 
 ### Inputs / Fields
-- **Style:** 흰 채움, 진한 선 1px 테두리, 8px 둥글기, 높이 48px, 16px 글자(모바일 확대 방지). 날짜는 브라우저 기본 날짜 선택기.
-- **Focus:** 공통 먹색 윤곽선.
+- **Style:** 흰 채움, 진한 선 1px, 4px 둥글기, 높이 48px, 16px 글자(모바일 확대 방지), 파랑 커서. 날짜는 브라우저 기본 날짜 선택기.
+- **제자리 고치기:** 초안 제목처럼 그 자리에서 고칠 때는 파랑 1px 테두리 입력 칸으로 바뀐다.
+- **Focus:** 공통 파랑 윤곽선.
 
 ### Navigation
-- **하단 탭:** 흰 바탕, 위쪽 1px 선, 높이 56px에 4칸. 각 칸은 22px 선 아이콘 위에 11px 이름. 활성 탭은 먹색, 600, 아이콘 선 2.2. 비활성은 중회색, 선 1.8.
-- **상단 바:** 높이 56px, 왼쪽에 19px 700 제목(전체 화면은 뒤로 가기 아이콘), 오른쪽에 아이콘 버튼 하나. 본문에 큰 안내 제목이 있는 화면(목표 입력)은 상단 바 제목을 비우고, 본문 제목이 화면의 h1이 된다.
+- **안내판 띠 (화면 머리):** 파랑 바탕, 아래 3px 노랑 줄, 22px Do Hyeon 흰 제목, 흰 아이콘. 날짜나 제목 위에 작은 이름표(eyebrow)를 두지 않는다.
+- **하단 탭:** 흰 바탕, 위쪽 1px 선, 높이 56px에 4칸, 22px 선 아이콘 위 11px 이름. 활성 탭은 파랑 글자 700, 아이콘 선 2.2, 칸 위쪽 안쪽에 3px 파랑 막대. 비활성은 중회색, 선 1.8.
+
+### 공정 막대 (Stage Meter)
+이 세계의 시그니처. 터·골조·완성 세 칸(높이 5px, 칸 사이 3px, 각진 모서리)에서 지금 단계까지 노랑으로 채우고 남은 칸은 짙은 콘크리트(surface-3). 보관한 목표(공사 중지)는 채운 칸을 진한 선 색으로 바꾼다. 단계 이름 글자가 옆에 늘 함께 있어 막대는 스크린 리더가 읽지 않는다(색만으로 말하지 않는다). 건물 띠, 목표 줄(폭 96px), 목표 상세 그림 아래(전체 폭), 마을 이름표(폭 96px)에 같은 모양으로 쓴다.
+
+### 가림막 건물 띠 (Hoarding Strip)
+오늘 화면의 안내판 바로 아래에 붙는 띠. 콘크리트 면 바탕, 아래 1px 선. 건물마다 가림막 패널 한 칸: 위쪽에 높이 5px 파랑·흰 점선 띠(파랑 14px, 흰 6px 반복), 패널 사이 1px 선, 안쪽 10~12px. 칸 안에 1:1 그림 자리, 16px Do Hyeon 건물 이름, 공정 막대, 13px 중회색 단계. 세 칸까지 폭을 나누고 넘치면 가로로 넘긴다(칸 최소 31%). 누르면 마을로 간다. 불러오지 못하면 띠를 숨기고 할 일 목록을 가리지 않는다.
 
 ### 할 일 줄 (Task Row)
-목록의 기본 단위. 왼쪽 44px 체크 영역(22px 원, 2px 진한 선 테두리), 가운데 16px 제목(최대 두 줄)과 13px 목표 이름, 오른쪽 44px 더보기. 완료하면 원이 먹색으로 채워지고 흰 체크가 들어가며, 제목은 중회색 취소선이 된다. 완료한 줄은 더보기 자리를 빈칸으로 남겨 정렬을 유지한다. 줄 사이는 선 없이 간격으로만 나눈다. 길게 누르면 더보기 시트가 열린다.
+목록의 기본 단위. 왼쪽 44px 체크 영역(22px 원, 2px 진한 선), 가운데 16px 제목(최대 두 줄)과 13px 목표 이름, 오른쪽 44px 더보기. 완료하면 원이 파랑으로 채워지고 흰 체크가 들어가며, 제목은 중회색 취소선이 된다. 완료한 줄은 더보기 자리를 빈칸으로 남겨 정렬을 유지한다. 줄 사이 1px 선. 길게 누르면 더보기 시트가 열린다. 목표 상세에서는 더보기 대신 '오늘로' 글자 버튼.
 
 ### 초안 줄 (Draft Row)
-고르는 목록의 단위(AI 추천 할 일). 할 일 줄과 같은 44px 영역에 **네모 체크**(22px, 6px 둥글기, 2px 진한 선)를 둔다. 둥근 체크는 '완료', 네모 체크는 '선택'이다. 선택하면 먹색 채움과 흰 체크. 제목을 누르면 그 자리에서 먹색 1px 테두리 입력 칸으로 바뀐다. 목록 위 오른쪽에 "모두 선택/모두 해제" 밑줄 글자 버튼.
+AI 추천 할 일을 고르는 줄. 할 일 줄과 같은 44px 영역에 네모 체크(22px, 3px 둥글기, 2px 진한 선). 선택하면 파랑 채움과 흰 체크. 제목을 누르면 그 자리에서 파랑 테두리 입력 칸이 된다.
 
 ### 스위치 (Switch)
-켜고 끄는 한 줄(role=switch). 줄 전체가 누르는 영역(최소 48px)이고, 왼쪽 16px 이름과 그 아래 13px 중회색 보조 문장(비활성 이유 등), 오른쪽 48×28px 트랙. 켜면 먹색 트랙, 끄면 surface-3 트랙에 중회색(ink-3) 1px 안쪽 테두리(상태가 3:1 이상으로 보이게), 손잡이는 흰 24px 원(Floating-Only Rule의 유일한 예외인 아주 작은 그림자). 비활성이면 이름과 트랙만 투명도 40%이고, 보조 문장(비활성 이유)은 그대로 읽힌다.
+줄 전체가 누르는 영역(최소 48px), 왼쪽 16px 이름과 13px 중회색 보조 문장, 오른쪽 48×28px 트랙. 켜면 파랑 트랙, 끄면 짙은 콘크리트 트랙에 중회색 1px 안쪽 테두리. 손잡이는 흰 24px 원(150ms 이동). 비활성이면 이름과 트랙만 40%, 보조 문장(비활성 이유)은 그대로 읽힌다.
 
-### 고르기 줄 (Picker Row)
-다른 시트를 여는 한 줄(연결 목표, 할 일 상세의 날짜). 최소 48px, 왼쪽 16px 먹색 이름(스위치 이름과 같은 크기라 한 목록에 섞여도 줄이 맞는다), 오른쪽 15px 현재 값(없으면 중회색 '목표 없음', '날짜 없음')과 꺾쇠. 누르면 라디오 목록이나 날짜 칩 시트가 위에 겹쳐 열린다. 줄 사이 선은 감싸는 목록이 그린다(1px). 고를 수 없는 상태(완료한 할 일)에서는 꺾쇠를 빼고 값을 흐리게 하지 않는 읽기 줄이 된다.
-
-### 설정 목록 (할 일 상세)
-고르기 줄과 스위치를 1px 선으로 나눈 한 목록에 섞는다(위아래 1px 선). 카드나 묶음 상자로 감싸지 않는다. 고칠 수 있는 제목은 19px 700 글자 그대로 두고 오른쪽에 16px 중회색 연필을 둔다. 누르면 같은 자리가 옅은 면(surface-2)으로 바뀌어 입력 중임을 보여준다. 저장 버튼이 없고, 입력칸을 벗어나거나 화면을 떠날 때 저장한다.
+### 고르기 줄과 라디오 (Picker Row)
+다른 시트를 여는 한 줄(최소 48px, 16px 이름, 오른쪽 15px 현재 값과 꺾쇠). 시트 안 라디오는 22px 원, 고르면 파랑 테두리와 가운데 파랑 점. 가구 상점 줄은 고르면 파랑 채움과 흰 체크.
 
 ### 목표 줄 (Goal Row)
-목표 목록의 한 줄. 카드로 감싸지 않고 1px 선으로 나눈다. 왼쪽 56px 건물 그림 자리, 가운데 16px 600 제목(두 줄까지)과 13px 중회색 '오피스 · 터 · 12월 27일까지', 오른쪽 14px '할 일 3/8'(개수만, 퍼센트와 막대 없음). 줄 전체가 링크다.
-
-### 안내 칸 행동 (Notice Actions)
-안내 칸(옅은 면, 12px 둥글기) 안에 15px 600 제목, 14px 진회색 문장, 그 아래 44px 버튼 한두 개. 첫 버튼은 먹색 채움, 둘째는 테두리. 목표 상세(보관, 완료, 할 일 모두 마침, 기한 지남)와 할 일 상세(완료함)에서 쓴다. 서비스가 대신 정하지 않고 묻기만 한다.
-
-### 펼침 줄 (Disclosure Row)
-기록의 날짜 줄과 설정의 설치 안내. 최소 52px, 왼쪽 16px 이름, 오른쪽 14px 진회색 요약과 18px 아래 꺾쇠(펼치면 뒤집힘). 펼친 내용은 15px 목록이고 완료는 체크, 옮김은 오른쪽 화살표와 13px 중회색 보조 줄.
-
-### 문장 요약 (Sentence Summary)
-숫자 대시보드 대신 쓰는 요약. 안내 칸 안에 18px 700 문장 하나가 제목이다('이번 주 할 일 7개를 마쳤어요'). 그 아래 14px 진회색 보조 줄('실행한 날 3일 · 실행률 75%'). 제목 위의 작은 이름표, 큰 숫자 하나와 작은 이름표 조합은 쓰지 않는다. 마친 일이 없으면 보조 줄을 빼서 '0일 · 0%'를 보여주지 않는다.
-
-### 업적 줄 (Achievement Row)
-48px 배지 그림 자리(얻은 배지는 회색 면, 못 얻은 배지는 같은 크기의 점선 빈 자리), 이름(얻으면 600), 13px 중회색 '10월 25일에 얻었어요' 또는 설명, 못 얻은 업적은 오른쪽에 '12/30일'.
-
-### 미리보기 상자 (Preview)
-만들어질 결과를 보여주는 옅은 면(surface-2) 상자, 8px 둥글기. 13px 중회색 이름표 아래 18px 600 결과와 연필 아이콘. 누르면 같은 자리에서 먹색 테두리 입력칸으로 바뀐다(빠른 추가의 제목).
-
-### 날짜 칩 줄
-선택 칩을 가로 한 줄로 둔다(오늘 · 내일 · 날짜 선택 · 날짜 없음). 넘치면 가로로 넘긴다. '날짜 선택'을 고르면 아래에 기본 날짜 입력칸이 나타나고, 고른 날짜가 칩 이름이 된다.
-
-### 방 그림 (Room)
-집 내부 화면의 주인공. 1:1 그래픽 자리 표시자가 앱 기둥 폭을 채우고(좌우 16px), 왼쪽 위에 13px 진회색으로 이름('원룸 내부')을 쓴다. 슬롯은 그 위에 임시 좌표(%)로 놓이며 중심을 좌표에 맞춘다.
-- **빈 자리:** 44px 원, 2px 중회색 점선 테두리, 흰 채움, 18px 더하기 아이콘.
-- **설치된 가구:** 48px 정사각형, 6px 둥글기, 진한 선 1px 테두리, surface-3 채움, 가운데 이름. **예외: 이름은 11px.** 주택(18자리)에서 360px 폭에 겹치지 않는 가장 큰 크기라서다(56px 상자는 겹친다). 그래픽 자리 표시자의 13~14px 규칙에서 이 상자만 벗어난다.
+카드로 감싸지 않고 1px 선으로 나눈다. 왼쪽 56px 그림 자리, 가운데 16px 600 제목(두 줄까지), 13px 중회색 '오피스 · 터 · 12월 27일까지', 그 아래 공정 막대(96px). 오른쪽 14px 진회색 '할 일 3/8'(개수만). 줄 전체가 링크.
 
 ### 마을 그림 (Village)
-마을 화면의 주인공. 3:4 그래픽 자리 표시자가 앱 기둥 폭을 채우고(좌우 16px), 왼쪽 위에 13px 진회색 '마을 그림'(자리 표시자 이름). 그 위에 임시 좌표(%)로:
-- **집:** 가운데 96px 정사각형, 진한 선 1px, surface-3 채움, 14px 600 집 단계 이름과 13px '집'. 누르면 집 내부로 간다.
-- **건물:** 64px 정사각형, 같은 재질. 13px 600 먹색 건물 이름, 아래 줄에 단계(터/골조/완성), 보관한 목표는 한 줄 더 '공사 중지'(색 대신 글자). 고른 건물은 2px 먹색 테두리. 터 자리 8곳을 왼쪽, 오른쪽, 위, 아래, 모서리 순으로 채운다.
-- **이름표:** 마을 그림 아래쪽 안쪽 12px에 붙는 흰 띠(진한 선 1px, 8px 둥글기, 최소 56px). 15px 600 목표 이름(한 줄, 넘치면 말줄임. 아래쪽 건물을 가리지 않기 위해서다), 13px 진회색 공사 진행, 오른쪽 꺾쇠. 누르면 목표 상세로 간다. 그림자는 쓰지 않는다(Floating-Only Rule).
-- **단계 연출:** 단계가 오른 뒤 첫 진입에만 그 건물 상자가 600ms 동안 1.14배로 커졌다 돌아온다(transform, 300ms 지연, 감속 곡선). 움직임 줄이기 설정에서는 생략. 앱에서 유일한 보상 움직임이다.
-
-### 가구 고르기 줄 (Shop Row)
-가구 상점 시트의 한 줄(radiogroup). 왼쪽 56px 그래픽 자리 표시자(13px 이름, 장식이라 읽지 않음), 가운데 16px 이름과 14px 진회색 가격 또는 '보유 중', 오른쪽 22px 둥근 라디오(선택 시 먹색 채움과 흰 체크). 줄 사이 1px 선. 판매 가구 하나에 한 줄이고, 놓지 않은 보유 가구가 있으면 그 줄이 '보유 중'이 된다. 시트 아래에 붙은 전체 폭 주요 버튼 위로 부족 안내(14px 진회색, 가운데 정렬)가 놓인다.
-
-### 조건 줄 (Condition Row)
-넓히기 조건 같은 '현재/필요' 표시. 위아래 1px 선 사이에 줄마다 최소 48px, 왼쪽 15px 이름, 오른쪽 15px 600 `2/3` 같은 값. 조건을 채우면 값 옆에 16px 체크 아이콘을 붙인다(스크린 리더용 '채움' / '아직 모자람' 글자). 색만으로 상태를 말하지 않는다.
+3:4 그림 자리 위에 임시 좌표로 집(96px)과 건물(64px, 3px 둥글기, 진한 선 1px, 짙은 콘크리트 채움)을 놓는다. 고른 건물은 2px 파랑 테두리. 아래쪽 안쪽 12px에 흰 이름표(진한 선 1px, 4px 둥글기, 최소 56px): 15px 600 목표 이름, 13px 진회색 공사 진행, 공정 막대, 꺾쇠. 단계가 오른 뒤 첫 진입에만 그 건물 상자가 600ms 동안 1.14배로 커졌다 돌아온다(300ms 지연). 앱의 유일한 보상 움직임이다.
 
 ### 바텀시트 (Bottom Sheet)
-네이티브 dialog. 화면 아래에 붙고 폭은 앱 기둥과 같으며 최대 높이는 보이는 화면 높이(visualViewport)의 85%이고, 키보드가 열리면 키보드 바로 위에 붙는다. iOS Safari는 interactive-widget을 따르지 않아 visualViewport로 위치를 맞춘다(실기기 확인 전). 위쪽에 36×4px 손잡이, 18px 700 제목, 14px 중회색 설명, 그 아래 스크롤되는 내용(좌우 20px). 아래로 끌거나 덮개를 누르거나 Esc로 닫는다. 내용 영역은 위쪽 4px을 두어 첫 입력칸의 포커스 윤곽선이 잘리지 않는다. 시트 위에 시트가 겹쳐 열릴 수 있다(목표 고르기). 280ms 동안 아래에서 올라오며 덮개가 함께 짙어진다(감속 곡선 `cubic-bezier(0.16, 1, 0.3, 1)`).
+네이티브 dialog. 폭은 앱 기둥과 같고 최대 높이는 보이는 화면의 85%, 키보드가 열리면 키보드 위에 붙는다. 위쪽 6px 둥글기, 36×4px 손잡이, 20px Do Hyeon 제목, 14px 중회색 설명, 스크롤되는 내용(좌우 20px). 280ms 동안 아래에서 올라오며 덮개가 함께 짙어진다. 열리면 제목이 초점을 받고 링을 그리지 않는다(파랑 링이 '선택됨'으로 보이지 않게). 바로 입력하는 시트만 `data-autofocus` 입력 칸이 초점을 받는다.
 
 ### 알림 (Toast)
-먹색 바탕, 흰 15px 문장, 12px 둥글기, 최소 높이 48px. 행동(실행 취소)은 오른쪽의 44px 높이 밑줄 글자 버튼. 할 일 추가 버튼 바로 위에 뜨고 240ms 동안 8px 아래에서 떠오른다. 새 알림은 앞 알림을 바꾼다.
-
-### 진행 줄 (Progress Line)
-진행 현황은 14px 진회색 문장 한 줄이다. 일일 보너스는 위아래 1px 선 사이에 이름과 `1/5` 같은 숫자 하나. 차트나 큰 숫자를 쓰지 않는다.
+먹색 바탕, 흰 15px 문장, 4px 둥글기, 최소 48px. 실행 취소는 오른쪽 44px 밑줄 글자 버튼. 대표 버튼 바로 위에 뜨고 240ms 동안 8px 아래에서 떠오른다. 새 알림은 앞 알림을 바꾼다.
 
 ### 그래픽 자리 표시자 (Graphic Placeholder)
-마을, 건물, 집, 가구 그림 자리. 최종 그림과 같은 비율의 자리 표시 회색 상자, 8px 둥글기, 가운데에 진회색으로 이름을 쓴다(작은 건물 상자는 13px, 화면 자리 상자는 14px). 아직 만들지 않은 화면의 자리도 같은 형태(4:3 상자)다.
+마을, 건물, 집, 가구 그림 자리. 최종 그림과 같은 비율의 자리 표시 회색 상자, 4px 둥글기, 가운데 13px 진회색 이름.
 
 ### 상태 표시
-- **로딩:** 더 옅은 면(surface-3)의 뼈대. 체크 원 자리에 22px 원, 제목 자리에 16px 높이 막대.
-- **오류:** 옅은 면 상자 안에 15px 문장과 주요 버튼 "다시 시도". 하단에 주요 버튼이 있는 화면은 상자에 문장만 두고 주요 버튼 글자를 "다시 시도"로 바꾼다.
-- **진행 중:** 20px 회전 원(움직임 줄이기 설정에서는 멈춤)과 15px 진회색 문장. 버튼 자리나 목록 자리를 그대로 대신한다.
-- **오프라인:** 화면 위에 붙는 진회색 띠, 흰 14px 문장과 16px 아이콘.
+- **로딩:** 짙은 콘크리트 뼈대. 건물 띠도 같은 가림막 칸 모양의 뼈대.
+- **오류:** 콘크리트 면 안내 칸에 15px 문장과 본문 먹색 버튼 '다시 시도'.
+- **오프라인:** 화면 위에 붙는 진회색 띠, 흰 14px 문장.
 
 ## Do's and Don'ts
 
 ### Do:
-- **Do** 색은 `ink`, `ink-2`, `ink-3`, `line`, `line-strong`, `surface`, `surface-2`, `surface-3`, `placeholder`, `backdrop` 토큰 이름으로만 쓴다.
-- **Do** 주요 행동 하나만 먹색 채움으로 두고, 나머지는 테두리 버튼이나 보조 버튼으로 낮춘다.
-- **Do** 누르는 대상을 최소 44px로, 자주 쓰는 행동을 화면 아래쪽에 둔다.
-- **Do** 진행과 결과는 문장 한 줄과 숫자 하나로 조용히 보여준다.
-- **Do** 마을, 건물, 집, 가구 자리는 같은 비율의 회색 상자와 이름으로 둔다.
-- **Do** 움직임은 감속 곡선 하나(`ease-out-expo`)로, 줄이기 설정(`prefers-reduced-motion`)에서는 사실상 꺼지게 한다.
+- **Do** 모든 화면을 파란 안내판 띠(제목 필수, 아래 3px 노랑 줄)로 시작하고 띠 아래를 16px 띄운다. 오늘 화면만 건물 띠를 바로 붙인다.
+- **Do** 먹색 채움 버튼은 각진 모서리와 노랑 아래 줄(하단 대표 4px, 본문 3px)로 만든다.
+- **Do** 아래 대표 버튼과 같은 일을 하는 본문 버튼은 테두리 버튼으로 낮춘다.
+- **Do** 완료, 선택, 활성 탭, 포커스, 켠 스위치는 파랑으로 표시한다.
+- **Do** 건물 단계는 3칸 공정 막대와 단계 이름 글자를 함께 보여준다. 멈춘 공사는 막대를 진한 선 색으로 바꾸고 '공사 중지'를 글자로 쓴다.
+- **Do** 대비는 도구로 잰다. 글자는 흰 바탕에서 ink-3(6.13:1)보다 옅게 쓰지 않는다.
+- **Do** 움직임은 감속 곡선 하나(`cubic-bezier(0.16, 1, 0.3, 1)`)와 transform, opacity만 쓰고 줄이기 설정에서는 사실상 끈다.
 
 ### Don't:
-- **Don't** 색과 서체가 정해지기 전에 브랜드 색, 상태 색, 웹 폰트를 추가하지 않는다.
-- **Don't** 마을, 건물, 집, 가구를 일러스트나 아이콘으로 대신 그리지 않는다. (조작용 선 아이콘, 예를 들어 탭, 설정, 꺾쇠, 더보기는 이 규칙과 무관하다.)
-- **Don't** 진행 현황에 큰 숫자, 차트, 카드 격자, 축하 연출을 쓰지 않는다.
-- **Don't** 카드나 버튼에 그림자를 넣지 않는다. 그림자는 바텀시트와 알림만 쓴다(스위치 손잡이만 예외).
+- **Don't** 노랑을 글자, 아이콘, 배지 채움으로 쓰지 않는다(흰 바탕 1.68:1).
+- **Don't** 제목이나 날짜 위에 작은 이름표(eyebrow, kicker)를 두지 않는다.
+- **Don't** 마을, 건물, 집, 가구를 일러스트나 아이콘으로 대신 그리거나 회색이 아닌 색으로 칠하지 않는다.
+- **Don't** 둥근 체크로 선택을, 네모 체크로 완료를 표시하지 않는다.
+- **Don't** Do Hyeon을 굵게 합성하지 않는다. 강조는 크기로 한다.
+- **Don't** 카드, 버튼, 이름표에 그림자를 넣지 않는다. 그림자는 바텀시트와 알림만 쓴다(스위치 손잡이만 예외).
+- **Don't** 진행 현황에 퍼센트 막대, 차트, 축하 연출을 쓰지 않는다. 진행은 개수와 공정 막대로만 말한다.

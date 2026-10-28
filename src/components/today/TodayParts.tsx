@@ -22,7 +22,7 @@ export function TodayNotice({
         type="button"
         onClick={onOpenOverdue}
         aria-haspopup="dialog"
-        className="mx-4 mt-1 flex min-h-12 w-[calc(100%-2rem)] items-center gap-2 rounded-xl bg-surface-2 px-4 py-3 text-left text-[15px]"
+        className="mx-4 mt-3 flex min-h-12 w-[calc(100%-2rem)] items-center gap-2 rounded-xl bg-surface-2 px-4 py-3 text-left text-[15px]"
       >
         <span className="flex-1">지난 할 일 {overdueCount}개가 남아 있어요</span>
         <ChevronRight aria-hidden size={18} className="shrink-0 text-ink-3" />
@@ -31,7 +31,7 @@ export function TodayNotice({
   }
   if (notice === "HOUSE_UPGRADE") {
     return (
-      <div className="mx-4 mt-1 flex min-h-12 items-center gap-2 rounded-xl bg-surface-2 py-1.5 pr-1.5 pl-4 text-[15px]">
+      <div className="mx-4 mt-3 flex min-h-12 items-center gap-2 rounded-xl bg-surface-2 py-1.5 pr-1.5 pl-4 text-[15px]">
         <p className="flex-1 py-1.5">집을 넓힐 수 있어요</p>
         <VillageLink />
       </div>
@@ -40,21 +40,37 @@ export function TodayNotice({
   return null;
 }
 
-export function VillageLink({ variant = "quiet" }: { variant?: "quiet" | "solid" }) {
+export function VillageLink() {
   return (
     <Link
       href="/village"
-      className={`grid h-11 shrink-0 place-items-center rounded-lg px-4 text-[14px] font-semibold ${
-        variant === "solid" ? "bg-ink text-surface" : "border border-line-strong bg-surface text-ink"
-      }`}
+      className="grid h-11 shrink-0 place-items-center rounded-lg border border-line-strong bg-surface px-4 text-[14px] font-semibold text-ink"
     >
       마을 보러 가기
     </Link>
   );
 }
 
-/** 진행 현황: 핵심 할 일 완료 수/핵심 할 일 수, 오늘 완료 수/오늘 할 일 수. 한 줄 문장으로 조용히 */
-export function ProgressSummary({
+/** 안내판의 진행 현황: 핵심 할 일을 큰 숫자로, 오늘 전체는 작게. 스크린 리더는 문장 하나로 읽는다 */
+export function ProgressBoard(props: { coreDone: number; coreTotal: number; done: number; total: number }) {
+  const { coreDone, coreTotal, done, total } = props;
+  return (
+    <p className="flex items-baseline gap-3">
+      <span aria-hidden className="font-display text-[22px] leading-none text-sign-ink">
+        {coreTotal > 0 ? `핵심 ${coreDone}/${coreTotal}` : `오늘 ${done}/${total}`}
+      </span>
+      {coreTotal > 0 && (
+        <span aria-hidden>
+          오늘 {done}/{total} 완료
+        </span>
+      )}
+      <span className="sr-only">{progressSentence(props)}</span>
+    </p>
+  );
+}
+
+/** 진행 현황 문장: 핵심 할 일 완료 수/핵심 할 일 수, 오늘 완료 수/오늘 할 일 수. 안내판 띠 아래 한 줄로 조용히 */
+export function progressSentence({
   coreDone,
   coreTotal,
   done,
@@ -64,26 +80,24 @@ export function ProgressSummary({
   coreTotal: number;
   done: number;
   total: number;
-}) {
-  const sentence =
-    coreTotal > 0
-      ? `핵심 할 일 ${coreTotal}개 중 ${coreDone}개, 오늘 ${total}개 중 ${done}개를 마쳤어요`
-      : `오늘 할 일 ${total}개 중 ${done}개를 마쳤어요`;
-  return <p className="px-5 pt-3 text-[14px] text-ink-2 tabular-nums">{sentence}</p>;
+}): string {
+  return coreTotal > 0
+    ? `핵심 할 일 ${coreTotal}개 중 ${coreDone}개, 오늘 ${total}개 중 ${done}개를 마쳤어요`
+    : `오늘 할 일 ${total}개 중 ${done}개를 마쳤어요`;
 }
 
 export function AllDoneMessage({ showVillageLink }: { showVillageLink: boolean }) {
   return (
     <div className="mx-4 mt-3 flex flex-col items-start gap-3 rounded-xl bg-surface-2 px-4 py-4">
       <p className="text-[16px] font-semibold">오늘 할 일을 모두 마쳤어요</p>
-      {showVillageLink && <VillageLink variant="solid" />}
+      {showVillageLink && <VillageLink />}
     </div>
   );
 }
 
 export function SectionHeading({ id, children }: { id: string; children: React.ReactNode }) {
   return (
-    <h2 id={id} className="px-5 pt-7 pb-0 text-[14px] font-semibold text-ink-2">
+    <h2 id={id} className="px-5 pt-6 pb-1 text-[18px] text-ink">
       {children}
     </h2>
   );
@@ -148,7 +162,7 @@ export function LoadError({ message = "할 일을 불러오지 못했어요", on
   return (
     <div role="alert" className="mx-4 mt-6 flex flex-col items-start gap-3 rounded-xl bg-surface-2 px-4 py-4">
       <p className="text-[15px]">{message}</p>
-      <button type="button" onClick={onRetry} className="h-11 rounded-lg bg-ink px-4 text-[14px] font-semibold text-surface">
+      <button type="button" onClick={onRetry} className="h-11 border-b-[3px] border-caution bg-ink px-4 text-[14px] font-semibold text-surface">
         다시 시도
       </button>
     </div>

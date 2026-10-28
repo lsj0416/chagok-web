@@ -80,8 +80,8 @@ export function ManualEntryScreen() {
                   aria-checked={selected}
                   aria-label={`${buildingName(type)} (${GOAL_TYPE_EXAMPLE[type]})`}
                   onClick={() => update({ goalType: type, goalTypeTouched: true })}
-                  className={`h-11 rounded-full border px-4 text-[15px] ${
-                    selected ? "border-ink bg-ink font-semibold text-surface" : "border-line-strong bg-surface text-ink"
+                  className={`h-11 rounded-md border px-4 text-[15px] ${
+                    selected ? "border-sign bg-sign font-semibold text-sign-ink" : "border-line-strong bg-surface text-ink"
                   }`}
                 >
                   {buildingName(type)}

@@ -14,6 +14,7 @@ import { CoreReplaceSheet } from "@/components/today/CoreReplaceSheet";
 import { EmptyTodayCard } from "@/components/today/EmptyTodayCard";
 import { ListSkeleton, OverdueSheet } from "@/components/today/OverdueSheet";
 import { AddTaskSheet } from "@/components/today/AddTaskSheet";
+import { BuildingStrip } from "@/components/today/BuildingStrip";
 import { QuickAddSheet } from "@/components/today/QuickAddSheet";
 import { TaskActionsSheet } from "@/components/today/TaskActionsSheet";
 import { TaskRow } from "@/components/today/TaskRow";
@@ -23,7 +24,7 @@ import {
   CompletedSection,
   LoadError,
   NoCoreHint,
-  ProgressSummary,
+  ProgressBoard,
   SectionHeading,
   TodayNotice,
 } from "@/components/today/TodayParts";
@@ -242,14 +243,27 @@ export function TodayScreen() {
       <OfflineBanner show={!online || scenario === "offline"} />
       <TopBar
         title={formatDayTitle(today)}
+        subtitle={
+          view && !view.isEmpty
+            ? <ProgressBoard
+                coreDone={view.coreDoneCount}
+                coreTotal={view.coreTasks.length}
+                done={view.doneCount}
+                total={view.totalCount}
+              />
+            : undefined
+        }
+        flush
         action={
-          <Link href="/settings" aria-label="설정" className="grid size-11 place-items-center rounded-full text-ink-2">
+          <Link href="/settings" aria-label="설정" className="grid size-11 place-items-center rounded-full">
             <Settings aria-hidden size={22} />
           </Link>
         }
       />
 
       <main className="flex-1 pb-[calc(var(--tab-bar-height)+var(--safe-bottom)+88px)]">
+        <BuildingStrip />
+
         {todayQuery.isPending && (
           <div className="px-2 pt-4">
             <ListSkeleton />
@@ -280,13 +294,6 @@ export function TodayScreen() {
               />
             ) : (
               <>
-                <ProgressSummary
-                  coreDone={view.coreDoneCount}
-                  coreTotal={view.coreTasks.length}
-                  done={view.doneCount}
-                  total={view.totalCount}
-                />
-
                 {view.allDone && <AllDoneMessage showVillageLink={view.notice !== "HOUSE_UPGRADE"} />}
 
                 <section aria-labelledby="core-heading">
@@ -336,7 +343,7 @@ export function TodayScreen() {
             type="button"
             onClick={() => setSheet({ kind: "addTask" })}
             aria-haspopup="dialog"
-            className="flex h-12 w-full items-center justify-center gap-1.5 rounded-xl bg-ink text-[16px] font-semibold text-surface"
+            className="flex h-13 w-full items-center justify-center gap-1.5 border-b-4 border-caution bg-ink font-display text-[19px] text-surface"
           >
             <Plus aria-hidden size={20} strokeWidth={2.4} />
             할 일 추가

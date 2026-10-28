@@ -129,6 +129,7 @@ export function AddTaskSheet({
             id={ids.title}
             type="text"
             autoFocus
+            data-autofocus
             enterKeyHint="done"
             maxLength={TASK_TITLE_MAX_LENGTH}
             value={title}

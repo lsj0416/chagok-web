@@ -28,6 +28,7 @@ import { goalNotice, groupGoalTasks, remainingTaskCount } from "@/lib/goals";
 import { withIGa } from "@/lib/korean";
 import { coreDemotedMessage } from "@/lib/today";
 import { constructionLabel, STAGE_LABEL } from "@/lib/village";
+import { StageMeter } from "@/components/StageMeter";
 import type { CreateTaskRequest, DateKey, GoalDetail, Task } from "@/types";
 
 type Sheet = "more" | "addTask" | "edit" | "complete" | "archive" | null;
@@ -97,9 +98,9 @@ export function GoalDetailScreen() {
   if (id === "" || query.data === null) {
     return (
       <>
-        <TopBar title="" back />
+        <TopBar title="목표" back />
         <main className="flex-1 px-5 pt-2 pb-6">
-          <h1 className="text-[19px] font-bold">목표를 찾을 수 없어요</h1>
+          <h2 className="text-[20px]">목표를 찾을 수 없어요</h2>
           <Link
             href="/goals"
             className="mt-6 flex h-12 items-center justify-center rounded-xl border border-line-strong text-[16px] font-semibold"
@@ -115,9 +116,8 @@ export function GoalDetailScreen() {
   if (query.isError && !detail) {
     return (
       <>
-        <TopBar title="" back />
+        <TopBar title="목표" back />
         <main className="flex-1 pb-6">
-          <h1 className="sr-only">목표 상세</h1>
           <LoadError message="목표를 불러오지 못했어요" onRetry={() => void query.refetch()} />
         </main>
       </>
@@ -127,9 +127,8 @@ export function GoalDetailScreen() {
   if (!detail) {
     return (
       <>
-        <TopBar title="" back />
+        <TopBar title="목표" back />
         <main className="flex-1 px-5 pt-2 pb-6" aria-busy="true">
-          <h1 className="sr-only">목표 상세</h1>
           <div aria-label="불러오는 중">
             <div className="aspect-[16/10] w-full rounded-lg bg-surface-3" />
             <div className="mt-4 h-6 w-2/3 rounded-md bg-surface-3" />
@@ -220,14 +219,16 @@ export function GoalDetailScreen() {
   return (
     <>
       <OfflineBanner show={!online || scenario === "offline"} />
-      <TopBar title="" back />
+      <TopBar title={goal.title} back />
       <main className={`flex-1 ${active ? "pb-6" : "pb-[calc(24px+var(--safe-bottom))]"}`}>
         <div className="px-5">
           {building && buildingName && (
-            <GraphicPlaceholder label={`${buildingName} · ${STAGE_LABEL[building.stage]}`} className="aspect-[16/10] w-full" />
+            <>
+              <GraphicPlaceholder label={`${buildingName} · ${STAGE_LABEL[building.stage]}`} className="aspect-[16/10] w-full" />
+              <StageMeter stage={building.stage} paused={goal.status === "ARCHIVED"} className="mt-2" />
+            </>
           )}
-          <h1 className="mt-4 text-[19px] leading-snug font-bold tracking-[-0.01em]">{goal.title}</h1>
-          <dl className="mt-2 flex flex-col gap-1 text-[14px]">
+          <dl className="mt-3 flex flex-col gap-1 text-[14px]">
             {goal.dueDate && <MetaRow label="기한">{formatShortDate(goal.dueDate)}</MetaRow>}
             {goal.completionCriteria && <MetaRow label="완료 조건">{goal.completionCriteria}</MetaRow>}
             <MetaRow label="할 일">
@@ -257,7 +258,7 @@ export function GoalDetailScreen() {
             <p className="pb-1 text-[14px] text-ink-2">AI가 할 일을 추천하거나, 직접 적을 수 있어요</p>
             <Link
               href={`/goals/new?goal=${encodeURIComponent(goal.id)}`}
-              className="flex h-12 items-center justify-center rounded-xl bg-ink text-[16px] font-semibold text-surface"
+              className="flex h-12 items-center justify-center rounded-xl border border-line-strong bg-surface text-[16px] font-semibold text-ink"
             >
               AI로 할 일 추가
             </Link>
@@ -428,8 +429,8 @@ function GoalNoticePanel({ notice, dueDate, buildingName, onResume, onComplete, 
               key={action.label}
               type="button"
               onClick={action.onClick}
-              className={`h-11 rounded-lg px-4 text-[14px] font-semibold ${
-                i === 0 ? "bg-ink text-surface" : "border border-line-strong bg-surface text-ink"
+              className={`h-11 px-4 text-[14px] font-semibold ${
+                i === 0 ? "border-b-[3px] border-caution bg-ink text-surface" : "rounded-lg border border-line-strong bg-surface text-ink"
               }`}
             >
               {action.label}

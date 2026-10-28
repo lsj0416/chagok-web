@@ -91,6 +91,7 @@ export function SplitSheet({ open, onClose, onSubmit }: SplitSheetProps) {
                 }}
                 type="text"
                 autoFocus={i === 0}
+                data-autofocus={i === 0 || undefined}
                 enterKeyHint={i === rows.length - 1 ? "done" : "next"}
                 maxLength={TASK_TITLE_MAX_LENGTH}
                 aria-label={`나눈 할 일 ${i + 1}`}

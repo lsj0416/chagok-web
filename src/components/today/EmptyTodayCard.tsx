@@ -87,7 +87,7 @@ export function EmptyTodayCard({
               <button
                 type="button"
                 onClick={() => onQuickAdd(template)}
-                className="h-11 rounded-full border border-line-strong bg-surface px-4 text-[15px]"
+                className="h-11 rounded-md border border-line-strong bg-surface px-4 text-[15px]"
               >
                 {template.keyword}
               </button>
@@ -107,7 +107,7 @@ export function EmptyTodayCard({
         {!hasActiveGoals && (
           <Link
             href="/goals/new"
-            className="grid h-12 place-items-center rounded-lg bg-ink text-[15px] font-semibold text-surface"
+            className="grid h-12 place-items-center border-b-[3px] border-caution bg-ink text-[15px] font-semibold text-surface"
           >
             AI로 목표 만들기
           </Link>

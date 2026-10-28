@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { BUILDING_FRAME_THRESHOLD } from "@/config/game";
 import { formatCredit } from "@/lib/credit";
-import { constructionLabel, needsStageReveal } from "@/lib/village";
+import { BUILDING_STAGES, constructionLabel, needsStageReveal, stageStep } from "@/lib/village";
 import type { Building } from "@/types";
 
 const building = (overrides: Partial<Building> = {}): Building => ({
@@ -40,5 +40,11 @@ describe("formatCredit", () => {
   it("마이너스에는 − 부호", () => {
     expect(formatCredit(-20)).toBe("−20");
     expect(formatCredit(210)).toBe("210");
+  });
+});
+
+describe("stageStep", () => {
+  it("터는 1칸, 골조는 2칸, 완성은 3칸을 채운다", () => {
+    expect(BUILDING_STAGES.map(stageStep)).toEqual([1, 2, 3]);
   });
 });

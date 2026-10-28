@@ -126,6 +126,7 @@ export function QuickAddSheet({ template, today, goals, onClose, onSubmit }: Qui
                 id={ids.title}
                 type="text"
                 autoFocus
+                data-autofocus
                 enterKeyHint="done"
                 maxLength={TASK_TITLE_MAX_LENGTH}
                 value={customTitle ?? generated}
@@ -134,7 +135,7 @@ export function QuickAddSheet({ template, today, goals, onClose, onSubmit }: Qui
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.nativeEvent.isComposing) setEditing(false);
                 }}
-                className="mt-1 h-11 w-full rounded-lg border border-ink bg-surface px-3 text-[16px]"
+                className="mt-1 h-11 w-full rounded-lg border border-sign bg-surface px-3 text-[16px]"
               />
             ) : (
               <button

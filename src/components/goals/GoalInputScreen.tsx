@@ -90,9 +90,9 @@ export function GoalInputScreen() {
   if (addMode && target.isSuccess && (target.data === null || target.data.goal.status !== "ACTIVE")) {
     return (
       <>
-        <TopBar title="" back />
+        <TopBar title="목표" back />
         <main className="flex-1 px-5 pt-2 pb-6">
-          <h1 className="text-[19px] font-bold">{target.data === null ? "목표를 찾을 수 없어요" : "진행 중인 목표에만 더할 수 있어요"}</h1>
+          <h2 className="text-[20px]">{target.data === null ? "목표를 찾을 수 없어요" : "진행 중인 목표에만 더할 수 있어요"}</h2>
           <Link
             href="/goals"
             className="mt-6 flex h-12 items-center justify-center rounded-xl border border-line-strong text-[16px] font-semibold"
@@ -106,14 +106,13 @@ export function GoalInputScreen() {
 
   return (
     <>
-      <TopBar title="" back={addMode || !isFirstEntry} />
+      <TopBar
+        title={addMode ? "이 목표에 더할 할 일을 추천받아요" : "이루고 싶은 목표를 적어주세요"}
+        back={addMode || !isFirstEntry}
+      />
       <main className="flex-1 px-5 pb-6">
-        <h1 className="pt-2 text-[19px] leading-snug font-bold tracking-[-0.01em]">
-          {addMode ? "이 목표에 더할 할 일을 추천받아요" : "이루고 싶은 목표를 적어주세요"}
-        </h1>
-
         <form
-          className="mt-6 flex flex-col gap-5"
+          className="flex flex-col gap-5"
           onSubmit={(e) => {
             e.preventDefault();
             void generate();

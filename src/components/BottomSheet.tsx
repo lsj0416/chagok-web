@@ -27,9 +27,15 @@ export function BottomSheet({ open, onClose, title, description, children }: Bot
     openRef.current = open;
     const dialog = ref.current;
     if (!dialog) return;
-    if (open && !dialog.open) dialog.showModal();
+    if (open && !dialog.open) {
+      dialog.showModal();
+      // 브라우저는 첫 버튼에 초점을 둔다. 파란 초점 링이 '선택됨'처럼 보이므로,
+      // 바로 입력하는 시트(data-autofocus)가 아니면 제목에서 시작한다
+      const target = dialog.querySelector<HTMLElement>("[data-autofocus]") ?? dialog.querySelector<HTMLElement>(`[id="${titleId}"]`);
+      target?.focus();
+    }
     if (!open && dialog.open) dialog.close();
-  }, [open]);
+  }, [open, titleId]);
 
   // iOS Safari는 interactive-widget을 따르지 않아 키보드가 시트를 가린다.
   // 열려 있는 동안 보이는 영역(visualViewport)을 따라 시트를 키보드 위로 올린다
@@ -97,7 +103,7 @@ export function BottomSheet({ open, onClose, title, description, children }: Bot
           <span className="h-1 w-9 rounded-full bg-line-strong" />
         </div>
         <div className="shrink-0 px-5 pt-1 pb-3">
-          <h2 id={titleId} className="text-[18px] font-bold">
+          <h2 id={titleId} tabIndex={-1} className="text-[20px]">
             {title}
           </h2>
           {description && (

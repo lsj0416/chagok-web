@@ -125,18 +125,22 @@ export function SettingsScreen() {
                 <label htmlFor={timezoneId} className="sr-only">
                   시간대
                 </label>
-                <select
-                  id={timezoneId}
-                  value={settings.timezone}
-                  onChange={(e) => save.mutate({ timezone: e.target.value })}
-                  className="h-12 w-full rounded-lg border border-line-strong bg-surface px-3 text-[16px]"
-                >
-                  {timezoneOptions(settings.timezone).map((tz) => (
-                    <option key={tz} value={tz}>
-                      {tz}
-                    </option>
-                  ))}
-                </select>
+                {/* 브라우저 기본 화살표 대신 다른 화면과 같은 꺾쇠 */}
+                <div className="relative">
+                  <select
+                    id={timezoneId}
+                    value={settings.timezone}
+                    onChange={(e) => save.mutate({ timezone: e.target.value })}
+                    className="h-12 w-full appearance-none rounded-lg border border-line-strong bg-surface pr-10 pl-3 text-[16px]"
+                  >
+                    {timezoneOptions(settings.timezone).map((tz) => (
+                      <option key={tz} value={tz}>
+                        {tz}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown aria-hidden size={18} className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-ink-3" />
+                </div>
                 <p className="pt-2 text-[13px] text-ink-3">자정을 기준으로 오늘이 바뀌어요</p>
               </div>
             </section>
@@ -258,7 +262,7 @@ function InstallGuide() {
             <button
               type="button"
               onClick={() => void installEvent.prompt().then(() => setInstallEvent(null))}
-              className="mb-3 flex h-12 w-full items-center justify-center rounded-xl bg-ink text-[16px] font-semibold text-surface"
+              className="mb-3 flex h-12 w-full items-center justify-center border-b-[3px] border-caution bg-ink text-[16px] font-semibold text-surface"
             >
               홈 화면에 추가
             </button>

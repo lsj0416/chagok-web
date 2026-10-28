@@ -36,7 +36,7 @@ export function Switch({ label, hint, checked, disabled = false, onChange }: Swi
       <span
         aria-hidden
         className={`flex h-7 w-12 shrink-0 items-center rounded-full p-0.5 transition-colors duration-150 group-disabled:opacity-40 ${
-          checked ? "bg-ink" : "bg-surface-3 ring-1 ring-ink-3 ring-inset"
+          checked ? "bg-sign" : "bg-surface-3 ring-1 ring-ink-3 ring-inset"
         }`}
       >
         <span

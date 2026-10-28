@@ -44,7 +44,7 @@ export function TaskRow({
 
   return (
     <li
-      className="flex items-start gap-1 py-1 select-none [-webkit-touch-callout:none]"
+      className="flex items-start gap-1 border-b border-line py-1 select-none last:border-b-0 [-webkit-touch-callout:none]"
       onPointerDown={(e) => {
         if (e.pointerType === "mouse" && e.button !== 0) return;
         longPressed.current = false;
@@ -83,7 +83,7 @@ export function TaskRow({
       >
         <span
           className={`grid size-[22px] place-items-center rounded-full border-2 transition-colors duration-150 ${
-            done ? "border-ink bg-ink text-surface" : "border-line-strong bg-surface"
+            done ? "border-sign bg-sign text-sign-ink" : "border-line-strong bg-surface"
           } ${pending ? "opacity-60" : ""}`}
         >
           {done && <Check aria-hidden size={14} strokeWidth={3} />}
