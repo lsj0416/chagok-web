@@ -9,6 +9,7 @@ import { LoadError } from "@/components/today/TodayParts";
 import { TopBar } from "@/components/TopBar";
 import { VillageView } from "@/components/village/VillageView";
 import * as api from "@/lib/api/village";
+import { CreditAmount } from "@/components/CreditAmount";
 import { formatCredit } from "@/lib/credit";
 import { needsStageReveal } from "@/lib/village";
 import type { VillageDetail } from "@/types";
@@ -64,7 +65,7 @@ export function VillageScreen() {
         action={
           detail && (
             <p className="pr-3 text-[15px] text-sign-2 tabular-nums">
-              크레딧 <strong className="font-bold text-sign-ink">{formatCredit(detail.balance)}</strong>
+              크레딧 <CreditAmount balance={detail.balance} />
             </p>
           )
         }

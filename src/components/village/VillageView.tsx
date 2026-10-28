@@ -7,7 +7,7 @@ import { StageMeter } from "@/components/StageMeter";
 import { constructionLabel, STAGE_LABEL } from "@/lib/village";
 import type { Building, Goal, House } from "@/types";
 
-// TODO: 마을 그림이 정해지기 전의 임시 좌표 (%). 터 자리는 8곳까지 (docs/screens.md 확인 필요)
+// TODO: 마을 그림이 정해지기 전의 임시 좌표 (%). 터 자리는 8곳까지 (8곳을 넘을 때는 3D 마을 그림을 정할 때 함께 정한다)
 const HOUSE_POSITION = { x: 50, y: 47 };
 // 건물이 적을 때도 집 둘레에 고르게 놓이도록 왼쪽, 오른쪽, 위, 아래, 모서리 순으로 채운다.
 // 아래쪽 자리는 이름표 띠와 겹치지 않는 높이까지만 둔다

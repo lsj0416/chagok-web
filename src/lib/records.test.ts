@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { startOfWeek } from "@/lib/date";
-import { completionRate, formatRate, summarizeWeek } from "@/lib/records";
+import { addDays, startOfWeek } from "@/lib/date";
+import { completionRate, formatRate, pageDayRecords, summarizeWeek } from "@/lib/records";
 import type { DayRecord } from "@/types";
 
 const day = (date: string, planned: number, plannedDone: number, done = plannedDone): DayRecord => ({
@@ -48,5 +48,23 @@ describe("summarizeWeek", () => {
   it("계획이 하나도 없던 주는 실행률이 없다", () => {
     expect(summarizeWeek([day("2026-10-27", 0, 0, 1)], "2026-10-28").completionRate).toBeNull();
     expect(formatRate(0.678)).toBe("68%");
+  });
+});
+
+describe("pageDayRecords", () => {
+  const day = (date: string): DayRecord => ({ date, plannedCount: 1, plannedDoneCount: 1, doneTasks: [], movedTasks: [] });
+  const today = "2026-10-28";
+  const days = [0, 1, 5, 29, 30, 31, 70].map((n) => day(addDays(today, -n)));
+
+  it("기준 날짜 전날부터 정한 기간만 최근 날짜가 위로 자르고, 더 오래된 기록이 있으면 다음 기준을 준다", () => {
+    const first = pageDayRecords(days, addDays(today, 1), 30);
+    expect(first.days.map((d) => d.date)).toEqual([0, 1, 5, 29].map((n) => addDays(today, -n)));
+    expect(first.olderBefore).toBe(addDays(today, -29));
+  });
+
+  it("더 오래된 기록이 없으면 olderBefore는 null", () => {
+    const last = pageDayRecords(days, addDays(today, -60), 30);
+    expect(last.days.map((d) => d.date)).toEqual([addDays(today, -70)]);
+    expect(last.olderBefore).toBeNull();
   });
 });

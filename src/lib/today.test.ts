@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { MAX_CORE_TASKS_PER_DAY } from "@/config/game";
-import { buildTodayView, coreDemotedMessage, isCoreFull, pickNotice } from "@/lib/today";
+import { buildTodayView, isCoreFull, movedAsNormalMessage, pickNotice } from "@/lib/today";
 import type { Task, TodayPlan } from "@/types";
 
 let seq = 0;
@@ -93,8 +93,8 @@ describe("isCoreFull", () => {
   });
 });
 
-describe("coreDemotedMessage", () => {
-  it("옮긴 날짜와 핵심 할 일 최대 개수를 알린다", () => {
-    expect(coreDemotedMessage("2026-10-29")).toBe(`10월 29일은 핵심 할 일이 ${MAX_CORE_TASKS_PER_DAY}개라 일반 할 일로 옮겼어요`);
+describe("movedAsNormalMessage", () => {
+  it("옮긴 날짜를 넣어 알린다", () => {
+    expect(movedAsNormalMessage("2026-10-29")).toBe("10월 29일에 일반 할 일로 옮겼어요");
   });
 });

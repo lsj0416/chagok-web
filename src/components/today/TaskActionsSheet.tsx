@@ -52,10 +52,15 @@ export function TaskActionsSheet({ task, today, onClose, onToggleCore, onResched
           <li>
             <SheetAction
               label="날짜 없이 보관"
-              onClick={() => {
-                onUnschedule(task);
-                close();
-              }}
+              hint={task.recurrence ? "반복을 끄면 날짜 없이 둘 수 있어요" : undefined}
+              onClick={
+                task.recurrence
+                  ? undefined
+                  : () => {
+                      onUnschedule(task);
+                      close();
+                    }
+              }
             />
           </li>
         </ul>
@@ -64,14 +69,17 @@ export function TaskActionsSheet({ task, today, onClose, onToggleCore, onResched
   );
 }
 
-export function SheetAction({ label, onClick }: { label: string; onClick: () => void }) {
+export function SheetAction({ label, onClick, hint }: { label: string; onClick?: () => void; hint?: string }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className="flex min-h-13 w-full items-center py-2 text-left text-[16px] text-ink"
+      disabled={!onClick}
+      className="group flex min-h-13 w-full flex-col items-start justify-center py-2 text-left text-[16px] text-ink"
     >
-      {label}
+      <span className="group-disabled:opacity-40">{label}</span>
+      {/* 누를 수 없는 이유는 흐리게 하지 않는다 */}
+      {hint && <span className="text-[13px] text-ink-3">{hint}</span>}
     </button>
   );
 }

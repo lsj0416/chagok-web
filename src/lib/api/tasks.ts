@@ -4,6 +4,7 @@ export {
   completeTask,
   createTask,
   deleteTask,
+  fetchDayCoreTasks,
   fetchOverdueTasks,
   fetchTaskDetail,
   fetchTodayPlan,

@@ -17,6 +17,7 @@ import { AddTaskSheet } from "@/components/today/AddTaskSheet";
 import { SheetAction } from "@/components/today/TaskActionsSheet";
 import { TaskRow } from "@/components/today/TaskRow";
 import { CompletedSection, LoadError, SectionHeading } from "@/components/today/TodayParts";
+import { useCoreConflict } from "@/components/today/useCoreConflict";
 import { TopBar } from "@/components/TopBar";
 import { useToast } from "@/components/useToast";
 import { BUILDING_LABEL } from "@/config/game";
@@ -26,7 +27,7 @@ import { canUncomplete } from "@/lib/completion";
 import { formatShortDate, toDateKey } from "@/lib/date";
 import { goalNotice, groupGoalTasks, remainingTaskCount } from "@/lib/goals";
 import { withIGa } from "@/lib/korean";
-import { coreDemotedMessage } from "@/lib/today";
+import { movedAsNormalMessage } from "@/lib/today";
 import { constructionLabel, STAGE_LABEL } from "@/lib/village";
 import { StageMeter } from "@/components/StageMeter";
 import type { CreateTaskRequest, DateKey, GoalDetail, Task } from "@/types";
@@ -48,6 +49,7 @@ export function GoalDetailScreen() {
   const [pendingId, setPendingId] = useState<string | null>(null);
   const { toast, show } = useToast();
   const today: DateKey = toDateKey(new Date());
+  const coreConflict = useCoreConflict(today);
 
   // 다른 화면에서 떠나면서 남긴 알림 (AI로 할 일 추가, 할 일 상세의 나누기·삭제)
   useEffect(() => {
@@ -172,17 +174,27 @@ export function GoalDetailScreen() {
     }
   };
 
-  const moveToday = (task: Task) =>
+  const moveToday = async (task: Task) => {
+    // 오늘 핵심 할 일이 가득 찼는데 핵심 할 일을 옮기면 무엇을 뺄지, 일반 할 일로 옮길지 묻는다
+    const choice = task.isCore
+      ? await coreConflict.ask(today, { mode: "move", excludeTaskId: task.id }).catch(() => undefined)
+      : undefined;
+    if (choice === null) return;
+    const asNormal = choice !== undefined && "asNormal" in choice;
     taskSave.mutate({
       task,
-      run: () => taskApi.rescheduleTask(task.id, today),
-      optimistic: { scheduledDate: today },
-      done: (result) => ((result as { demotedFromCore: boolean }).demotedFromCore ? coreDemotedMessage(today) : "오늘로 옮겼어요"),
+      run: () => taskApi.rescheduleTask(task.id, today, choice),
+      optimistic: asNormal ? { scheduledDate: today, isCore: false } : { scheduledDate: today },
+      done: () => (asNormal ? movedAsNormalMessage(today) : "오늘로 옮겼어요"),
     });
+  };
 
   const createTask = async (req: CreateTaskRequest) => {
-    await taskApi.createTask(req);
+    const choice = req.isCore && req.scheduledDate ? await coreConflict.ask(req.scheduledDate, { mode: "add" }) : undefined;
+    if (choice === null) return false;
+    await taskApi.createTask(req, choice);
     refresh();
+    return true;
   };
 
   const goalAction = async (run: () => Promise<unknown>, message: string) => {
@@ -344,6 +356,7 @@ export function GoalDetailScreen() {
         </ul>
       </BottomSheet>
 
+      {coreConflict.sheet}
       <AddTaskSheet
         open={sheet === "addTask"}
         onClose={() => setSheet(null)}

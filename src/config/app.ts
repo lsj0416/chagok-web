@@ -9,7 +9,7 @@ export const TOAST_DURATION_MS = 4000;
 export const LONG_PRESS_MS = 500;
 /** 가짜 데이터 응답 지연. 로딩 상태가 실제처럼 보이도록 */
 export const MOCK_LATENCY_MS = 350;
-/** AI 분해 응답을 기다리는 최대 시간 (docs/screens.md 확인 필요) */
+/** AI 분해 응답을 기다리는 최대 시간 */
 export const AI_TIMEOUT_MS = 20000;
 /** 할 일 제목과 메모의 최대 글자 수 */
 export const TASK_TITLE_MAX_LENGTH = 100;
@@ -18,3 +18,9 @@ export const TASK_MEMO_MAX_LENGTH = 500;
 export const PENDING_TOAST_TTL_MS = 3000;
 /** 가짜 AI 응답 지연 */
 export const MOCK_AI_LATENCY_MS = 1500;
+
+/** 기록(S13) 한 번에 불러오는 기간. 처음엔 최근 이만큼, '이전 기록 더 보기'로 이만큼씩 더 */
+export const RECORDS_PAGE_DAYS = 30;
+/** 하루 시작·마무리 알림을 처음 켤 때의 기본 시각 (HH:MM) */
+export const DEFAULT_MORNING_REMINDER_TIME = "08:00";
+export const DEFAULT_EVENING_REMINDER_TIME = "21:00";

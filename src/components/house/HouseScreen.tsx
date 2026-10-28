@@ -15,6 +15,7 @@ import { TopBar } from "@/components/TopBar";
 import { useToast } from "@/components/useToast";
 import { HOUSE_LEVEL_LABEL, HOUSE_UPGRADE_RULES } from "@/config/game";
 import * as api from "@/lib/api/house";
+import { CreditAmount } from "@/components/CreditAmount";
 import { formatCredit } from "@/lib/credit";
 import { upgradeProgress } from "@/lib/house";
 import { withEulReul, withEuro } from "@/lib/korean";
@@ -75,7 +76,7 @@ export function HouseScreen() {
         action={
           detail && (
             <p className="pr-3 text-[15px] text-sign-2 tabular-nums">
-              크레딧 <strong className="font-bold text-sign-ink">{formatCredit(detail.balance)}</strong>
+              크레딧 <CreditAmount balance={detail.balance} />
             </p>
           )
         }
@@ -102,7 +103,7 @@ export function HouseScreen() {
 
             {negative && (
               <p role="status" className="mt-4 rounded-xl bg-surface-2 px-4 py-3.5 text-[15px] leading-snug">
-                크레딧이 <strong className="font-bold">{formatCredit(detail.balance)}</strong>이에요. 완료를 취소해서
+                크레딧이 <strong className="font-bold text-debt">{formatCredit(detail.balance)}</strong>이에요. 완료를 취소해서
                 크레딧이 회수됐어요. 다음에 받는 크레딧으로 먼저 채워져요
               </p>
             )}

@@ -210,6 +210,12 @@
         "role": "neutral",
         "displayName": "덮개",
         "canonical": "rgb(24 32 43 / 0.45)"
+      },
+      "debt": {
+        "role": "status",
+        "displayName": "진한 주황",
+        "canonical": "#a14a00",
+        "description": "마이너스 잔액 글자색 하나에만. 흰 바탕 6.0:1. 빨강 대신. '−' 부호와 이유 문구를 함께 둔다"
       }
     },
     "typographyMeta": {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { ArrowRight, Check, ChevronDown, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useId, useState } from "react";
@@ -8,11 +8,13 @@ import { useMockScenario } from "@/components/dev/useMockScenario";
 import { OfflineBanner, useOnline } from "@/components/OfflineBanner";
 import { TabBar } from "@/components/TabBar";
 import { LoadError, SectionHeading } from "@/components/today/TodayParts";
+import { Spinner } from "@/components/Spinner";
 import { TopBar } from "@/components/TopBar";
+import { RECORDS_PAGE_DAYS } from "@/config/app";
 import * as api from "@/lib/api/records";
 import { formatDayTitle, formatShortDate, toDateKey } from "@/lib/date";
 import { formatRate } from "@/lib/records";
-import type { DateKey, DayRecord, WeekSummary } from "@/types";
+import type { DateKey, DayRecord, DayRecordPage, WeekSummary } from "@/types";
 
 /** S13 기록. 연속 일수는 보여주지 않는다 */
 export function RecordsScreen() {
@@ -31,7 +33,7 @@ export function RecordsScreen() {
         {query.isPending && <RecordsSkeleton />}
         {query.isError && <LoadError message="기록을 불러오지 못했어요" onRetry={() => void query.refetch()} />}
 
-        {data && data.days.length === 0 && (
+        {data && data.days.length === 0 && data.olderBefore === null && (
           <section className="mx-4 mt-2 flex flex-col items-start gap-3 rounded-xl bg-surface-2 px-4 py-5">
             <h2 className="text-[18px] font-bold">아직 기록이 없어요</h2>
             <p className="text-[15px] text-ink-2">할 일을 완료하면 날짜별로 여기에 쌓여요</p>
@@ -44,7 +46,7 @@ export function RecordsScreen() {
           </section>
         )}
 
-        {data && data.days.length > 0 && (
+        {data && (data.days.length > 0 || data.olderBefore !== null) && (
           <>
             <WeekPanel week={data.week} />
 
@@ -56,11 +58,11 @@ export function RecordsScreen() {
 
             <section aria-labelledby="records-days">
               <SectionHeading id="records-days">날짜별 기록</SectionHeading>
-              <ul className="mt-1 px-4">
-                {data.days.map((day) => (
-                  <DayRow key={day.date} day={day} today={today} />
-                ))}
-              </ul>
+              {data.days.length === 0 && (
+                <p className="px-5 pt-2 text-[15px] text-ink-2">최근 {RECORDS_PAGE_DAYS}일에는 기록이 없어요</p>
+              )}
+              {/* 시나리오가 바뀌면 불러온 이전 기록도 처음부터 */}
+              <DayList key={scenario} first={data} today={today} />
             </section>
           </>
         )}
@@ -87,6 +89,45 @@ function WeekPanel({ week }: { week: WeekSummary }) {
       {/* 마친 할 일이 없을 때 '0일 · 0%'로 탓하는 듯한 줄을 보여주지 않는다 */}
       {week.doneCount > 0 && <p className="mt-0.5 text-[14px] text-ink-2 tabular-nums">{detail.join(" · ")}</p>}
     </section>
+  );
+}
+
+/** 날짜별 기록 목록과 '이전 기록 더 보기'. 처음엔 최근 RECORDS_PAGE_DAYS일, 누를 때마다 그만큼 더 */
+function DayList({ first, today }: { first: DayRecordPage; today: DateKey }) {
+  const [older, setOlder] = useState<DayRecordPage[]>([]);
+  const days = [first, ...older].flatMap((page) => page.days);
+  const nextBefore = (older.at(-1) ?? first).olderBefore;
+  const loadMore = useMutation({
+    mutationFn: (before: DateKey) => api.fetchDayRecords(before),
+    onSuccess: (page) => setOlder((prev) => [...prev, page]),
+  });
+
+  return (
+    <>
+      <ul className="mt-1 px-4">
+        {days.map((day) => (
+          <DayRow key={day.date} day={day} today={today} />
+        ))}
+      </ul>
+      {nextBefore && (
+        <div className="px-4 pt-4">
+          {loadMore.isError && (
+            <p role="alert" className="pb-2 text-center text-[14px] text-ink-2">
+              기록을 불러오지 못했어요. 다시 눌러 주세요
+            </p>
+          )}
+          <button
+            type="button"
+            disabled={loadMore.isPending}
+            onClick={() => loadMore.mutate(nextBefore)}
+            className="flex h-12 w-full items-center justify-center gap-2 rounded-lg border border-line-strong bg-surface text-[15px] font-semibold text-ink disabled:opacity-40"
+          >
+            {loadMore.isPending && <Spinner />}
+            이전 기록 더 보기
+          </button>
+        </div>
+      )}
+    </>
   );
 }
 

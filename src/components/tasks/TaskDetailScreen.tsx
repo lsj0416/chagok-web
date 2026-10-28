@@ -18,13 +18,14 @@ import { CoreReplaceSheet } from "@/components/today/CoreReplaceSheet";
 import { GoalPickerSheet } from "@/components/today/GoalPickerSheet";
 import { LoadError } from "@/components/today/TodayParts";
 import { Toast } from "@/components/Toast";
+import { useCoreConflict } from "@/components/today/useCoreConflict";
 import { TopBar } from "@/components/TopBar";
 import { useToast } from "@/components/useToast";
 import { TASK_MEMO_MAX_LENGTH, TASK_TITLE_MAX_LENGTH } from "@/config/app";
 import * as api from "@/lib/api/tasks";
 import { canUncomplete } from "@/lib/completion";
 import { formatDayTitle, formatShortDate, isSameDay, toDateKey } from "@/lib/date";
-import { coreDemotedMessage, isCoreFull } from "@/lib/today";
+import { isCoreFull, movedAsNormalMessage } from "@/lib/today";
 import type { DateKey, Task, TaskDetail } from "@/types";
 
 type Sheet = "date" | "goal" | "coreReplace" | "split" | "delete" | null;
@@ -50,6 +51,7 @@ export function TaskDetailScreen() {
   const [sheet, setSheet] = useState<Sheet>(null);
   const { toast, show } = useToast();
   const today: DateKey = toDateKey(new Date());
+  const coreConflict = useCoreConflict(today);
 
   const patchTask = (patch: Partial<Task>) =>
     queryClient.setQueryData<TaskDetail | null>(detailKey, (prev) => prev && { ...prev, task: { ...prev.task, ...patch } });
@@ -162,15 +164,23 @@ export function TaskDetailScreen() {
     save.mutate({ run: () => api.setTaskCore(task.id, next), optimistic: { isCore: next } });
   };
 
-  const changeDate = (date: DateKey | null) =>
-    date === null
-      ? save.mutate({ run: () => api.unscheduleTask(task.id), optimistic: { scheduledDate: null, isCore: false } })
-      : save.mutate({
-          run: () => api.rescheduleTask(task.id, date),
-          optimistic: { scheduledDate: date },
-          // 옮긴 날의 핵심 할 일이 가득 차서 일반 할 일이 됐으면 말없이 바꾸지 않고 알린다
-          done: (result) => ((result as { demotedFromCore: boolean }).demotedFromCore ? coreDemotedMessage(date) : undefined),
-        });
+  const changeDate = async (date: DateKey | null) => {
+    if (date === null) {
+      save.mutate({ run: () => api.unscheduleTask(task.id), optimistic: { scheduledDate: null, isCore: false } });
+      return;
+    }
+    // 핵심 할 일을 핵심이 가득 찬 날로 옮기면 무엇을 뺄지, 일반 할 일로 옮길지 묻는다
+    const choice = task.isCore
+      ? await coreConflict.ask(date, { mode: "move", excludeTaskId: task.id }).catch(() => undefined)
+      : undefined;
+    if (choice === null) return;
+    const asNormal = choice !== undefined && "asNormal" in choice;
+    save.mutate({
+      run: () => api.rescheduleTask(task.id, date, choice),
+      optimistic: asNormal ? { scheduledDate: date, isCore: false } : { scheduledDate: date },
+      done: asNormal ? movedAsNormalMessage(date) : undefined,
+    });
+  };
 
   return (
     <>
@@ -212,8 +222,11 @@ export function TaskDetailScreen() {
             empty={!goal}
             onClick={done ? undefined : () => setSheet("goal")}
           />
+          {/* 반복은 언제부터인지가 있어야 한다. 날짜 없는 할 일은 날짜를 정한 뒤 켠다 */}
           <Switch
             label="매일 반복"
+            hint={task.scheduledDate === null ? "날짜를 정하면 반복할 수 있어요" : undefined}
+            disabled={task.scheduledDate === null}
             checked={task.recurrence === "DAILY"}
             onChange={(on) => {
               const recurrence = on ? "DAILY" : null;
@@ -262,6 +275,7 @@ export function TaskDetailScreen() {
         open={sheet === "date"}
         today={today}
         value={task.scheduledDate}
+        recurring={task.recurrence !== null}
         onClose={() => setSheet(null)}
         onPick={changeDate}
       />
@@ -272,8 +286,9 @@ export function TaskDetailScreen() {
         onClose={() => setSheet(null)}
         onSelect={(goalId) => save.mutate({ run: () => api.updateTask(task.id, { goalId }), optimistic: { goalId } })}
       />
+      {coreConflict.sheet}
       <CoreReplaceSheet
-        incoming={sheet === "coreReplace" ? task : null}
+        open={sheet === "coreReplace"}
         coreTasks={dayCoreTasks}
         onClose={() => setSheet(null)}
         onReplace={(remove) =>

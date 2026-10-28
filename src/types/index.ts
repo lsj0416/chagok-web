@@ -52,6 +52,10 @@ export interface CreateTaskRequest {
   recurrence: TaskRecurrence | null;
 }
 
+/** 핵심 할 일이 가득 찬 날로 핵심 할 일을 옮기거나 더할 때 사용자가 고른 처리.
+ *  그날 핵심 하나를 빼고 대신 넣거나, 일반 할 일로 둔다. 서비스가 대신 고르지 않는다 */
+export type CoreConflictChoice = { replaceCoreTaskId: string } | { asNormal: true };
+
 export type TaskUnit = "MINUTE" | "COUNT" | "PAGE" | "ITEM";
 
 export interface QuickTaskTemplate {
@@ -201,10 +205,16 @@ export interface WeekSummary {
 }
 
 /** 기록 화면(S13)에 필요한 조회 결과 */
-export interface RecordsOverview {
-  week: WeekSummary;
+/** 날짜별 기록 한 묶음(RECORDS_PAGE_DAYS일). olderBefore는 더 이전 기록을 불러올 기준 날짜, 없으면 null */
+export interface DayRecordPage {
   /** 최근 날짜가 위. 계획도 완료도 없던 날은 빠진다 */
   days: DayRecord[];
+  olderBefore: DateKey | null;
+}
+
+/** 기록 첫 화면: 주간 요약과 최근 RECORDS_PAGE_DAYS일의 기록 */
+export interface RecordsOverview extends DayRecordPage {
+  week: WeekSummary;
   earnedAchievementCount: number;
 }
 

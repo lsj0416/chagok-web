@@ -20,6 +20,8 @@
   --color-sign-2: #d5e1f6; /* 파랑 위 보조 글자, 5.9:1 */
   /* 안전 노랑: 공정 진행 막대와 안내판·대표 버튼 아래 줄. 글자색으로 쓰지 않는다 */
   --color-caution: #f2c230;
+  /* 마이너스 잔액(완료 취소로 회수): 진한 주황 글자. 빨강은 처벌처럼 보여 쓰지 않는다. 흰 바탕 6.0:1, surface-2 위 5.4:1 */
+  --color-debt: #a14a00;
 
   --font-sans: var(--font-gothic), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-dohyeon), var(--font-gothic), ui-sans-serif, sans-serif;

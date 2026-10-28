@@ -1,5 +1,6 @@
 // 화면 상태 확인용 가짜 데이터 시나리오.
 // 개발 서버에서 ?mock=<이름> 으로 바꿔 본다. 날짜는 오늘을 기준으로 만든다
+import { DEFAULT_EVENING_REMINDER_TIME, DEFAULT_MORNING_REMINDER_TIME } from "@/config/app";
 import { AI_DAILY_LIMIT, DAILY_BONUS_THRESHOLD, HOUSE_UPGRADE_RULES } from "@/config/game";
 import { addDays, toDateKey } from "@/lib/date";
 import { furnishedSlots, MOCK_CATALOG } from "@/mocks/house";
@@ -206,8 +207,14 @@ function pastRecords(today: DateKey): DayRecord[] {
     rec(6, 3, ["관심 공고 2개 읽기"], 1, [{ id: "r-m3", title: "포트폴리오 README 쓰기", movedTo: null }]),
     rec(7, 3, ["네트워크 기출 오답 정리", "헬스장 등록 알아보기", "독서 20분"], 3),
     rec(9, 2, ["이력서 경력 칸 다듬기"], 1),
+    // '이전 기록 더 보기' 확인용: 12일 전부터 80일 전까지. 나흘에 하루는 쉬었다
+    ...Array.from({ length: 69 }, (_, i) => i + 12)
+      .filter((offset) => offset % 4 !== 0)
+      .map((offset) => rec(offset, 3, OLDER_DONE.slice(0, 1 + (offset % 3)), 1 + (offset % 3))),
   ];
 }
+
+const OLDER_DONE = ["알고리즘 문제 2개 풀기", "자료구조 요약 노트 읽기", "산책 30분"];
 
 // TODO: 미정 (docs/planning.md 14장). 업적 목록과 보상은 정하지 않았다. 화면 확인용 임시 값이다
 function mockAchievements(today: DateKey): AchievementProgress[] {
@@ -242,8 +249,8 @@ function baseDb(today: DateKey): MockDb {
       email: "sample.user@gmail.com",
       // 처음에는 기기 시간대를 쓴다
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      morningReminder: { enabled: false, time: "08:00" },
-      eveningReminder: { enabled: false, time: "21:00" },
+      morningReminder: { enabled: false, time: DEFAULT_MORNING_REMINDER_TIME },
+      eveningReminder: { enabled: false, time: DEFAULT_EVENING_REMINDER_TIME },
     },
   };
 }

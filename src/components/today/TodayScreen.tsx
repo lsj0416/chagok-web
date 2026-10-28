@@ -29,11 +29,12 @@ import {
   TodayNotice,
 } from "@/components/today/TodayParts";
 import { UndatedSheet } from "@/components/today/UndatedSheet";
+import { useCoreConflict } from "@/components/today/useCoreConflict";
 import { TOAST_DURATION_MS } from "@/config/app";
 import * as api from "@/lib/api/tasks";
 import { canUncomplete } from "@/lib/completion";
 import { formatDayTitle, formatShortDate, toDateKey } from "@/lib/date";
-import { buildTodayView, coreDemotedMessage, isCoreFull } from "@/lib/today";
+import { buildTodayView, isCoreFull, movedAsNormalMessage } from "@/lib/today";
 import type { CreateTaskRequest, DateKey, QuickTaskTemplate, Task, TodayPlan } from "@/types";
 
 type Sheet =
@@ -176,12 +177,17 @@ export function TodayScreen() {
   });
 
   /** S03, S16에서 할 일 만들기. 실패하면 시트가 그 자리에서 알린다 */
-  const createTask = async (req: CreateTaskRequest) => {
-    await api.createTask(req);
-    refresh();
-  };
-
   const today: DateKey = plan?.date ?? toDateKey(new Date());
+  const coreConflict = useCoreConflict(today);
+
+  const createTask = async (req: CreateTaskRequest) => {
+    // 핵심으로 더하는데 그날 핵심이 가득 찼으면 무엇을 뺄지 묻는다. '그대로 두기'면 더하지 않고 입력을 남긴다
+    const choice = req.isCore && req.scheduledDate ? await coreConflict.ask(req.scheduledDate, { mode: "add" }) : undefined;
+    if (choice === null) return false;
+    await api.createTask(req, choice);
+    refresh();
+    return true;
+  };
   const view = useMemo(
     () => (plan ? buildTodayView(plan, lingeringId ? new Set([lingeringId]) : undefined) : null),
     [plan, lingeringId],
@@ -206,18 +212,24 @@ export function TodayScreen() {
     save.mutate({ taskId: task.id, run: () => api.setTaskCore(task.id, !task.isCore) });
   };
 
-  const reschedule = (task: Task, date: DateKey) =>
+  const reschedule = async (task: Task, date: DateKey) => {
+    // 핵심 할 일을 핵심이 가득 찬 날로 옮기면 무엇을 뺄지, 일반 할 일로 옮길지 묻는다.
+    // 확인에 실패하면 묻지 않고 보내고, 서버가 거절하면 저장 실패 알림이 뜬다
+    const choice = task.isCore
+      ? await coreConflict.ask(date, { mode: "move", excludeTaskId: task.id }).catch(() => undefined)
+      : undefined;
+    if (choice === null) return;
     save.mutate({
       taskId: task.id,
-      run: () => api.rescheduleTask(task.id, date),
-      // 옮긴 날의 핵심 할 일이 가득 차서 일반 할 일이 됐으면 그 사실을 알린다
-      done: (result) =>
-        (result as { demotedFromCore: boolean }).demotedFromCore
-          ? coreDemotedMessage(date)
+      run: () => api.rescheduleTask(task.id, date, choice),
+      done:
+        choice && "asNormal" in choice
+          ? movedAsNormalMessage(date)
           : date === today
             ? undefined
             : `${formatShortDate(date)}로 옮겼어요`,
     });
+  };
 
   const unschedule = (task: Task) =>
     save.mutate({ taskId: task.id, run: () => api.unscheduleTask(task.id), done: "날짜 없이 보관했어요" });
@@ -363,13 +375,16 @@ export function TodayScreen() {
         onUnschedule={unschedule}
       />
       <CoreReplaceSheet
-        incoming={sheet?.kind === "coreReplace" ? sheet.task : null}
+        open={sheet?.kind === "coreReplace"}
         coreTasks={view?.coreTasks ?? []}
         onClose={() => setSheet(null)}
-        onReplace={(remove, add) =>
-          save.mutate({ taskId: add.id, run: () => api.replaceCoreTask(remove.id, add.id) })
-        }
+        onReplace={(remove) => {
+          if (sheet?.kind !== "coreReplace") return;
+          const add = sheet.task;
+          save.mutate({ taskId: add.id, run: () => api.replaceCoreTask(remove.id, add.id) });
+        }}
       />
+      {coreConflict.sheet}
       <OverdueSheet
         open={sheet?.kind === "overdue" && !overdueCleared}
         onClose={() => setSheet(null)}

@@ -17,6 +17,8 @@ interface TaskDateSheetProps {
   onClose: () => void;
   /** null이면 날짜 없이 보관 */
   onPick: (date: DateKey | null) => void;
+  /** 매일 반복하는 할 일은 날짜 없이 둘 수 없다 (반복을 먼저 끈다) */
+  recurring?: boolean;
 }
 
 function modeOf(value: DateKey | null, today: DateKey): DateMode | null {
@@ -31,7 +33,7 @@ function modeOf(value: DateKey | null, today: DateKey): DateMode | null {
  * S04 날짜 바꾸기. S03과 같은 날짜 칩을 쓴다.
  * 오늘, 내일, 날짜 없음은 누르면 바로 바꾸고, 날짜 선택은 날짜를 고른 뒤 '바꾸기'
  */
-export function TaskDateSheet({ open, today, value, onClose, onPick }: TaskDateSheetProps) {
+export function TaskDateSheet({ open, today, value, onClose, onPick, recurring = false }: TaskDateSheetProps) {
   const ids = { label: useId(), custom: useId() };
   const initial = modeOf(value, today);
   const [mode, setMode] = useState<DateMode | null>(initial);
@@ -65,6 +67,7 @@ export function TaskDateSheet({ open, today, value, onClose, onPick }: TaskDateS
           <ChoiceChip
             key={chip.mode}
             selected={mode === chip.mode}
+            disabled={recurring && chip.mode === "NONE"}
             onClick={() => {
               if (chip.mode === "CUSTOM") setMode("CUSTOM");
               else pick(chip.date ?? null);
@@ -74,6 +77,7 @@ export function TaskDateSheet({ open, today, value, onClose, onPick }: TaskDateS
           </ChoiceChip>
         ))}
       </div>
+      {recurring && <p className="pt-2 text-[13px] text-ink-3">반복을 끄면 날짜 없이 둘 수 있어요</p>}
       {mode === "CUSTOM" && (
         <form
           className="mt-3 flex flex-col gap-3"

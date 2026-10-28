@@ -1,23 +1,25 @@
 // 백엔드가 준비되기 전까지 쓰는 메모리 안의 가짜 API.
 // 함수 이름과 응답 모양이 나중에 API 명세의 기준이 된다
-import { MOCK_AI_LATENCY_MS, MOCK_LATENCY_MS } from "@/config/app";
+import { MOCK_AI_LATENCY_MS, MOCK_LATENCY_MS, RECORDS_PAGE_DAYS } from "@/config/app";
 import { computeCompletion, computeUncompletion, canUncomplete, type LedgerChange } from "@/lib/completion";
-import { toDateKey } from "@/lib/date";
+import { addDays, toDateKey } from "@/lib/date";
 import { remainingAiCalls } from "@/lib/drafts";
 import { canPurchase, canUpgradeHouse } from "@/lib/house";
 import { slotsFor } from "@/mocks/house";
-import { summarizeWeek } from "@/lib/records";
+import { pageDayRecords, summarizeWeek } from "@/lib/records";
 import { isCoreFull } from "@/lib/today";
 import { mockBreakdown } from "@/mocks/aiDrafts";
 import { createMockDb, type MockDb, type MockScenario } from "@/mocks/scenarios";
 import { GOAL_BUILDING, HOUSE_UPGRADE_RULES, SPLIT_MIN_TASKS } from "@/config/game";
 import type {
+  CoreConflictChoice,
   AchievementProgress,
   AiUsage,
   CreateGoalRequest,
   CreateTaskRequest,
   DateKey,
   DayRecord,
+  DayRecordPage,
   Goal,
   GoalBreakdown,
   GoalBreakdownRequest,
@@ -200,15 +202,31 @@ export function replaceCoreTask(removeId: string, addId: string) {
   });
 }
 
-export function rescheduleTask(id: string, date: DateKey) {
+/** 그날의 핵심 할 일. 핵심 할 일을 그날로 옮기거나 더하기 전에 자리가 있는지 본다 */
+export function fetchDayCoreTasks(date: DateKey, excludeTaskId?: string): Promise<Task[]> {
+  return respond(() => db.tasks.filter((t) => t.scheduledDate === date && t.isCore && t.id !== excludeTaskId));
+}
+
+/** 그날 핵심 할 일이 가득 찼는데 핵심으로 들이려 하면, 사용자가 고른 처리(choice)를 따른다.
+ *  고르지 않았으면 바꾸지 않고 거절한다 (말없이 일반 할 일로 바꾸지 않는다) */
+function resolveCoreConflict(date: DateKey, incomingId: string | null, choice: CoreConflictChoice | undefined): boolean {
+  const dayCore = db.tasks.filter((t) => t.scheduledDate === date && t.isCore && t.id !== incomingId);
+  if (!isCoreFull(dayCore)) return true;
+  if (!choice) throw new MockApiError("core full");
+  if ("asNormal" in choice) return false;
+  const removed = dayCore.find((t) => t.id === choice.replaceCoreTaskId && t.status !== "DONE");
+  if (!removed) throw new MockApiError("core replace target not found");
+  removed.isCore = false;
+  return true;
+}
+
+export function rescheduleTask(id: string, date: DateKey, choice?: CoreConflictChoice) {
   return mutate(() => {
     const task = findTask(id);
-    // 옮긴 날짜의 핵심 할 일이 이미 가득 차 있으면 일반 할 일로 옮긴다. 화면이 알릴 수 있게 결과에 남긴다
-    const demotedFromCore = task.isCore && isCoreFull(db.tasks.filter((t) => t.id !== id && t.scheduledDate === date));
-    if (demotedFromCore) task.isCore = false;
+    if (task.isCore) task.isCore = resolveCoreConflict(date, id, choice);
     recordMoveFromToday(task, date);
     task.scheduledDate = date;
-    return { demotedFromCore };
+    return { ok: true };
   });
 }
 
@@ -222,6 +240,7 @@ function recordMoveFromToday(task: Task, movedTo: DateKey | null) {
 export function unscheduleTask(id: string) {
   return mutate(() => {
     const task = findTask(id);
+    if (task.recurrence) throw new MockApiError("recurring task needs a date");
     recordMoveFromToday(task, null);
     task.scheduledDate = null;
     task.isCore = false;
@@ -253,6 +272,8 @@ export function updateTask(id: string, patch: Partial<Pick<Task, "title" | "memo
     if (task.status === "DONE" && patch.goalId !== undefined && patch.goalId !== task.goalId) {
       throw new MockApiError("done task goal locked");
     }
+    // 매일 반복은 날짜가 있는 할 일만 (언제부터 반복하는지가 있어야 한다)
+    if (patch.recurrence && task.scheduledDate === null) throw new MockApiError("recurrence needs a date");
     Object.assign(task, patch);
     return { ok: true };
   });
@@ -260,7 +281,7 @@ export function updateTask(id: string, patch: Partial<Pick<Task, "title" | "memo
 
 /**
  * 나누기. 원래 할 일은 SPLIT으로 남고(목록, 집계, 크레딧에서 빠진다) 새 할 일은 원래 날짜와 목표를 이어받는다.
- * 새 할 일은 일반 할 일로 만들고 반복과 메모는 물려주지 않는다 (docs/screens.md 확인 필요)
+ * 새 할 일은 일반 할 일로 만들고 반복과 메모는 물려주지 않는다
  */
 export function splitTask(id: string, titles: string[]) {
   return mutate(() => {
@@ -289,7 +310,7 @@ export function splitTask(id: string, titles: string[]) {
   });
 }
 
-/** 삭제. 완료한 할 일이어도 받은 크레딧과 공사 진행은 그대로 둔다 (docs/screens.md 확인 필요) */
+/** 삭제. 완료한 할 일이어도 받은 크레딧과 공사 진행은 그대로 둔다 */
 export function deleteTask(id: string) {
   return mutate(() => {
     findTask(id);
@@ -315,7 +336,7 @@ let breakdownRound = 0;
 
 /**
  * AI 분해 요청. 성공하면 1회로 센다. 취소(abort)도 서버는 이미 호출했으므로 1회로 센다.
- * 실패와 시간 초과는 세지 않는다 (docs/screens.md 확인 필요)
+ * 실패와 시간 초과는 세지 않는다
  */
 export function requestGoalBreakdown(req: GoalBreakdownRequest, signal?: AbortSignal): Promise<GoalBreakdown> {
   return new Promise((resolve, reject) => {
@@ -509,19 +530,29 @@ function todayRecord(date: DateKey): DayRecord {
   };
 }
 
+/** 계획도 완료도 없던 날(쉰 날)은 기록 줄을 만들지 않는다 */
+function allDayRecords(date: DateKey): DayRecord[] {
+  return [todayRecord(date), ...db.pastRecords].filter(
+    (d) => d.plannedCount > 0 || d.doneTasks.length > 0 || d.movedTasks.length > 0,
+  );
+}
+
+/** 주간 요약과 최근 RECORDS_PAGE_DAYS일의 기록 */
 export function fetchRecords(): Promise<RecordsOverview> {
   return respond(() => {
     const date = today();
-    const current = todayRecord(date);
-    const days = [current, ...db.pastRecords].filter(
-      (d) => d.plannedCount > 0 || d.doneTasks.length > 0 || d.movedTasks.length > 0,
-    );
+    const days = allDayRecords(date);
     return {
       week: summarizeWeek(days, date),
-      days,
+      ...pageDayRecords(days, addDays(date, 1), RECORDS_PAGE_DAYS),
       earnedAchievementCount: db.achievements.filter((a) => a.earnedAt !== null).length,
     };
   });
+}
+
+/** before 이전 RECORDS_PAGE_DAYS일의 기록 ('이전 기록 더 보기') */
+export function fetchDayRecords(before: DateKey): Promise<DayRecordPage> {
+  return respond(() => pageDayRecords(allDayRecords(today()), before, RECORDS_PAGE_DAYS));
 }
 
 export function fetchAchievements(): Promise<AchievementProgress[]> {
@@ -647,17 +678,17 @@ export function markBuildingStageSeen(buildingId: string) {
 
 // 할 일 만들기 (S03, S16)
 
-/** 할 일을 만든다. 그날 핵심 할 일이 이미 3개면 일반 할 일로 만든다 (docs/screens.md 확인 필요) */
-export function createTask(req: CreateTaskRequest) {
+/** 할 일을 만든다. 그날 핵심 할 일이 이미 가득 찼으면 사용자가 고른 처리(choice)를 따른다 */
+export function createTask(req: CreateTaskRequest, choice?: CoreConflictChoice) {
   return mutate(() => {
-    const sameDay = req.scheduledDate ? db.tasks.filter((t) => t.scheduledDate === req.scheduledDate) : [];
+    const isCore = req.isCore && req.scheduledDate !== null && resolveCoreConflict(req.scheduledDate, null, choice);
     const task: Task = {
       id: `t-${Date.now()}`,
       title: req.title,
       goalId: req.goalId,
       status: "PLANNED",
       scheduledDate: req.scheduledDate,
-      isCore: req.isCore && req.scheduledDate !== null && !isCoreFull(sameDay),
+      isCore,
       source: req.source,
       recurrence: req.recurrence,
       memo: null,

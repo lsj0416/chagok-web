@@ -87,9 +87,11 @@ export function OverdueSheet({
                   </button>
                   <button
                     type="button"
-                    disabled={busy}
+                    // 매일 반복하는 할 일은 날짜 없이 둘 수 없다 (할 일 상세에서 반복을 먼저 끈다)
+                    disabled={busy || task.recurrence !== null}
+                    title={task.recurrence ? "반복을 끄면 날짜 없이 둘 수 있어요" : undefined}
                     onClick={() => onUnschedule(task)}
-                    className="h-11 rounded-lg bg-surface-2 text-[14px] font-semibold text-ink-2"
+                    className="h-11 rounded-lg bg-surface-2 text-[14px] font-semibold text-ink-2 disabled:opacity-40"
                   >
                     날짜 없이 보관
                   </button>

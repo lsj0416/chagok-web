@@ -1,5 +1,5 @@
-import { startOfWeek } from "@/lib/date";
-import type { DateKey, DayRecord, WeekSummary } from "@/types";
+import { addDays, startOfWeek } from "@/lib/date";
+import type { DateKey, DayRecord, DayRecordPage, WeekSummary } from "@/types";
 
 /**
  * 계획 대비 실행률: 수행 대상이던 할 일 중 그날 완료한 비율.
@@ -25,6 +25,16 @@ export function summarizeWeek(days: DayRecord[], today: DateKey): WeekSummary {
     activeDayCount: week.filter((d) => d.doneTasks.length > 0).length,
     completionRate: completionRate(plannedDone, planned),
   };
+}
+
+/**
+ * before 바로 전날부터 pageDays일 동안의 기록을 자른다(before는 빠진다).
+ * 그보다 오래된 기록이 남아 있으면 다음에 불러올 기준 날짜를 함께 준다
+ */
+export function pageDayRecords(days: DayRecord[], before: DateKey, pageDays: number): DayRecordPage {
+  const from = addDays(before, -pageDays);
+  const page = days.filter((d) => d.date < before && d.date >= from).sort((a, b) => b.date.localeCompare(a.date));
+  return { days: page, olderBefore: days.some((d) => d.date < from) ? from : null };
 }
 
 /** '68%'. 반올림 */

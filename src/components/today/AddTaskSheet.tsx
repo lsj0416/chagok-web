@@ -27,6 +27,7 @@ interface AddTaskSheetProps {
   /** S02에서 열면 오늘·목표 없음, S12에서 열면 날짜 없음·그 목표 */
   defaultDate?: "TODAY" | "NONE";
   defaultGoalId?: string | null;
+  /** false를 돌려주면 더하지 않은 것(핵심 교체를 그대로 둠)으로 보고 입력을 남긴다 */
   onSubmit: (req: CreateTaskRequest) => Promise<unknown>;
 }
 
@@ -81,7 +82,7 @@ export function AddTaskSheet({
     setPending(true);
     setFailed(false);
     try {
-      await onSubmit({
+      const added = await onSubmit({
         title: title.trim(),
         scheduledDate: date,
         goalId,
@@ -89,6 +90,8 @@ export function AddTaskSheet({
         source: "MANUAL",
         recurrence: null,
       });
+      // 핵심 교체 시트에서 '그대로 두기'를 골랐으면 더하지 않았으니 입력을 그대로 둔다
+      if (added === false) return;
       // 연속 추가: 제목만 비우고 날짜, 목표, 핵심 선택은 그대로 둔다
       setTitle("");
       input.current?.focus();
